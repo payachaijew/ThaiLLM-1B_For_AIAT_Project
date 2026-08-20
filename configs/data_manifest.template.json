@@ -1,0 +1,79 @@
+{
+  "manifest_id": null,
+  "created_at": null,
+  "selected_tokenizer": {
+    "repo": null,
+    "revision": null,
+    "hash": null
+  },
+  "sources": [
+    {
+      "source_id": "sea_pile_v2_th",
+      "repo_or_url": "aisingapore/SEA-PILE-v2",
+      "subset": "th",
+      "revision": null,
+      "role": "thai_cpt_primary",
+      "dataset_level_license": "odc-by-1.0",
+      "additional_terms": "CommonCrawl terms of use",
+      "provenance_verified": false,
+      "redistribution_verified": false,
+      "document_count": null,
+      "observed_tokens": null,
+      "content_hash": null
+    },
+    {
+      "source_id": "thaillm_repository_components",
+      "repo_or_url": "https://data-repository.thaillm.or.th/",
+      "subset": null,
+      "revision": null,
+      "role": "thai_cpt_candidate_supplement",
+      "dataset_level_license": null,
+      "additional_terms": "audit every component separately",
+      "provenance_verified": false,
+      "redistribution_verified": false,
+      "document_count": null,
+      "observed_tokens": null,
+      "content_hash": null
+    },
+    {
+      "source_id": "fineweb_edu_en",
+      "repo_or_url": "HuggingFaceFW/fineweb-edu",
+      "subset": null,
+      "revision": null,
+      "role": "english_replay_candidate",
+      "dataset_level_license": "odc-by-1.0",
+      "additional_terms": null,
+      "provenance_verified": false,
+      "redistribution_verified": false,
+      "document_count": null,
+      "observed_tokens": null,
+      "content_hash": null
+    },
+    {
+      "source_id": "permissive_code",
+      "repo_or_url": null,
+      "subset": null,
+      "revision": null,
+      "role": "code_replay_candidate",
+      "dataset_level_license": null,
+      "additional_terms": "retain repository-level provenance and approved permissive licenses",
+      "provenance_verified": false,
+      "redistribution_verified": false,
+      "document_count": null,
+      "observed_tokens": null,
+      "content_hash": null
+    }
+  ],
+  "processing": {
+    "unicode_normalization": "NFC",
+    "language_id_model_and_revision": null,
+    "exact_dedup": null,
+    "near_dedup": null,
+    "quality_filter_revision": null,
+    "pii_filter_revision": null,
+    "benchmark_decontamination_hash": null,
+    "split_seed": null
+  },
+  "fail_closed": true
+}
+

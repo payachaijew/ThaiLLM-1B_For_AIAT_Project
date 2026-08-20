@@ -1,0 +1,91 @@
+{
+  "run_id": null,
+  "timestamp": null,
+  "stage": null,
+  "scientific_evidence_allowed": false,
+  "claim": null,
+  "condition": null,
+  "model": {
+    "repo": null,
+    "revision": null,
+    "family": null,
+    "parameter_count": null,
+    "license": null
+  },
+  "tokenizer": {
+    "revision_or_hash": null,
+    "vocab_size": null,
+    "thai_bytes_per_token": null,
+    "english_bytes_per_token": null,
+    "code_bytes_per_token": null
+  },
+  "data": {
+    "manifest_hash": null,
+    "source_revisions": [],
+    "licenses": [],
+    "language_token_counts": {},
+    "document_counts": {},
+    "dedup_rate": null,
+    "contamination_matches": null,
+    "pii_flags": null
+  },
+  "training": {
+    "seed": null,
+    "hardware": null,
+    "precision": null,
+    "sequence_length": null,
+    "global_batch_tokens": null,
+    "optimizer": null,
+    "learning_rate_schedule": null,
+    "observed_tokens": null,
+    "steps": null,
+    "estimated_flops": null,
+    "gpu_hours": null
+  },
+  "engineering": {
+    "max_logit_error": null,
+    "loss_error": null,
+    "router_gradient_norm": null,
+    "checkpoint_roundtrip_pass": null,
+    "standard_path_recoverable": null,
+    "tokens_per_second": null,
+    "peak_memory_allocated_bytes": null,
+    "peak_memory_reserved_bytes": null,
+    "inference_latency_ms": null,
+    "compile_or_fused_kernel": null
+  },
+  "quality": {
+    "thai_bpb": null,
+    "english_bpb": null,
+    "code_bpb": null,
+    "thai_downstream_aggregate": null,
+    "english_downstream_aggregate": null,
+    "code_downstream_aggregate": null
+  },
+  "routing": {
+    "mean_entropy": null,
+    "mean_max_weight": null,
+    "source_usage_distribution": null,
+    "thai_english_js_divergence": null,
+    "codeswitch_boundary_metric": null,
+    "clamp_effect": null
+  },
+  "statistics": {
+    "seed_count": null,
+    "bootstrap_resamples": null,
+    "confidence_intervals": null,
+    "multiplicity_correction": null
+  },
+  "gates": {
+    "novelty": null,
+    "license_and_data": null,
+    "engineering": null,
+    "premise": null,
+    "compute_normalized_gain": null,
+    "paper_worthiness": null
+  },
+  "blockers": [],
+  "verdict": "pending",
+  "notes": []
+}
+

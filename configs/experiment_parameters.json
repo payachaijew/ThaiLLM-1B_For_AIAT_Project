@@ -1,0 +1,453 @@
+{
+  "project_id": "thai_llm_1b_attnres_2026",
+  "created_at": "2026-08-18T00:00:00+07:00",
+  "status": "phase0_complete_pending_decontamination_and_downstream_eval",
+  "target_venue": "iSAI-NLP 2026",
+  "deliverables": {
+    "engineering": [
+      "ThaiLLM-1B-Base"
+    ],
+    "engineering_deferred": [
+      "ThaiLLM-1B-Instruct — SFT/DPO เลื่อนออกจาก critical path ตามมติทีม"
+    ],
+    "research": "secondary track: compute-controlled Thai CPT comparison of residual-routing variants; ไม่ใส่ใน product"
+  },
+  "base_model_candidates": [
+    {
+      "repo": "meta-llama/Llama-3.2-1B",
+      "role": "final_main_base_conditional",
+      "reported_parameters": 1230000000,
+      "verified_parameters": 1235814400,
+      "verified_parameters_source": "huggingface safetensors metadata at pinned revision",
+      "parameters_embedding": 262668288,
+      "parameters_non_embedding": 973146112,
+      "layers": 16,
+      "hidden_size": 2048,
+      "license": "llama-3.2-community",
+      "thai_status": "officially_supported",
+      "revision": "4e20de362430cd3b72f300e6b0f18e50e7166e08",
+      "gated": "manual",
+      "thai_chars_per_token": 2.179,
+      "decision": "conditional_selection_blocked_on_gated_access_and_naming_terms"
+    },
+    {
+      "repo": "google/gemma-3-1b-pt",
+      "role": "tokenizer_upside_alternative",
+      "reported_parameters": 1000000000,
+      "verified_parameters": 999885952,
+      "verified_parameters_source": "huggingface safetensors metadata at pinned revision",
+      "parameters_embedding": 301989888,
+      "parameters_non_embedding": 697896064,
+      "layers": 26,
+      "hidden_size": 1152,
+      "license": "gemma",
+      "thai_status": "multilingual_over_140_languages",
+      "revision": "fcf18a2a879aab110ca39f8bffbccd5d49d8eb29",
+      "gated": "manual",
+      "thai_chars_per_token": 2.833,
+      "decision": "not_recommended_as_main_base_high_port_confound_risk_see_base_selection"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B",
+      "role": "final_fallback_license_clean",
+      "reported_parameters": 1540000000,
+      "verified_parameters": 1543714304,
+      "verified_parameters_source": "huggingface safetensors metadata at pinned revision",
+      "parameters_embedding": 233373696,
+      "parameters_non_embedding": 1310340608,
+      "layers": 28,
+      "hidden_size": 1536,
+      "license": "apache-2.0",
+      "thai_status": "explicitly_supported",
+      "revision": "8faed761d45a263340a0528343f099c05c9a4323",
+      "gated": false,
+      "thai_chars_per_token": 1.838,
+      "decision": "promoted_to_primary_fallback_pending_mentor_size_approval"
+    },
+    {
+      "repo": "allenai/OLMo-2-0425-1B",
+      "role": "cross_family_architecture_replication_english_only",
+      "reported_parameters": 1000000000,
+      "verified_parameters": 1484916736,
+      "verified_parameters_source": "huggingface safetensors metadata at pinned revision",
+      "parameters_correction_note": "previously recorded as 1.0B; the true total is 1.485B (untied embeddings, 100352 vocab). This is a 48 percent error and it changes the OLMo compute budget.",
+      "parameters_embedding": 411041792,
+      "parameters_non_embedding": 1073874944,
+      "layers": 16,
+      "hidden_size": 2048,
+      "license": "apache-2.0",
+      "thai_status": "english_only_per_model_card",
+      "revision": "a1847dff35000b4271fa70afc5db10fd29fedbdf",
+      "gated": false,
+      "thai_chars_per_token": 1.082,
+      "decision": "rejected_as_thai_base_retained_for_architecture_replication_only"
+    },
+    {
+      "repo": "Qwen/Qwen3-0.6B-Base",
+      "role": "cheap_pilot",
+      "reported_parameters": 600000000,
+      "verified_parameters": 596049920,
+      "verified_parameters_source": "huggingface safetensors metadata at pinned revision",
+      "parameters_embedding": 155582464,
+      "parameters_non_embedding": 440467456,
+      "layers": 28,
+      "hidden_size": 1024,
+      "license": "apache-2.0",
+      "thai_status": "part_of_119_language_pretraining",
+      "revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+      "gated": false,
+      "thai_chars_per_token": 1.838,
+      "decision": "confirmed_pilot_only_tokenizer_byte_identical_to_qwen2_5_1_5b"
+    },
+    {
+      "repo": "sail/Sailor2-1B",
+      "role": "evaluated_and_rejected",
+      "verified_parameters": 988064640,
+      "layers": 48,
+      "hidden_size": 896,
+      "license": "apache-2.0",
+      "thai_status": "already_thai_sea_continued_pretrained",
+      "revision": "75c2856ffc7e6a6e64127f40c5f54a953deb682e",
+      "gated": false,
+      "thai_chars_per_token": 1.838,
+      "decision": "rejected_confounded_base_already_thai_adapted_cannot_measure_thai_acquisition"
+    },
+    {
+      "repo": "tiiuae/Falcon3-1B-Base",
+      "role": "evaluated_and_rejected",
+      "verified_parameters": 1669408768,
+      "layers": 18,
+      "hidden_size": 2048,
+      "license": "falcon3-tii-custom",
+      "thai_status": "not_supported_en_fr_es_pt_only",
+      "revision": "cb37ef3559b157b5c9d9226296ba01a5162da1f7",
+      "gated": false,
+      "thai_chars_per_token": 0.737,
+      "decision": "rejected_thai_tokenizer_fatal"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-1.7B",
+      "role": "evaluated_and_rejected",
+      "verified_parameters": 1711376384,
+      "layers": 24,
+      "hidden_size": 2048,
+      "license": "apache-2.0",
+      "thai_status": "english_only",
+      "revision": "effd688a12921b4cc83e3312b6feb579f70f9c71",
+      "gated": false,
+      "thai_chars_per_token": 0.583,
+      "decision": "rejected_thai_tokenizer_fatal"
+    }
+  ],
+  "base_selection": {
+    "screen_id": "BASE-SCREEN-2026-08-18",
+    "status": "final_selection_made_2026-08-19",
+    "recommended_main_base": "Qwen/Qwen3-1.7B-Base",
+    "superseded_recommendation": {
+      "was": "meta-llama/Llama-3.2-1B",
+      "reason": "Llama 3.2 และ Gemma 3 เป็น gated:manual และบังคับให้ชื่อ derivative ขึ้นต้นด้วย Llama/Gemma ซึ่งทำให้ชื่อ deliverable ThaiLLM-1B-Base ผิดเงื่อนไข. เมื่อทีมยืนยันว่า ต้องปล่อย weight บน HuggingFace และขนาดขั้นต่ำ 1B ผู้สมัครที่ผ่านจึงเหลือเฉพาะ Apache-2.0."
+    },
+    "challenger_not_selected": {
+      "repo": "google/gemma-4-E2B",
+      "thai_chars_per_token": 2.8326,
+      "advantage": "tokenizer ดีกว่า 54%",
+      "rejected_because": "MatFormer + per-layer embeddings + audio/vision; ไม่มีใน transformers release ใด ๆ",
+      "revisit_conditions": "ดู selected_base.switch_conditions"
+    },
+    "pilot_for_track2": "Qwen/Qwen3-0.6B-Base",
+    "artifacts_directory": "../base_selection/",
+    "open_gates_blocking_final_lock": [
+      {
+        "gate": "A_gated_access",
+        "detail": "meta-llama/Llama-3.2-1B and google/gemma-3-1b-pt are gated:manual and no Hugging Face token exists in the working environment. Their config and tokenizer artifacts were read from ungated community mirrors and byte-identity against origin is UNVERIFIED.",
+        "status": "open"
+      },
+      {
+        "gate": "B_derivative_naming",
+        "detail": "Llama 3.2 Community License requires derivative model names to begin with 'Llama' and a 'Built with Llama' notice. Gemma Terms require derivative names to begin with 'Gemma'. Either choice makes the declared deliverable names ThaiLLM-1B-Base and ThaiLLM-1B-Instruct non-compliant. Apache-2.0 candidates carry no such constraint. Requires an explicit project decision.",
+        "status": "open"
+      },
+      {
+        "gate": "C_tokenizer",
+        "detail": "Deterministic tokenizer screen completed on a frozen 14-document sample set. All candidates round-trip losslessly with zero replacement and zero unknown tokens. Ranking is by fertility cost.",
+        "status": "passed_provisionally_pending_gate_A"
+      },
+      {
+        "gate": "D_port",
+        "detail": "All candidates admit exact identity-preserving Delta Block conversion. Effort ranges 4 to 19 engineer-days. No candidate rejected on port grounds; Gemma 3 flagged for scientific confound risk from its 5:1 local/global attention alternation and 26-layer block indivisibility.",
+        "status": "passed"
+      }
+    ]
+  },
+  "conditions": [
+    {
+      "id": "S0",
+      "name": "standard_residual",
+      "routing_heads": 0,
+      "status": "required"
+    },
+    {
+      "id": "D1",
+      "name": "delta_block_attnres",
+      "routing_heads": 1,
+      "block_size_layers": null,
+      "status": "required_pending_port"
+    },
+    {
+      "id": "D2",
+      "name": "delta_block_attnres_mhar",
+      "routing_heads": null,
+      "routing_head_candidates": [
+        4,
+        8
+      ],
+      "block_size_layers": null,
+      "status": "required_pending_frozen_head_selection"
+    }
+  ],
+  "data_mixture_provisional": {
+    "thai_fraction": 0.5,
+    "english_fraction": 0.35,
+    "code_fraction": 0.1,
+    "math_fraction": 0.05,
+    "must_sum_to": 1.0,
+    "same_document_order_across_conditions": true,
+    "changed_at": "2026-08-18",
+    "previous_value": {
+      "thai_fraction": 0.9,
+      "english_fraction": 0.05,
+      "code_fraction": 0.05
+    },
+    "change_rationale": "Prior 90/5/5 mixture was ~10x lower in replay than every published recipe that succeeded at target-language CPT. Typhoon 2 (Thai, 1B-70B) used 50 percent English explicitly citing catastrophic-forgetting mitigation; Racka (Hungarian, academic HPC) used ~56 percent non-target (24 EN + 21 DE + 11 code); EstLLM used English replay plus code, math and instruction-like data. At 1-2B capacity the forgetting risk is higher than at larger scale, so a 90 percent target-language mixture risks a model that gains little Thai while losing English and reasoning.",
+    "evidence_sources": [
+      "arXiv:2412.13702",
+      "arXiv:2601.01244",
+      "arXiv:2603.02041",
+      "arXiv:2510.25947"
+    ],
+    "status": "provisional_pending_replay_ratio_ablation"
+  },
+  "a100_preflight": {
+    "gpu_count": 1,
+    "required_gpu": "A100",
+    "precision": "bf16",
+    "warmup_steps": 20,
+    "measured_steps": 200,
+    "sequence_length": null,
+    "global_batch_tokens": null,
+    "hardware_note": "rented A100/H100; ไม่ผูกกับ LANTA แล้ว"
+  },
+  "premise_pilot": {
+    "min_observed_tokens_per_condition": 50000000,
+    "max_observed_tokens_per_condition": 100000000,
+    "screening_seeds": [
+      0
+    ],
+    "confirmation_seeds": [
+      0,
+      1
+    ],
+    "comparisons": [
+      "token_matched",
+      "gpu_hour_matched"
+    ]
+  },
+  "engineering_thresholds": {
+    "max_logit_error": 1e-05,
+    "max_loss_error": 1e-06,
+    "router_gradient_must_be_nonzero": true,
+    "checkpoint_roundtrip_required": true,
+    "standard_path_recoverable_required": true,
+    "fixed_overhead_kill_threshold": null
+  },
+  "scientific_thresholds": {
+    "thai_bpb_relative_improvement": 0.02,
+    "thai_downstream_min_points": 1.0,
+    "max_english_or_code_aggregate_regression_points": 1.0,
+    "minimum_confirmatory_seeds": 2,
+    "bootstrap_resamples": 10000,
+    "confidence_level": 0.95,
+    "multiplicity_correction": "holm_within_metric_family"
+  },
+  "hard_rules": {
+    "first_in_thai_is_sufficient_novelty": false,
+    "freeze_before_opening_pilot_results": true,
+    "fail_closed_on_missing_license_or_revision": true,
+    "no_gpu_spend_before_headroom_gate": true,
+    "research_architecture_must_not_enter_product": true
+  },
+  "replay_ratio_ablation": {
+    "ablation_id": "REPLAY-ABL-2026",
+    "purpose": "Determine the Thai fraction that maximises Thai acquisition subject to a bounded English/code retention loss, before committing the main CPT budget.",
+    "status": "planned",
+    "tokens_per_arm_min": 1000000000,
+    "tokens_per_arm_max": 2000000000,
+    "arms": [
+      {
+        "arm_id": "MIX50",
+        "thai": 0.5,
+        "english": 0.35,
+        "code": 0.1,
+        "math": 0.05,
+        "role": "proposed_default"
+      },
+      {
+        "arm_id": "MIX70",
+        "thai": 0.7,
+        "english": 0.21,
+        "code": 0.06,
+        "math": 0.03,
+        "role": "midpoint"
+      },
+      {
+        "arm_id": "MIX90",
+        "thai": 0.9,
+        "english": 0.05,
+        "code": 0.05,
+        "math": 0.0,
+        "role": "previous_config_value"
+      }
+    ],
+    "controls": [
+      "identical base checkpoint and revision",
+      "identical tokenizer",
+      "identical optimizer, schedule, sequence length and global batch",
+      "identical total observed tokens per arm",
+      "same document pool; only the sampling proportions differ"
+    ],
+    "primary_metric": "thai_bpb_on_frozen_heldout",
+    "guardrail_metrics": [
+      "english_bpb",
+      "code_bpb",
+      "english_downstream_aggregate"
+    ],
+    "decision_rule": "Select the arm with the best Thai BPB whose English/code aggregate regression stays within the retention budget in scientific_thresholds; if two arms tie on Thai BPB, prefer the lower Thai fraction.",
+    "seeds": [
+      0
+    ],
+    "scientific_evidence_allowed": false,
+    "note": "Screening ablation only. One seed. Not evidence for the Track 2 architecture claim."
+  },
+  "last_updated": "2026-08-19",
+  "selected_base": {
+    "repo": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "license": "apache-2.0",
+    "gated": false,
+    "derivative_naming_constraint": null,
+    "parameters": 1720000000,
+    "layers": 28,
+    "hidden_size": 2048,
+    "vocab_size": 151936,
+    "architecture": "Qwen3ForCausalLM — dense decoder, no linear attention, no MoE, no multimodal",
+    "context_length": 32768,
+    "thai_chars_per_token": 1.838,
+    "thai_bytes_per_token": 5.0468,
+    "thai_vs_english_token_ratio": 2.8571,
+    "selection_rationale": "เลือกภายใต้ข้อจำกัด Apache-2.0 (ต้องปล่อย weight ได้) + ขนาดขั้นต่ำ 1B + ต้องมี Base checkpoint. ยอมรับข้อเสียเรื่อง tokenizer: Gemma-4-E2B ได้ 2.8326 chars/token ซึ่งดีกว่า 54% แต่เป็น MatFormer + per-layer embeddings + audio/vision encoders และไม่มีใน transformers release ใด ๆ (git main เท่านั้น). แลกต้นทุน compute ที่คำนวณได้ กับความเสี่ยงทางวิศวกรรมที่คำนวณไม่ได้.",
+    "switch_conditions": [
+      "baseline downstream ชี้ว่า gemma-4-E2B เหนือกว่าอย่างมีนัยสำคัญ",
+      "transformers release ที่รองรับ Gemma4ForConditionalGeneration พร้อม FSDP + gradient checkpointing",
+      "ทีมยอมสละ Track 2 (AttnRes)"
+    ],
+    "scale_up_path": "Qwen/Qwen3-4B-Base — dense ตระกูลเดียวกัน tokenizer เดียวกัน ไม่ต้อง re-engineer"
+  },
+  "phase0_results": {
+    "eval_suite": {
+      "suite_id": "THAILLM-EVAL-FROZEN-V1",
+      "spec_sha256": "1fae436e05fa99cee8b5b878e72f45c95aa8d51b3c1177e49c1c5a98c565cb19",
+      "frozen_before_any_baseline": true
+    },
+    "heldout_set": {
+      "set_id": "TH-WEB-HELDOUT",
+      "set_sha256": "48aaf8623e7f1a7ece19cbfe28f3eeb5ae4f35f6870213b91ed6ca771651c631",
+      "documents": 2000,
+      "utf8_bytes": 9323384,
+      "shards_used": [
+        0,
+        13,
+        27,
+        40,
+        53
+      ],
+      "exclusion_rule": "HELDOUT-BUCKET-V1"
+    },
+    "thai_bpb_pre_cpt": {
+      "sail/Sailor2-1B": 0.378051,
+      "Qwen/Qwen3-1.7B-Base": 0.454218,
+      "Qwen/Qwen3-0.6B-Base": 0.521386
+    },
+    "headroom": {
+      "reference": "sail/Sailor2-1B (500B tokens SEA CPT)",
+      "absolute_bpb_gap": 0.076167,
+      "relative_gap": 0.1677,
+      "promotion_threshold": 0.02,
+      "multiple_of_threshold": 8.4,
+      "caveat": "UPPER BOUND. Sailor2 อาจเคยเห็นเอกสารใน held-out เพราะทั้งคู่มาจาก CommonCrawl"
+    },
+    "sanity_check": {
+      "expectation": "โมเดลเล็กกว่าต้องได้ BPB สูงกว่า",
+      "observed": "0.6B 0.521386 > 1.7B 0.454218",
+      "verdict": "PASS"
+    }
+  },
+  "corpus": {
+    "source": {
+      "repo": "aisingapore/SEA-PILE-v2",
+      "subset": "th",
+      "revision": "77573cc84631412a781daa8e6f72cf322d4207f0",
+      "license": "ODC-By 1.0 + CommonCrawl Terms of Use",
+      "shards": 54
+    },
+    "raw": {
+      "documents": 16428048,
+      "text_bytes_estimated": 50500000000.0,
+      "qwen_tokens_estimated": 10000000000.0
+    },
+    "cleaned": {
+      "manifest": "CLEAN-SEA-PILE-TH-V1",
+      "documents": 4567214,
+      "retention_rate": 0.278,
+      "utf8_bytes": 29530000000.0,
+      "qwen_tokens_estimated": 5851000000.0
+    },
+    "pii_redacted": {
+      "manifest": "CLEAN-SEA-PILE-TH-PII-V1",
+      "documents_touched": 108237,
+      "rate": 0.0237,
+      "redactions": {
+        "line_id": 104121,
+        "social_handle": 18578,
+        "phone": 18127,
+        "bank_account": 4163,
+        "email": 575,
+        "thai_national_id": 420
+      }
+    },
+    "sufficiency": "ต้องการ 3-5B Thai tokens ที่สัดส่วนไทย 50% ของงบ 6-10B; มี 5.851B -> เพียงพอ"
+  },
+  "compute_plan": {
+    "total_token_budget": {
+      "min": 6000000000.0,
+      "max": 10000000000.0
+    },
+    "hardware": "rented GPU (LANTA approval too slow); Phase 1 data work runs on local CPU",
+    "estimate_4xA100": {
+      "6B_tokens_hours": 34,
+      "10B_tokens_hours": 57
+    },
+    "estimated_cost_usd": {
+      "main_run": "250-450",
+      "with_ablation": "400-700"
+    },
+    "storage": "durable master on HF private repo; working copy on rented NVMe >= 500 GB"
+  },
+  "pre_train_validation": {
+    "tiny_overfit_min_sequences": 32,
+    "tiny_overfit_max_sequences": 128,
+    "optional_toy_model_min_parameters": 20000000,
+    "optional_toy_model_max_parameters": 50000000,
+    "scientific_evidence_allowed": false,
+    "note": "เดิมชื่อ pre_lanta; เปลี่ยนเป็นเช่า GPU เพราะ LANTA อนุมัติช้า"
+  }
+}
