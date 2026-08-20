@@ -1,0 +1,37 @@
+{
+  "manifest_id": "CLEAN-SEA-PILE-TH-PII-V1",
+  "created_at": "2026-08-19T21:20:12.571947+00:00",
+  "scientific_evidence_allowed": false,
+  "input": {
+    "path": "data/clean/th",
+    "manifest": "CLEAN-SEA-PILE-TH-V1"
+  },
+  "output": {
+    "path": "data/clean_pii/th",
+    "shards": 23,
+    "documents": 4567214,
+    "utf8_bytes": 29527397603
+  },
+  "policy": "redact_in_place_not_drop",
+  "documents_touched": 108237,
+  "documents_touched_rate": 0.0237,
+  "redactions_by_type": {
+    "line_id": 104121,
+    "thai_national_id": 420,
+    "social_handle": 18578,
+    "phone": 18127,
+    "bank_account": 4163,
+    "email": 575
+  },
+  "bytes_removed": 1015555,
+  "detector_fixes_applied": [
+    "EMAIL: \\b word boundaries replaced with lookarounds. Thai letters are word characters under Python Unicode \\w, so Thai-adjacent emails never matched. The pre-fix detector found ZERO emails in 40,000 documents containing 809 '@'.",
+    "CREDIT: now requires a payment context cue. A bare Luhn-valid 13-19 digit run false-positived on reference numbers such as '166617 106017 106617'.",
+    "THAI_ID: validated with the official checksum before redaction."
+  ],
+  "limitations": [
+    "Regex detectors, not a trained NER model. Names, addresses and dates of birth are NOT detected and remain in the corpus.",
+    "Line IDs are detected by a keyword cue and will miss bare handles.",
+    "No manual review of any document was performed."
+  ]
+}

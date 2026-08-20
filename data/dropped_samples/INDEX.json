@@ -1,0 +1,20 @@
+{
+  "scanned_documents": 24000,
+  "shards_scanned": [
+    "train-00000-of-00054.parquet",
+    "train-00001-of-00054.parquet",
+    "train-00002-of-00054.parquet"
+  ],
+  "examples_per_rule": {
+    "exact_duplicate": 60,
+    "heldout_bucket": 60,
+    "low_thai_ratio": 24,
+    "spam_adult": 7,
+    "spam_gambling": 60,
+    "spam_lottery": 60,
+    "too_long": 3,
+    "too_short": 60
+  },
+  "purpose": "Eyeball audit of the cleaning filters. Each file holds up to 60 documents that rule removed, with the matched spam terms.",
+  "scientific_evidence_allowed": false
+}
