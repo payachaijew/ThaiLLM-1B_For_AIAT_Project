@@ -1,0 +1,52 @@
+{
+  "set_id": "TH-WEB-HELDOUT",
+  "created_at": "2026-08-18T22:51:11.365870+00:00",
+  "scientific_evidence_allowed": false,
+  "exclusion_rule": {
+    "rule_id": "HELDOUT-BUCKET-V1",
+    "module": "phase0/heldout_rule.py",
+    "total_buckets": 100,
+    "heldout_buckets": [
+      0
+    ],
+    "contract": "The training pipeline MUST import heldout_rule.is_trainable and drop every document for which it returns False. This excludes the whole bucket, including documents in shards this builder never opened."
+  },
+  "source": {
+    "repo": "aisingapore/SEA-PILE-v2",
+    "revision": "77573cc84631412a781daa8e6f72cf322d4207f0",
+    "files": [
+      "th/train-00000-of-00054.parquet",
+      "th/train-00013-of-00054.parquet",
+      "th/train-00027-of-00054.parquet",
+      "th/train-00040-of-00054.parquet",
+      "th/train-00053-of-00054.parquet"
+    ],
+    "access": "hf_hub_download + pyarrow local read"
+  },
+  "filters": {
+    "min_chars": 500,
+    "max_chars": 20000,
+    "script_min_ratio": 0.5
+  },
+  "counts": {
+    "scanned": 543476,
+    "in_bucket": 5620,
+    "too_short": 3458,
+    "too_long": 3,
+    "wrong_script": 9,
+    "dup": 150,
+    "kept": 2000
+  },
+  "totals": {
+    "documents": 2000,
+    "utf8_bytes": 9323384,
+    "chars": 3468262
+  },
+  "set_sha256": "48aaf8623e7f1a7ece19cbfe28f3eeb5ae4f35f6870213b91ed6ca771651c631",
+  "jsonl": "data/heldout/TH-WEB-HELDOUT.jsonl",
+  "limitations": [
+    "Token counts are NOT recorded here; they depend on the final tokenizer choice and must be computed after the base model is locked.",
+    "Benchmark decontamination against ThaiExam/M3Exam is a SEPARATE step and has not run yet.",
+    "Streamed from the first shards only; this is a held-out sample, not a stratified sample of the whole corpus."
+  ]
+}
