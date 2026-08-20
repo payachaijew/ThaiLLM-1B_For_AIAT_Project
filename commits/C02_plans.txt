@@ -1,0 +1,5 @@
+plans/research_plan.md
+plans/pre_train_validation_plan.md
+plans/thaillm_1b_build_plan.md
+plans/compute_and_storage_plan.md
+src/README.md

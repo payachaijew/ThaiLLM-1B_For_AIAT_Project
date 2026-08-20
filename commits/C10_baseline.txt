@@ -1,0 +1,7 @@
+phase0/measure_baseline.py
+phase0/baseline_Qwen3-1.7B-Base_TH-WEB-HELDOUT-v2.json
+phase0/baseline_Qwen3-0.6B-Base_TH-WEB-HELDOUT-v2.json
+phase0/baseline_Qwen3-1.7B-Base_TH-WEB-HELDOUT.json
+phase0/baseline_Qwen_Qwen3-0.6B-Base_smoke.json
+phase0/run_overnight.sh
+phase0/baseline_Sailor2-1B_TH-WEB-HELDOUT-v2.json
