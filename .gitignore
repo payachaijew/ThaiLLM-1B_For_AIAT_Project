@@ -1,0 +1,25 @@
+# ---- ข้อมูลขนาดใหญ่: ห้าม commit (สร้างใหม่ได้จากสคริปต์) ----
+data/clean/                 # ~27 GB ผลลัพธ์จาก clean_corpus.py
+data/heldout/*.jsonl        # 9.3 MB สร้างซ้ำได้ด้วย build_heldout.py (bucket rule เป็น deterministic)
+data/dropped_samples/*.jsonl  # ข้อความดิบจาก corpus - ไม่ redistribute; INDEX.json commit ได้
+data/clean_pii/             # ผล PII pass
+*.parquet
+*.jsonl.gz
+*.safetensors
+*.bin
+
+# ---- log ของการรัน (เก็บเฉพาะผลสรุปที่เป็น .json) ----
+phase0/overnight_logs/
+
+# ---- ขยะระบบ ----
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# ---- ห้ามหลุด ----
+.env
+*.key
+hf_token*
