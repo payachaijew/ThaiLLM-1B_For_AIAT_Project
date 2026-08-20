@@ -1,0 +1,70 @@
+{
+  "audit_id": "CORPUS-AUDIT-SEA-PILE-TH-2026-08-18",
+  "created_at": "2026-08-18T22:53:05.881484+00:00",
+  "scientific_evidence_allowed": false,
+  "shards_on_disk": 54,
+  "documents_sampled": 1000000,
+  "total_utf8_bytes": 2315487557,
+  "length_chars": {
+    "mean": 879,
+    "p10": 116,
+    "median": 379,
+    "p90": 2369,
+    "p99": 6159,
+    "max": 238189
+  },
+  "short_doc_rate_under_500_chars": 0.5938,
+  "thai_script_ratio": {
+    "mean": 0.8277,
+    "under_0.5": 0.0101
+  },
+  "exact_duplicate_rate": 0.2097,
+  "exact_duplicate_bytes_share": 0.1165,
+  "crawl_dumps": {
+    "CC-MAIN-2021-43": 257875,
+    "CC-MAIN-2022-05": 233379,
+    "CC-MAIN-2021-49": 206429,
+    "CC-MAIN-2020-45": 202072,
+    "CC-MAIN-2022-21": 100245
+  },
+  "top_domains": {
+    "thairath.co.th": 14007,
+    "pantip.com": 8747,
+    "news.thaipbs.or.th": 7096,
+    "mthai.com": 6102,
+    "sistacafe.com": 5814,
+    "bloggang.com": 5207,
+    "thaifranchisecenter.com": 4649,
+    "slideplayer.in.th": 4585,
+    "matichon.co.th": 4347,
+    "oknation.nationtv.tv": 4073,
+    "droidsans.com": 4014,
+    "th.tripadvisor.com": 3984,
+    "gicnetwork.nl": 3819,
+    "promotions.co.th": 3558,
+    "brandbuffet.in.th": 3465,
+    "riter.dek-d.com": 3392,
+    "amperanders.nl": 3311,
+    "sanook.com": 3268,
+    "mgronline.com": 3110,
+    "techsauce.co": 3022
+  },
+  "content_flags_doc_rate": {
+    "gambling": 0.0179,
+    "lottery": 0.0062,
+    "seo_spam": 0.0006,
+    "boilerplate": 0.0004,
+    "adult": 0.001
+  },
+  "content_flags_byte_share": {
+    "gambling": 0.0325,
+    "lottery": 0.017,
+    "seo_spam": 0.0011,
+    "boilerplate": 0.0015,
+    "adult": 0.0029
+  },
+  "notes": [
+    "Dataset card states dedup was applied WITHIN each snapshot only.",
+    "Regex flags are recall-oriented screens, not classifiers. They overcount (a news article about gambling law matches 'gambling') and undercount obfuscated spam. Treat as a lower bound on the cleaning still needed, not as a filter."
+  ]
+}
