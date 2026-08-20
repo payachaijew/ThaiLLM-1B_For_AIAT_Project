@@ -1,0 +1,37 @@
+{
+  "run_id": "PHASE0-C-BASELINE-Qwen_Qwen3-1.7B-Base",
+  "timestamp": "2026-08-19T00:13:40.672569+00:00",
+  "stage": "phase0_baseline_bpb",
+  "scientific_evidence_allowed": false,
+  "eval_suite_id": "THAILLM-EVAL-FROZEN-V1",
+  "eval_suite_sha256": "1fae436e05fa99cee8b5b878e72f45c95aa8d51b3c1177e49c1c5a98c565cb19",
+  "model": {
+    "repo": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "parameters": 1720574976
+  },
+  "measurement": {
+    "device": "mps",
+    "dtype": "torch.float16",
+    "max_length": 2048,
+    "subsample_limit": null,
+    "text_source": "frozen_heldout_sets"
+  },
+  "bpb_by_language": {
+    "th": {
+      "bits_per_byte": 0.454218,
+      "nats_total": 2935371.931,
+      "utf8_bytes": 9323384,
+      "scored_tokens": 1631898,
+      "documents": 2000,
+      "note": "First token of each document is unscored (no left context)."
+    }
+  },
+  "limitations": [
+    "BPB only. No downstream accuracy here -- run lm-evaluation-harness for the frozen task list.",
+    "Smoke runs use 14 short authored documents. They verify the PIPELINE, not the model.",
+    "If subsample_limit is set, this is NOT the full frozen held-out set. BPB converges quickly but the full-set number must be produced on GPU before it is quoted.",
+    "BPB is comparable ACROSS MODELS for the same language. It is NOT comparable ACROSS LANGUAGES: Thai is ~3 UTF-8 bytes per character and English ~1, so Thai BPB is mechanically lower. Never read 'Thai BPB < English BPB' as 'the model is better at Thai'."
+  ],
+  "verdict": "baseline_recorded"
+}
