@@ -1,0 +1,58 @@
+{
+  "manifest_id": "CLEAN-SEA-PILE-TH-V1",
+  "created_at": "2026-08-19T17:53:44.437243+00:00",
+  "scientific_evidence_allowed": false,
+  "source": {
+    "repo": "aisingapore/SEA-PILE-v2",
+    "subset": "th",
+    "revision": "77573cc84631412a781daa8e6f72cf322d4207f0",
+    "shards": 54
+  },
+  "exclusion_rule": "HELDOUT-BUCKET-V1",
+  "filters": {
+    "min_chars": 500,
+    "max_chars": 100000,
+    "min_thai_ratio": 0.5,
+    "spam_patterns": [
+      "adult",
+      "gambling",
+      "lottery"
+    ]
+  },
+  "input": {
+    "documents": 16428048
+  },
+  "output": {
+    "documents": 4567214,
+    "utf8_bytes": 29528413158,
+    "shards": 23,
+    "retention_rate_docs": 0.278
+  },
+  "dropped_documents": {
+    "too_short": 8851360,
+    "heldout_bucket": 165175,
+    "too_long": 165,
+    "spam_lottery": 82039,
+    "low_thai_ratio": 5610,
+    "exact_duplicate": 2008876,
+    "spam_gambling": 735393,
+    "spam_adult": 12216
+  },
+  "dropped_bytes": {
+    "too_short": 6227513832,
+    "heldout_bucket": 502824857,
+    "too_long": 66893552,
+    "spam_lottery": 815576999,
+    "low_thai_ratio": 12777740,
+    "exact_duplicate": 7542316186,
+    "spam_gambling": 5294138327,
+    "spam_adult": 126203504
+  },
+  "estimated_qwen_tokens": 5.851,
+  "limitations": [
+    "Exact dedup only. Near-duplicate (MinHash/SimHash) dedup is NOT applied.",
+    "Spam filters are recall-oriented regexes, not classifiers. They over-drop legitimate news about gambling and under-drop obfuscated spam.",
+    "No PII filter. No benchmark decontamination. Both are still required.",
+    "Token estimate uses the measured Qwen Thai bytes/token of 5.0468; recount exactly after tokenisation."
+  ]
+}
