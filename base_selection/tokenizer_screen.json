@@ -1,0 +1,2757 @@
+{
+  "screen_id": "BASE-SCREEN-2026-08-18-TOKENIZER",
+  "created_at": "2026-08-17T22:45:58.996674+00:00",
+  "stage": "tier_b_tokenizer_only",
+  "scientific_evidence_allowed": false,
+  "evidence_class": "deterministic_tokenizer_measurement",
+  "what_this_is": "Deterministic tokenizer-only measurement on a frozen sample set. No model weights were loaded and no text was generated. These numbers are exact and reproducible, but they measure ONLY tokenizer fertility. They are an input to the compute budget, not a prediction of Thai model quality.",
+  "tooling": {
+    "library": "huggingface tokenizers",
+    "version": "0.22.2",
+    "python": "3.13 (venv)",
+    "add_special_tokens": false
+  },
+  "sample_set": {
+    "sample_set_id": "THAI-EN-CODE-SCREEN-V1",
+    "frozen": true,
+    "n_samples": 14,
+    "sha256_of_concatenated_id_group_text": "6abc31ea71544ca227b329554e6a296b54c0a6a1f8ad9dfdb60283d757e3a963",
+    "total_utf8_bytes": 8197,
+    "authored_for_this_project": true,
+    "note": "Text was authored for this screen so it can be redistributed with the paper without third-party licensing questions. TH-PAR-01 and EN-PAR-01 are semantic translations of each other and are the only pair used for the Thai/English fertility ratio.",
+    "samples": [
+      {
+        "sample_id": "TH-WEB-01",
+        "group": "th_web",
+        "language": "th",
+        "chars": 220,
+        "utf8_bytes": 644,
+        "sha256": "ca5a3d8986297d9d9de7916acb714a216f086cc170f46e8d05455018fa2a1dc2",
+        "text": "วันนี้อากาศที่กรุงเทพฯ ร้อนมากจนแทบไม่อยากออกจากบ้านเลยค่ะ เพื่อน ๆ คนไหนต้องเดินทางไปทำงานตอนบ่ายอย่าลืมพกร่มกับน้ำเปล่าไปด้วยนะคะ เมื่อวานนี้ฝนตกหนักช่วงเย็นทำให้รถติดยาวมากบนถนนพระราม 9 กว่าจะถึงบ้านก็เกือบสามทุ่มแล้ว"
+      },
+      {
+        "sample_id": "TH-WEB-02",
+        "group": "th_web",
+        "language": "th",
+        "chars": 231,
+        "utf8_bytes": 643,
+        "sha256": "a296560134082497ff85afef330603b5026915f053833814c3c1d0b2f7c84a12",
+        "text": "ร้านนี้เปิดใหม่แถวอารีย์ ของอร่อยจริง ๆ นะ สั่งข้าวหมูกรอบกับต้มยำกุ้งน้ำข้น ราคาไม่แพงเลย จานละประมาณ 80-120 บาท พนักงานบริการดีมาก ที่จอดรถมีน้อยหน่อยแต่เดินจาก BTS แค่ 5 นาทีก็ถึงแล้ว แนะนำให้ไปช่วงเย็นวันธรรมดาจะไม่ต้องรอคิวนาน"
+      },
+      {
+        "sample_id": "TH-ENC-01",
+        "group": "th_encyclopedic",
+        "language": "th",
+        "chars": 273,
+        "utf8_bytes": 781,
+        "sha256": "63deafcd6ba8d7b6647b2a385ac0e1a9999a3de927c34c58daa570ca07e78f74",
+        "text": "ประเทศไทยตั้งอยู่ในภูมิภาคเอเชียตะวันออกเฉียงใต้ มีพื้นที่ประมาณ 513,120 ตารางกิโลเมตร แบ่งการปกครองออกเป็น 76 จังหวัดและกรุงเทพมหานคร ภูมิประเทศประกอบด้วยที่ราบลุ่มแม่น้ำเจ้าพระยาทางภาคกลาง เทือกเขาสูงทางภาคเหนือ ที่ราบสูงโคราชทางภาคตะวันออกเฉียงเหนือ และคาบสมุทรทางภาคใต้"
+      },
+      {
+        "sample_id": "TH-ENC-02",
+        "group": "th_encyclopedic",
+        "language": "th",
+        "chars": 256,
+        "utf8_bytes": 762,
+        "sha256": "867dfe3bb62c3a9f99ed8a67af59c1fb8481b1cef86e59fdda4cc19d8b62f647",
+        "text": "การสังเคราะห์ด้วยแสงเป็นกระบวนการที่พืช สาหร่าย และแบคทีเรียบางชนิดใช้พลังงานจากแสงอาทิตย์เปลี่ยนคาร์บอนไดออกไซด์และน้ำให้กลายเป็นน้ำตาลกลูโคสและออกซิเจน กระบวนการนี้เกิดขึ้นภายในคลอโรพลาสต์ซึ่งมีรงควัตถุสีเขียวที่เรียกว่าคลอโรฟิลล์เป็นตัวดูดกลืนพลังงานแสง"
+      },
+      {
+        "sample_id": "TH-FORMAL-01",
+        "group": "th_formal_legal",
+        "language": "th",
+        "chars": 271,
+        "utf8_bytes": 785,
+        "sha256": "57541e48eecc05626be9da93eaf3681dfd09aa8780c685ad323196dab60262a1",
+        "text": "อาศัยอำนาจตามความในมาตรา ๒๒ แห่งพระราชบัญญัติระเบียบบริหารราชการแผ่นดิน พ.ศ. ๒๕๓๔ และที่แก้ไขเพิ่มเติม รัฐมนตรีว่าการกระทรวงการอุดมศึกษา วิทยาศาสตร์ วิจัยและนวัตกรรม จึงออกประกาศไว้ดังต่อไปนี้ ข้อ ๑ ประกาศนี้ให้ใช้บังคับตั้งแต่วันถัดจากวันประกาศในราชกิจจานุเบกษาเป็นต้นไป"
+      },
+      {
+        "sample_id": "TH-TECH-01",
+        "group": "th_code_switch",
+        "language": "th",
+        "chars": 275,
+        "utf8_bytes": 581,
+        "sha256": "c50db5f8f901fddec2a45efb2f67be2940616a3ed815f639dc48afb666072b3c",
+        "text": "ในการทำ continued pretraining สำหรับภาษาไทย เราต้องระวังเรื่อง catastrophic forgetting ของภาษาอังกฤษและโค้ด โดยทั่วไปจะใช้ replay ratio ประมาณ 5-10% และวัดผลด้วย bits per byte แทน perplexity เพราะ tokenizer ของแต่ละโมเดลตัดคำไม่เหมือนกัน ทำให้เทียบ perplexity ข้ามโมเดลไม่ได้"
+      },
+      {
+        "sample_id": "TH-NUM-01",
+        "group": "th_numeric",
+        "language": "th",
+        "chars": 216,
+        "utf8_bytes": 535,
+        "sha256": "a4ba37d09694eec2f934134f00ba1e4ccf870f303f1e4c96a3d7880531597f2a",
+        "text": "ยอดขายไตรมาสที่ ๓ ปี ๒๕๖๘ อยู่ที่ 1,234,567.89 บาท เพิ่มขึ้นร้อยละ 12.5 เมื่อเทียบกับช่วงเดียวกันของปีก่อน โดยวันที่ ๓๑ ธันวาคม ๒๕๖๘ จะปิดงบประมาณ อุณหภูมิเฉลี่ย 32.4 °C ความชื้น 78% น้ำหนักรวม 2.5 กก. ระยะทาง 15 กม."
+      },
+      {
+        "sample_id": "TH-PAR-01",
+        "group": "th_parallel",
+        "language": "th",
+        "chars": 221,
+        "utf8_bytes": 659,
+        "sha256": "60de1206d6faae1a91a9be1bf5fe0bb9b4a9e86696b3e813fd9f080e4deb43c7",
+        "text": "ปัญญาประดิษฐ์กำลังเปลี่ยนแปลงวิธีการทำงานของผู้คนทั่วโลกอย่างรวดเร็ว นักวิจัยหลายกลุ่มกำลังศึกษาว่าโมเดลภาษาขนาดใหญ่สามารถเรียนรู้ภาษาที่มีทรัพยากรน้อยได้ดีเพียงใด และจำเป็นต้องใช้ข้อมูลมากเท่าใดจึงจะได้คุณภาพที่ยอมรับได้"
+      },
+      {
+        "sample_id": "EN-PAR-01",
+        "group": "en_parallel",
+        "language": "en",
+        "chars": 251,
+        "utf8_bytes": 251,
+        "sha256": "64bafb071a2df41aea572da0a051d16cd421a3651ed6882a292eebe388135f5c",
+        "text": "Artificial intelligence is rapidly changing the way people work around the world. Several research groups are studying how well large language models can learn low-resource languages, and how much data is required before acceptable quality is reached."
+      },
+      {
+        "sample_id": "EN-GEN-01",
+        "group": "en_general",
+        "language": "en",
+        "chars": 321,
+        "utf8_bytes": 321,
+        "sha256": "d49dffbcba439ddb6abd524ffea7e61063e15c0bd6431864f4af5d43a202504d",
+        "text": "The committee met on Tuesday morning to review the quarterly budget and agreed that spending on infrastructure should be increased by roughly twelve percent next year. Several members raised concerns about the timeline, noting that similar projects in neighbouring provinces had been delayed by more than eighteen months."
+      },
+      {
+        "sample_id": "EN-TECH-01",
+        "group": "en_technical",
+        "language": "en",
+        "chars": 338,
+        "utf8_bytes": 338,
+        "sha256": "2d6a16c1a8d11f5ceae6751404cdbfd80484232bad1ccf3b6eeb3444277b0e2d",
+        "text": "When performing continued pretraining, the learning-rate schedule matters more than the peak value: a short warmup followed by cosine decay to ten percent of peak typically preserves source-domain performance better than a constant schedule. Report bits-per-byte rather than perplexity so that results remain comparable across tokenizers."
+      },
+      {
+        "sample_id": "CODE-PY-01",
+        "group": "code_python",
+        "language": "code",
+        "chars": 621,
+        "utf8_bytes": 621,
+        "sha256": "7f43d79ae6326603ee364aabbc2c5239b508d8dc7983fb0db47e57aa293d43c8",
+        "text": "import torch\nimport torch.nn as nn\n\nclass DeltaRouter(nn.Module):\n    def __init__(self, hidden_size: int, num_heads: int = 1):\n        super().__init__()\n        self.query = nn.Parameter(torch.zeros(num_heads, hidden_size))\n        self.null_logit = nn.Parameter(torch.zeros(num_heads))\n        self.head_dim = hidden_size // num_heads\n\n    def forward(self, residual, deltas):\n        keys = nn.functional.normalize(deltas, dim=-1)\n        logits = torch.einsum('hd,lbtd->hlbt', self.query, keys)\n        weights = torch.softmax(logits, dim=1)\n        return residual + torch.einsum('hlbt,lbtd->btd', weights, deltas)\n"
+      },
+      {
+        "sample_id": "CODE-JS-01",
+        "group": "code_javascript",
+        "language": "code",
+        "chars": 532,
+        "utf8_bytes": 532,
+        "sha256": "fb8a312d68c08d9d06c358b609be85f60ac13ee8e4e1d65320ddb922a2d1e47b",
+        "text": "async function fetchManifest(url, { retries = 3, timeoutMs = 5000 } = {}) {\n  for (let attempt = 0; attempt < retries; attempt++) {\n    const controller = new AbortController();\n    const timer = setTimeout(() => controller.abort(), timeoutMs);\n    try {\n      const res = await fetch(url, { signal: controller.signal });\n      if (!res.ok) throw new Error(`HTTP ${res.status}`);\n      return await res.json();\n    } catch (err) {\n      if (attempt === retries - 1) throw err;\n    } finally {\n      clearTimeout(timer);\n    }\n  }\n}\n"
+      },
+      {
+        "sample_id": "CODE-SQL-01",
+        "group": "code_sql",
+        "language": "code",
+        "chars": 408,
+        "utf8_bytes": 408,
+        "sha256": "44c60b9715496da5d0363926c37c82fddb23d8513db9fbe46dc0747f2707a992",
+        "text": "SELECT s.source_id,\n       COUNT(DISTINCT d.document_id) AS document_count,\n       SUM(d.observed_tokens)        AS observed_tokens,\n       ROUND(AVG(d.quality_score), 4) AS mean_quality\n  FROM documents AS d\n  JOIN sources   AS s ON s.source_id = d.source_id\n WHERE d.language = 'th'\n   AND d.observed_tokens BETWEEN 128 AND 8192\n GROUP BY s.source_id\nHAVING COUNT(*) > 1000\n ORDER BY observed_tokens DESC;\n"
+      }
+    ]
+  },
+  "metrics_defined": {
+    "bytes_per_token": "UTF-8 bytes of the document divided by token count. Higher is better (fewer tokens per byte).",
+    "chars_per_token": "Unicode code points divided by token count. Higher is better.",
+    "tokens_per_document": "Mean tokens per document within a language group.",
+    "thai_vs_english_token_ratio_parallel_doc": "tokens(TH-PAR-01) / tokens(EN-PAR-01). Lower is better; 1.0 would mean Thai is as cheap as English for the same meaning.",
+    "replacement_char_tokens": "Tokens whose surface form contains U+FFFD.",
+    "roundtrip_lossless": "decode(encode(x)) == x exactly."
+  },
+  "models": {
+    "meta-llama/Llama-3.2-1B": {
+      "canonical_repo": "meta-llama/Llama-3.2-1B",
+      "artifact_served_from_repo": "unsloth/Llama-3.2-1B",
+      "artifact_served_from_revision": "9535bd9b1d1dea6acafbdc4813b728796aeb28da",
+      "artifact_is_origin": false,
+      "provenance_warning": "Origin repo is gated:manual and no Hugging Face token is available in this environment. Tokenizer artifact was taken from an ungated community mirror at a pinned revision. Byte-identity against the origin artifact is UNVERIFIED. Re-run this screen against the origin revision after gated access is granted before any result is used as evidence.",
+      "tokenizer_json_sha256": "6b9e4e7fb171f92fd137b777cc2714bf87d11576700a1dcd7a399e7bbe39537b",
+      "tokenizer_json_bytes": 17209920,
+      "vocab_size": 128256,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 1391,
+      "vocab_pieces_multichar_thai": 1268,
+      "pct_vocab_containing_thai": 1.085,
+      "longest_thai_piece": "ุงเทพมหานคร",
+      "longest_thai_piece_thai_chars": 11,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 901,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 5.9822,
+          "chars_per_token": 2.1787,
+          "tokens_per_document": 112.62
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 151,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 6.0265,
+          "chars_per_token": 6.0265,
+          "tokens_per_document": 50.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 392,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.9821,
+          "chars_per_token": 3.9821,
+          "tokens_per_document": 130.67
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 2.3333,
+      "english_over_thai_bytes_per_token_ratio": 1.0074,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 5,
+          "tokens": [
+            "à¸ªà¸§",
+            "à¸±à¸ªà¸Ķ",
+            "à¸µ",
+            "à¸Ħà¸£",
+            "à¸±à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 7,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±à¸įà¸į",
+            "à¸²à¸Ľà¸£à¸°",
+            "à¸Ķ",
+            "à¸´à¸©",
+            "à¸Ĳ",
+            "à¹Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 2,
+          "tokens": [
+            "à¸ģà¸£",
+            "à¸¸à¸ĩà¹Ģà¸Ĺà¸ŀà¸¡à¸«à¸²à¸Ļà¸Ħà¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸ģà¸²à¸£à¸ª",
+            "à¸±à¸ĩ",
+            "à¹Ģà¸Ħà¸£à¸²à¸°à¸«",
+            "à¹Įà¸Ķ",
+            "à¹īà¸§à¸¢",
+            "à¹ģà¸ªà¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¹Ĵ",
+            "à¹ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 2,
+          "tokens": [
+            "à¸Ļ",
+            "à¹īà¸³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 9,
+          "tokens": [
+            "à¸ģ",
+            "à¹ĩ",
+            "à¹Ħà¸¡",
+            "à¹Īà¸£",
+            "à¸¹à¹ī",
+            "à¹Ģà¸«à¸¡",
+            "à¸·à¸Ńà¸Ļ",
+            "à¸ģ",
+            "à¸±à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 106,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 6.0755,
+          "chars_per_token": 2.0755,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 116,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 5.5431,
+          "chars_per_token": 1.9914,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 111,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 7.036,
+          "chars_per_token": 2.4595,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 126,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 6.0476,
+          "chars_per_token": 2.0317,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 127,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 6.1811,
+          "chars_per_token": 2.1339,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 90,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 6.4556,
+          "chars_per_token": 3.0556,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 127,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 4.2126,
+          "chars_per_token": 1.7008,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 98,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 6.7245,
+          "chars_per_token": 2.2551,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 58,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.8276,
+          "chars_per_token": 5.8276,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 154,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 4.0325,
+          "chars_per_token": 4.0325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 130,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 4.0923,
+          "chars_per_token": 4.0923,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 108,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 3.7778,
+          "chars_per_token": 3.7778,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "google/gemma-3-1b-pt": {
+      "canonical_repo": "google/gemma-3-1b-pt",
+      "artifact_served_from_repo": "unsloth/gemma-3-1b-pt",
+      "artifact_served_from_revision": "34a98bf3eaecc08c699516f625eb5e56e4c5d99d",
+      "artifact_is_origin": false,
+      "provenance_warning": "Origin repo is gated:manual and no Hugging Face token is available in this environment. Tokenizer artifact was taken from an ungated community mirror at a pinned revision. Byte-identity against the origin artifact is UNVERIFIED. Re-run this screen against the origin revision after gated access is granted before any result is used as evidence.",
+      "tokenizer_json_sha256": "4667f2089529e8e7657cfb6d1c19910ae71ff5f28aa7ab2ff2763330affad795",
+      "tokenizer_json_bytes": 33384568,
+      "vocab_size": 262145,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": false,
+      "vocab_pieces_containing_thai": 2177,
+      "vocab_pieces_multichar_thai": 2054,
+      "pct_vocab_containing_thai": 0.83,
+      "longest_thai_piece": "แมนเชสเตอร์ซิตี",
+      "longest_thai_piece_thai_chars": 15,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 693,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 7.7778,
+          "chars_per_token": 2.8326,
+          "tokens_per_document": 86.62
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 154,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 5.9091,
+          "chars_per_token": 5.9091,
+          "tokens_per_document": 51.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 497,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.1408,
+          "chars_per_token": 3.1408,
+          "tokens_per_document": 165.67
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 1.4524,
+      "english_over_thai_bytes_per_token_ratio": 0.7597,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 2,
+          "tokens": [
+            "สวัสดี",
+            "ครับ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 6,
+          "tokens": [
+            "ป",
+            "ัญญา",
+            "ประ",
+            "ดิ",
+            "ษฐ",
+            "์"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 5,
+          "tokens": [
+            "กร",
+            "ุงเทพ",
+            "มห",
+            "าน",
+            "คร"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 5,
+          "tokens": [
+            "การ",
+            "สัง",
+            "เคราะห์",
+            "ด้วย",
+            "แสง"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 4,
+          "tokens": [
+            "๒",
+            "๕",
+            "๖",
+            "๘"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 1,
+          "tokens": [
+            "น้ำ"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 5,
+          "tokens": [
+            "ก็",
+            "ไม่",
+            "รู้",
+            "เหมือน",
+            "กัน"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 74,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 8.7027,
+          "chars_per_token": 2.973,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 89,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 7.2247,
+          "chars_per_token": 2.5955,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 95,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 8.2211,
+          "chars_per_token": 2.8737,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 95,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 8.0211,
+          "chars_per_token": 2.6947,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 105,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 7.4762,
+          "chars_per_token": 2.581,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 67,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 8.6716,
+          "chars_per_token": 4.1045,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 107,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 5.0,
+          "chars_per_token": 2.0187,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 61,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 10.8033,
+          "chars_per_token": 3.623,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 61,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.541,
+          "chars_per_token": 5.541,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 197,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 3.1523,
+          "chars_per_token": 3.1523,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 160,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 3.325,
+          "chars_per_token": 3.325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 140,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 2.9143,
+          "chars_per_token": 2.9143,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "Qwen/Qwen2.5-1.5B": {
+      "canonical_repo": "Qwen/Qwen2.5-1.5B",
+      "artifact_served_from_repo": "Qwen/Qwen2.5-1.5B",
+      "artifact_served_from_revision": "8faed761d45a263340a0528343f099c05c9a4323",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_json_bytes": 7031645,
+      "vocab_size": 151665,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 2570,
+      "vocab_pieces_multichar_thai": 2489,
+      "pct_vocab_containing_thai": 1.695,
+      "longest_thai_piece": "อย่างต่อเนื่อง",
+      "longest_thai_piece_thai_chars": 14,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 1068,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 5.0468,
+          "chars_per_token": 1.838,
+          "tokens_per_document": 133.5
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 151,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 6.0265,
+          "chars_per_token": 6.0265,
+          "tokens_per_document": 50.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 400,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.9025,
+          "chars_per_token": 3.9025,
+          "tokens_per_document": 133.33
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 2.8571,
+      "english_over_thai_bytes_per_token_ratio": 1.1941,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸ªà¸§",
+            "à¸±",
+            "à¸ªà¸Ķ",
+            "à¸µ",
+            "à¸Ħà¸£",
+            "à¸±à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 9,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±à¸į",
+            "à¸įà¸²",
+            "à¸Ľà¸£à¸°",
+            "à¸Ķ",
+            "à¸´",
+            "à¸©",
+            "à¸Ĳ",
+            "à¹Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 7,
+          "tokens": [
+            "à¸ģà¸£",
+            "à¸¸à¸ĩ",
+            "à¹Ģà¸Ĺà¸ŀ",
+            "à¸¡",
+            "à¸«",
+            "à¸²à¸Ļ",
+            "à¸Ħà¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 11,
+          "tokens": [
+            "à¸ģà¸²à¸£",
+            "à¸ª",
+            "à¸±à¸ĩ",
+            "à¹Ģà¸Ħà¸£",
+            "à¸²à¸°",
+            "à¸«",
+            "à¹Į",
+            "à¸Ķ",
+            "à¹ī",
+            "à¸§à¸¢",
+            "à¹ģà¸ªà¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 8,
+          "tokens": [
+            "à¹",
+            "Ĵ",
+            "à¹",
+            "ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 2,
+          "tokens": [
+            "à¸Ļ",
+            "à¹īà¸³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 10,
+          "tokens": [
+            "à¸ģ",
+            "à¹ĩ",
+            "à¹Ħà¸¡",
+            "à¹Ī",
+            "à¸£",
+            "à¸¹à¹ī",
+            "à¹Ģà¸«à¸¡",
+            "à¸·à¸Ńà¸Ļ",
+            "à¸ģ",
+            "à¸±à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 112,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 5.75,
+          "chars_per_token": 1.9643,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 131,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 4.9084,
+          "chars_per_token": 1.7634,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 5.539,
+          "chars_per_token": 1.9362,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 5.4043,
+          "chars_per_token": 1.8156,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 159,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 4.9371,
+          "chars_per_token": 1.7044,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 104,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 5.5865,
+          "chars_per_token": 2.6442,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 160,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 3.3438,
+          "chars_per_token": 1.35,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 120,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 5.4917,
+          "chars_per_token": 1.8417,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 58,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.8276,
+          "chars_per_token": 5.8276,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 154,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 4.0325,
+          "chars_per_token": 4.0325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 132,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 4.0303,
+          "chars_per_token": 4.0303,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 114,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 3.5789,
+          "chars_per_token": 3.5789,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "allenai/OLMo-2-0425-1B": {
+      "canonical_repo": "allenai/OLMo-2-0425-1B",
+      "artifact_served_from_repo": "allenai/OLMo-2-0425-1B",
+      "artifact_served_from_revision": "a1847dff35000b4271fa70afc5db10fd29fedbdf",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "73fd5254624f39a88e3faac6a8e11300fc3c735ed37880d4f4f08db898eaecca",
+      "tokenizer_json_bytes": 7137177,
+      "vocab_size": 100278,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 58,
+      "vocab_pieces_multichar_thai": 16,
+      "pct_vocab_containing_thai": 0.058,
+      "longest_thai_piece": "การ",
+      "longest_thai_piece_thai_chars": 3,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 1814,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 2.9713,
+          "chars_per_token": 1.0821,
+          "tokens_per_document": 226.75
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 151,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 6.0265,
+          "chars_per_token": 6.0265,
+          "tokens_per_document": 50.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 392,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.9821,
+          "chars_per_token": 3.9821,
+          "tokens_per_document": 130.67
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 5.2381,
+      "english_over_thai_bytes_per_token_ratio": 2.0282,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 9,
+          "tokens": [
+            "à¸ª",
+            "à¸§",
+            "à¸±",
+            "à¸ª",
+            "à¸Ķ",
+            "à¸µ",
+            "à¸Ħ",
+            "à¸£",
+            "à¸±à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 17,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±",
+            "à¸",
+            "į",
+            "à¸",
+            "į",
+            "à¸²",
+            "à¸Ľ",
+            "à¸£",
+            "à¸°",
+            "à¸Ķ",
+            "à¸´",
+            "à¸",
+            "©",
+            "à¸",
+            "Ĳ",
+            "à¹Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 12,
+          "tokens": [
+            "à¸ģà¸£",
+            "à¸¸",
+            "à¸ĩ",
+            "à¹Ģ",
+            "à¸Ĺ",
+            "à¸ŀ",
+            "à¸¡",
+            "à¸«",
+            "à¸²",
+            "à¸Ļ",
+            "à¸Ħ",
+            "à¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 18,
+          "tokens": [
+            "à¸ģà¸²à¸£",
+            "à¸ª",
+            "à¸±",
+            "à¸ĩ",
+            "à¹Ģ",
+            "à¸Ħ",
+            "à¸£",
+            "à¸²",
+            "à¸°",
+            "à¸«",
+            "à¹Į",
+            "à¸Ķ",
+            "à¹ī",
+            "à¸§",
+            "à¸¢",
+            "à¹ģ",
+            "à¸ª",
+            "à¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 8,
+          "tokens": [
+            "à¹",
+            "Ĵ",
+            "à¹",
+            "ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 3,
+          "tokens": [
+            "à¸Ļ",
+            "à¹ī",
+            "à¸³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 14,
+          "tokens": [
+            "à¸ģ",
+            "à¹ĩ",
+            "à¹Ħà¸¡",
+            "à¹Ī",
+            "à¸£",
+            "à¸¹",
+            "à¹ī",
+            "à¹Ģ",
+            "à¸«",
+            "à¸¡",
+            "à¸·à¸Ń",
+            "à¸Ļ",
+            "à¸ģ",
+            "à¸±à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 205,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 3.1415,
+          "chars_per_token": 1.0732,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 213,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 3.0188,
+          "chars_per_token": 1.0845,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 264,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 2.9583,
+          "chars_per_token": 1.0341,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 249,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 3.0602,
+          "chars_per_token": 1.0281,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 275,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 2.8545,
+          "chars_per_token": 0.9855,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 181,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 3.2099,
+          "chars_per_token": 1.5193,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 207,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 2.5845,
+          "chars_per_token": 1.0435,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 220,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 2.9955,
+          "chars_per_token": 1.0045,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 58,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.8276,
+          "chars_per_token": 5.8276,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 154,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 4.0325,
+          "chars_per_token": 4.0325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 130,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 4.0923,
+          "chars_per_token": 4.0923,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 108,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 3.7778,
+          "chars_per_token": 3.7778,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "Qwen/Qwen3-0.6B-Base": {
+      "canonical_repo": "Qwen/Qwen3-0.6B-Base",
+      "artifact_served_from_repo": "Qwen/Qwen3-0.6B-Base",
+      "artifact_served_from_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_json_bytes": 7031645,
+      "vocab_size": 151665,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 2570,
+      "vocab_pieces_multichar_thai": 2489,
+      "pct_vocab_containing_thai": 1.695,
+      "longest_thai_piece": "อำนวยความสะดวก",
+      "longest_thai_piece_thai_chars": 14,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 1068,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 5.0468,
+          "chars_per_token": 1.838,
+          "tokens_per_document": 133.5
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 151,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 6.0265,
+          "chars_per_token": 6.0265,
+          "tokens_per_document": 50.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 400,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.9025,
+          "chars_per_token": 3.9025,
+          "tokens_per_document": 133.33
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 2.8571,
+      "english_over_thai_bytes_per_token_ratio": 1.1941,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸ªà¸§",
+            "à¸±",
+            "à¸ªà¸Ķ",
+            "à¸µ",
+            "à¸Ħà¸£",
+            "à¸±à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 9,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±à¸į",
+            "à¸įà¸²",
+            "à¸Ľà¸£à¸°",
+            "à¸Ķ",
+            "à¸´",
+            "à¸©",
+            "à¸Ĳ",
+            "à¹Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 7,
+          "tokens": [
+            "à¸ģà¸£",
+            "à¸¸à¸ĩ",
+            "à¹Ģà¸Ĺà¸ŀ",
+            "à¸¡",
+            "à¸«",
+            "à¸²à¸Ļ",
+            "à¸Ħà¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 11,
+          "tokens": [
+            "à¸ģà¸²à¸£",
+            "à¸ª",
+            "à¸±à¸ĩ",
+            "à¹Ģà¸Ħà¸£",
+            "à¸²à¸°",
+            "à¸«",
+            "à¹Į",
+            "à¸Ķ",
+            "à¹ī",
+            "à¸§à¸¢",
+            "à¹ģà¸ªà¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 8,
+          "tokens": [
+            "à¹",
+            "Ĵ",
+            "à¹",
+            "ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 2,
+          "tokens": [
+            "à¸Ļ",
+            "à¹īà¸³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 10,
+          "tokens": [
+            "à¸ģ",
+            "à¹ĩ",
+            "à¹Ħà¸¡",
+            "à¹Ī",
+            "à¸£",
+            "à¸¹à¹ī",
+            "à¹Ģà¸«à¸¡",
+            "à¸·à¸Ńà¸Ļ",
+            "à¸ģ",
+            "à¸±à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 112,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 5.75,
+          "chars_per_token": 1.9643,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 131,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 4.9084,
+          "chars_per_token": 1.7634,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 5.539,
+          "chars_per_token": 1.9362,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 5.4043,
+          "chars_per_token": 1.8156,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 159,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 4.9371,
+          "chars_per_token": 1.7044,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 104,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 5.5865,
+          "chars_per_token": 2.6442,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 160,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 3.3438,
+          "chars_per_token": 1.35,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 120,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 5.4917,
+          "chars_per_token": 1.8417,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 58,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.8276,
+          "chars_per_token": 5.8276,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 154,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 4.0325,
+          "chars_per_token": 4.0325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 132,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 4.0303,
+          "chars_per_token": 4.0303,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 114,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 3.5789,
+          "chars_per_token": 3.5789,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "sail/Sailor2-1B": {
+      "canonical_repo": "sail/Sailor2-1B",
+      "artifact_served_from_repo": "sail/Sailor2-1B",
+      "artifact_served_from_revision": "75c2856ffc7e6a6e64127f40c5f54a953deb682e",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "a8506e7111b80c6d8635951a02eab0f4e1a8e4e5772da83846579e97b16f61bf",
+      "tokenizer_json_bytes": 7031673,
+      "vocab_size": 151665,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 2570,
+      "vocab_pieces_multichar_thai": 2489,
+      "pct_vocab_containing_thai": 1.695,
+      "longest_thai_piece": "อย่างต่อเนื่อง",
+      "longest_thai_piece_thai_chars": 14,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 1068,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 5.0468,
+          "chars_per_token": 1.838,
+          "tokens_per_document": 133.5
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 151,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 6.0265,
+          "chars_per_token": 6.0265,
+          "tokens_per_document": 50.33
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 400,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.9025,
+          "chars_per_token": 3.9025,
+          "tokens_per_document": 133.33
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 2.8571,
+      "english_over_thai_bytes_per_token_ratio": 1.1941,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸ªà¸§",
+            "à¸±",
+            "à¸ªà¸Ķ",
+            "à¸µ",
+            "à¸Ħà¸£",
+            "à¸±à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 9,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±à¸į",
+            "à¸įà¸²",
+            "à¸Ľà¸£à¸°",
+            "à¸Ķ",
+            "à¸´",
+            "à¸©",
+            "à¸Ĳ",
+            "à¹Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 7,
+          "tokens": [
+            "à¸ģà¸£",
+            "à¸¸à¸ĩ",
+            "à¹Ģà¸Ĺà¸ŀ",
+            "à¸¡",
+            "à¸«",
+            "à¸²à¸Ļ",
+            "à¸Ħà¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 11,
+          "tokens": [
+            "à¸ģà¸²à¸£",
+            "à¸ª",
+            "à¸±à¸ĩ",
+            "à¹Ģà¸Ħà¸£",
+            "à¸²à¸°",
+            "à¸«",
+            "à¹Į",
+            "à¸Ķ",
+            "à¹ī",
+            "à¸§à¸¢",
+            "à¹ģà¸ªà¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 8,
+          "tokens": [
+            "à¹",
+            "Ĵ",
+            "à¹",
+            "ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 2,
+          "tokens": [
+            "à¸Ļ",
+            "à¹īà¸³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 10,
+          "tokens": [
+            "à¸ģ",
+            "à¹ĩ",
+            "à¹Ħà¸¡",
+            "à¹Ī",
+            "à¸£",
+            "à¸¹à¹ī",
+            "à¹Ģà¸«à¸¡",
+            "à¸·à¸Ńà¸Ļ",
+            "à¸ģ",
+            "à¸±à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 112,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 5.75,
+          "chars_per_token": 1.9643,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 131,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 4.9084,
+          "chars_per_token": 1.7634,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 5.539,
+          "chars_per_token": 1.9362,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 141,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 5.4043,
+          "chars_per_token": 1.8156,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 159,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 4.9371,
+          "chars_per_token": 1.7044,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 104,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 5.5865,
+          "chars_per_token": 2.6442,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 160,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 3.3438,
+          "chars_per_token": 1.35,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 120,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 5.4917,
+          "chars_per_token": 1.8417,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 58,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.8276,
+          "chars_per_token": 5.8276,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 154,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 4.0325,
+          "chars_per_token": 4.0325,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 132,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 4.0303,
+          "chars_per_token": 4.0303,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 114,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 3.5789,
+          "chars_per_token": 3.5789,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "tiiuae/Falcon3-1B-Base": {
+      "canonical_repo": "tiiuae/Falcon3-1B-Base",
+      "artifact_served_from_repo": "tiiuae/Falcon3-1B-Base",
+      "artifact_served_from_revision": "cb37ef3559b157b5c9d9226296ba01a5162da1f7",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "96c1b62711ea59cb36cf4ab46cc551fc64b2168ac0a288448026088fb9ec7f4a",
+      "tokenizer_json_bytes": 9780754,
+      "vocab_size": 131072,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 27,
+      "vocab_pieces_multichar_thai": 1,
+      "pct_vocab_containing_thai": 0.021,
+      "longest_thai_piece": "อง",
+      "longest_thai_piece_thai_chars": 2,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 2663,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 2.024,
+          "chars_per_token": 0.7371,
+          "tokens_per_document": 332.88
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 155,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 5.871,
+          "chars_per_token": 5.871,
+          "tokens_per_document": 51.67
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 538,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 2.9015,
+          "chars_per_token": 2.9015,
+          "tokens_per_document": 179.33
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 7.9048,
+      "english_over_thai_bytes_per_token_ratio": 2.9007,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 10,
+          "tokens": [
+            "à¸ª",
+            "à¸§",
+            "à¸±",
+            "à¸ª",
+            "à¸Ķ",
+            "à¸µ",
+            "à¸Ħ",
+            "à¸£",
+            "à¸±",
+            "à¸ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 20,
+          "tokens": [
+            "à¸Ľ",
+            "à¸±",
+            "à¸",
+            "į",
+            "à¸",
+            "į",
+            "à¸",
+            "²",
+            "à¸Ľ",
+            "à¸£à¸",
+            "°",
+            "à¸Ķ",
+            "à¸´",
+            "à¸",
+            "©",
+            "à¸",
+            "Ĳ",
+            "à",
+            "¹",
+            "Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 16,
+          "tokens": [
+            "à¸ģ",
+            "à¸£",
+            "à¸¸",
+            "à¸ĩ",
+            "à",
+            "¹",
+            "Ģ",
+            "à¸Ĺ",
+            "à¸ŀ",
+            "à¸¡",
+            "à¸«",
+            "à¸",
+            "²",
+            "à¸Ļ",
+            "à¸Ħ",
+            "à¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 29,
+          "tokens": [
+            "à¸ģà¸",
+            "²",
+            "à¸£",
+            "à¸ª",
+            "à¸±",
+            "à¸ĩ",
+            "à",
+            "¹",
+            "Ģ",
+            "à¸Ħ",
+            "à¸£à¸",
+            "²",
+            "à¸",
+            "°",
+            "à¸«",
+            "à",
+            "¹",
+            "Į",
+            "à¸Ķ",
+            "à",
+            "¹",
+            "ī",
+            "à¸§",
+            "à¸¢",
+            "à",
+            "¹",
+            "ģ",
+            "à¸ª",
+            "à¸ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 12,
+          "tokens": [
+            "à",
+            "¹",
+            "Ĵ",
+            "à",
+            "¹",
+            "ķ",
+            "à",
+            "¹",
+            "ĸ",
+            "à",
+            "¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸Ļ",
+            "à",
+            "¹",
+            "ī",
+            "à¸",
+            "³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 28,
+          "tokens": [
+            "à¸ģ",
+            "à",
+            "¹",
+            "ĩ",
+            "à",
+            "¹",
+            "Ħ",
+            "à¸¡",
+            "à",
+            "¹",
+            "Ī",
+            "à¸£",
+            "à¸",
+            "¹",
+            "à",
+            "¹",
+            "ī",
+            "à",
+            "¹",
+            "Ģ",
+            "à¸«",
+            "à¸¡",
+            "à¸·",
+            "à¸Ń",
+            "à¸Ļ",
+            "à¸ģ",
+            "à¸±",
+            "à¸Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 319,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 2.0188,
+          "chars_per_token": 0.6897,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 327,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 1.9664,
+          "chars_per_token": 0.7064,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 383,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 2.0392,
+          "chars_per_token": 0.7128,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 370,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 2.0595,
+          "chars_per_token": 0.6919,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 380,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 2.0658,
+          "chars_per_token": 0.7132,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 268,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 2.1679,
+          "chars_per_token": 1.0261,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 284,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 1.8838,
+          "chars_per_token": 0.7606,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 332,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 1.9849,
+          "chars_per_token": 0.6657,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 62,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.4516,
+          "chars_per_token": 5.4516,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 212,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 2.9292,
+          "chars_per_token": 2.9292,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 182,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 2.9231,
+          "chars_per_token": 2.9231,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 144,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 2.8333,
+          "chars_per_token": 2.8333,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    },
+    "HuggingFaceTB/SmolLM2-1.7B": {
+      "canonical_repo": "HuggingFaceTB/SmolLM2-1.7B",
+      "artifact_served_from_repo": "HuggingFaceTB/SmolLM2-1.7B",
+      "artifact_served_from_revision": "effd688a12921b4cc83e3312b6feb579f70f9c71",
+      "artifact_is_origin": true,
+      "provenance_warning": null,
+      "tokenizer_json_sha256": "9ca9acddb6525a194ec8ac7a87f24fbba7232a9a15ffa1af0c1224fcd888e47c",
+      "tokenizer_json_bytes": 2104556,
+      "vocab_size": 49152,
+      "tokenizer_model_type": "BPE",
+      "byte_level_bpe": true,
+      "vocab_pieces_containing_thai": 2,
+      "vocab_pieces_multichar_thai": 0,
+      "pct_vocab_containing_thai": 0.004,
+      "longest_thai_piece": "ร",
+      "longest_thai_piece_thai_chars": 1,
+      "aggregate_by_language": {
+        "th": {
+          "docs": 8,
+          "tokens": 3365,
+          "utf8_bytes": 5390,
+          "chars": 1963,
+          "bytes_per_token": 1.6018,
+          "chars_per_token": 0.5834,
+          "tokens_per_document": 420.62
+        },
+        "en": {
+          "docs": 3,
+          "tokens": 155,
+          "utf8_bytes": 910,
+          "chars": 910,
+          "bytes_per_token": 5.871,
+          "chars_per_token": 5.871,
+          "tokens_per_document": 51.67
+        },
+        "code": {
+          "docs": 3,
+          "tokens": 502,
+          "utf8_bytes": 1561,
+          "chars": 1561,
+          "bytes_per_token": 3.1096,
+          "chars_per_token": 3.1096,
+          "tokens_per_document": 167.33
+        }
+      },
+      "thai_vs_english_token_ratio_parallel_doc": 9.8095,
+      "english_over_thai_bytes_per_token_ratio": 3.6653,
+      "total_replacement_char_tokens": 0,
+      "total_unk_tokens": 0,
+      "roundtrip_lossless_all_docs": true,
+      "roundtrip_failures": [],
+      "segmentation_examples": {
+        "สวัสดีครับ": {
+          "n_tokens": 19,
+          "tokens": [
+            "à¸",
+            "ª",
+            "à¸",
+            "§",
+            "à¸",
+            "±",
+            "à¸",
+            "ª",
+            "à¸",
+            "Ķ",
+            "à¸",
+            "µ",
+            "à¸",
+            "Ħ",
+            "à¸£",
+            "à¸",
+            "±",
+            "à¸",
+            "ļ"
+          ]
+        },
+        "ปัญญาประดิษฐ์": {
+          "n_tokens": 24,
+          "tokens": [
+            "à¸",
+            "Ľ",
+            "à¸",
+            "±",
+            "à¸",
+            "į",
+            "à¸",
+            "į",
+            "à¸²",
+            "à¸",
+            "Ľ",
+            "à¸£",
+            "à¸",
+            "°",
+            "à¸",
+            "Ķ",
+            "à¸",
+            "´",
+            "à¸",
+            "©",
+            "à¸",
+            "Ĳ",
+            "à¹",
+            "Į"
+          ]
+        },
+        "กรุงเทพมหานคร": {
+          "n_tokens": 23,
+          "tokens": [
+            "à¸",
+            "ģ",
+            "à¸£",
+            "à¸",
+            "¸",
+            "à¸",
+            "ĩ",
+            "à¹",
+            "Ģ",
+            "à¸",
+            "Ĺ",
+            "à¸",
+            "ŀ",
+            "à¸",
+            "¡",
+            "à¸",
+            "«",
+            "à¸²",
+            "à¸",
+            "Ļ",
+            "à¸",
+            "Ħ",
+            "à¸£"
+          ]
+        },
+        "การสังเคราะห์ด้วยแสง": {
+          "n_tokens": 36,
+          "tokens": [
+            "à¸",
+            "ģ",
+            "à¸²",
+            "à¸£",
+            "à¸",
+            "ª",
+            "à¸",
+            "±",
+            "à¸",
+            "ĩ",
+            "à¹",
+            "Ģ",
+            "à¸",
+            "Ħ",
+            "à¸£",
+            "à¸²",
+            "à¸",
+            "°",
+            "à¸",
+            "«",
+            "à¹",
+            "Į",
+            "à¸",
+            "Ķ",
+            "à¹",
+            "ī",
+            "à¸",
+            "§",
+            "à¸",
+            "¢",
+            "à¹",
+            "ģ",
+            "à¸",
+            "ª",
+            "à¸",
+            "ĩ"
+          ]
+        },
+        "๒๕๖๘": {
+          "n_tokens": 8,
+          "tokens": [
+            "à¹",
+            "Ĵ",
+            "à¹",
+            "ķ",
+            "à¹",
+            "ĸ",
+            "à¹",
+            "ĺ"
+          ]
+        },
+        "น้ำ": {
+          "n_tokens": 6,
+          "tokens": [
+            "à¸",
+            "Ļ",
+            "à¹",
+            "ī",
+            "à¸",
+            "³"
+          ]
+        },
+        "ก็ไม่รู้เหมือนกัน": {
+          "n_tokens": 33,
+          "tokens": [
+            "à¸",
+            "ģ",
+            "à¹",
+            "ĩ",
+            "à¹",
+            "Ħ",
+            "à¸",
+            "¡",
+            "à¹",
+            "Ī",
+            "à¸£",
+            "à¸",
+            "¹",
+            "à¹",
+            "ī",
+            "à¹",
+            "Ģ",
+            "à¸",
+            "«",
+            "à¸",
+            "¡",
+            "à¸",
+            "·",
+            "à¸",
+            "Ń",
+            "à¸",
+            "Ļ",
+            "à¸",
+            "ģ",
+            "à¸",
+            "±",
+            "à¸",
+            "Ļ"
+          ]
+        }
+      },
+      "per_document": {
+        "TH-WEB-01": {
+          "group": "th_web",
+          "tokens": 408,
+          "utf8_bytes": 644,
+          "chars": 220,
+          "bytes_per_token": 1.5784,
+          "chars_per_token": 0.5392,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-WEB-02": {
+          "group": "th_web",
+          "tokens": 407,
+          "utf8_bytes": 643,
+          "chars": 231,
+          "bytes_per_token": 1.5799,
+          "chars_per_token": 0.5676,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-01": {
+          "group": "th_encyclopedic",
+          "tokens": 490,
+          "utf8_bytes": 781,
+          "chars": 273,
+          "bytes_per_token": 1.5939,
+          "chars_per_token": 0.5571,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-ENC-02": {
+          "group": "th_encyclopedic",
+          "tokens": 479,
+          "utf8_bytes": 762,
+          "chars": 256,
+          "bytes_per_token": 1.5908,
+          "chars_per_token": 0.5344,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-FORMAL-01": {
+          "group": "th_formal_legal",
+          "tokens": 484,
+          "utf8_bytes": 785,
+          "chars": 271,
+          "bytes_per_token": 1.6219,
+          "chars_per_token": 0.5599,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-TECH-01": {
+          "group": "th_code_switch",
+          "tokens": 323,
+          "utf8_bytes": 581,
+          "chars": 275,
+          "bytes_per_token": 1.7988,
+          "chars_per_token": 0.8514,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-NUM-01": {
+          "group": "th_numeric",
+          "tokens": 362,
+          "utf8_bytes": 535,
+          "chars": 216,
+          "bytes_per_token": 1.4779,
+          "chars_per_token": 0.5967,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "TH-PAR-01": {
+          "group": "th_parallel",
+          "tokens": 412,
+          "utf8_bytes": 659,
+          "chars": 221,
+          "bytes_per_token": 1.5995,
+          "chars_per_token": 0.5364,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-PAR-01": {
+          "group": "en_parallel",
+          "tokens": 42,
+          "utf8_bytes": 251,
+          "chars": 251,
+          "bytes_per_token": 5.9762,
+          "chars_per_token": 5.9762,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-GEN-01": {
+          "group": "en_general",
+          "tokens": 51,
+          "utf8_bytes": 321,
+          "chars": 321,
+          "bytes_per_token": 6.2941,
+          "chars_per_token": 6.2941,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "EN-TECH-01": {
+          "group": "en_technical",
+          "tokens": 62,
+          "utf8_bytes": 338,
+          "chars": 338,
+          "bytes_per_token": 5.4516,
+          "chars_per_token": 5.4516,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-PY-01": {
+          "group": "code_python",
+          "tokens": 193,
+          "utf8_bytes": 621,
+          "chars": 621,
+          "bytes_per_token": 3.2176,
+          "chars_per_token": 3.2176,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-JS-01": {
+          "group": "code_javascript",
+          "tokens": 159,
+          "utf8_bytes": 532,
+          "chars": 532,
+          "bytes_per_token": 3.3459,
+          "chars_per_token": 3.3459,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        },
+        "CODE-SQL-01": {
+          "group": "code_sql",
+          "tokens": 150,
+          "utf8_bytes": 408,
+          "chars": 408,
+          "bytes_per_token": 2.72,
+          "chars_per_token": 2.72,
+          "roundtrip_lossless": true,
+          "replacement_char_tokens": 0,
+          "unk_tokens": 0
+        }
+      }
+    }
+  },
+  "corpus_cost_projection": {
+    "anchor": "SEA-PILE-v2 subset th, reported by the dataset card as 6.5B tokens under the Gemma 3 tokenizer",
+    "interpretation": "Same corpus bytes, different token counts. A higher multiplier means the same Thai text costs proportionally more GPU-hours to train on, because cost scales with tokens, not bytes.",
+    "per_model": {
+      "meta-llama/Llama-3.2-1B": {
+        "thai_bytes_per_token": 5.9822,
+        "tokens_multiplier_vs_gemma3": 1.3002,
+        "thai_tokens_for_sea_pile_v2_th_B": 8.451
+      },
+      "google/gemma-3-1b-pt": {
+        "thai_bytes_per_token": 7.7778,
+        "tokens_multiplier_vs_gemma3": 1.0,
+        "thai_tokens_for_sea_pile_v2_th_B": 6.5
+      },
+      "Qwen/Qwen2.5-1.5B": {
+        "thai_bytes_per_token": 5.0468,
+        "tokens_multiplier_vs_gemma3": 1.5411,
+        "thai_tokens_for_sea_pile_v2_th_B": 10.017
+      },
+      "allenai/OLMo-2-0425-1B": {
+        "thai_bytes_per_token": 2.9713,
+        "tokens_multiplier_vs_gemma3": 2.6176,
+        "thai_tokens_for_sea_pile_v2_th_B": 17.015
+      },
+      "Qwen/Qwen3-0.6B-Base": {
+        "thai_bytes_per_token": 5.0468,
+        "tokens_multiplier_vs_gemma3": 1.5411,
+        "thai_tokens_for_sea_pile_v2_th_B": 10.017
+      },
+      "sail/Sailor2-1B": {
+        "thai_bytes_per_token": 5.0468,
+        "tokens_multiplier_vs_gemma3": 1.5411,
+        "thai_tokens_for_sea_pile_v2_th_B": 10.017
+      },
+      "tiiuae/Falcon3-1B-Base": {
+        "thai_bytes_per_token": 2.024,
+        "tokens_multiplier_vs_gemma3": 3.8428,
+        "thai_tokens_for_sea_pile_v2_th_B": 24.978
+      },
+      "HuggingFaceTB/SmolLM2-1.7B": {
+        "thai_bytes_per_token": 1.6018,
+        "tokens_multiplier_vs_gemma3": 4.8557,
+        "thai_tokens_for_sea_pile_v2_th_B": 31.562
+      }
+    }
+  },
+  "findings": [
+    "Vocabulary size does not predict Thai fertility. Qwen (151,936 vocab, 2,570 Thai-bearing pieces) is WORSE on Thai than Llama 3.2 (128,256 vocab, 1,391 Thai-bearing pieces): 1.84 vs 2.18 chars/token.",
+    "Count of Thai-bearing vocabulary pieces also does not predict fertility, for the same reason.",
+    "Gemma 3 is the only tokenizer in the set that segments Thai into morpheme-like units (e.g. 'การ|สัง|เคราะห์|ด้วย|แสง'). Every other candidate falls back to sub-syllable byte fragments.",
+    "OLMo 2, Falcon 3 and SmolLM2 are at or below ~1.1 Thai chars/token, i.e. effectively byte-level on Thai. This is a compute-efficiency blocker for Thai CPT, independent of model quality.",
+    "Thai numerals (๒๕๖๘) are single tokens only under Gemma 3; all byte-level BPE candidates spend 6-12 tokens on a four-digit Thai year.",
+    "All eight tokenizers are lossless round-trip on all 14 documents with zero U+FFFD and zero <unk>. No candidate is eliminated on correctness grounds.",
+    "Qwen2.5-1.5B and Qwen3-0.6B-Base share a byte-identical tokenizer.json (sha256 match), so pilot-to-fallback transfer is tokenizer-invariant."
+  ],
+  "limitations": [
+    "Llama 3.2 and Gemma 3 artifacts came from ungated mirrors, not the origin repos. Byte identity vs origin is unverified.",
+    "14 documents is a screening sample, not a corpus-scale fertility estimate. Absolute bytes/token will shift on real SEA-PILE-v2 text; the RANKING is expected to be stable because the gaps are large.",
+    "Fertility is a cost metric. It does not measure how well a model will learn Thai. A tokenizer that splits Thai finely can still reach good quality, just at higher token and GPU cost.",
+    "No model weights were loaded, so no BPB, no perplexity and no downstream number appears here."
+  ]
+}
