@@ -1,0 +1,49 @@
+{
+  "run_id": "DECON-NEARDEDUP-V1",
+  "created_at": "2026-08-21T08:41:04.228621+00:00",
+  "scientific_evidence_allowed": false,
+  "params": {
+    "ngram_chars": 64,
+    "corpus_stride": 8,
+    "index_stride": 1,
+    "min_ngram_hits": 2,
+    "minhash_permutations": 32,
+    "lsh_bands": 8,
+    "lsh_rows": 4,
+    "max_chars_per_doc": 40000
+  },
+  "documents_scanned": {
+    "th": 4567214,
+    "en": 3507052,
+    "code": 690716,
+    "math": 412734,
+    "total": 9177716
+  },
+  "decontamination": {
+    "flagged_by_language": {
+      "th": 803,
+      "en": 1371,
+      "code": 826,
+      "math": 233
+    },
+    "flagged_total": 3233,
+    "rate": 0.000352
+  },
+  "near_duplicates": {
+    "flagged_total": 270841,
+    "rate": 0.029511
+  },
+  "removal_list": {
+    "path": "data/removal_list.txt",
+    "unique_documents": 273703,
+    "rate": 0.029823
+  },
+  "policy": "flag only; nothing deleted. The tokenisation step must drop these doc_sha256 values.",
+  "limitations": [
+    "Character 64-grams detect verbatim or near-verbatim overlap only; paraphrased or translated benchmark items are NOT detected.",
+    "Corpus scanned at stride 8 and capped at 40,000 characters per document.",
+    "MinHash with 32 permutations and 8x4 banding is tuned for recall of high-similarity pairs; moderately similar documents will be missed.",
+    "LSH keeps the FIRST document seen in each bucket, so which member of a near-duplicate cluster survives depends on file order."
+  ],
+  "runtime_minutes": 159.4
+}

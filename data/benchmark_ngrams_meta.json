@@ -1,0 +1,87 @@
+{
+  "index_id": "BENCH-NGRAM-V1",
+  "created_at": "2026-08-21T06:01:05.128604+00:00",
+  "scientific_evidence_allowed": false,
+  "ngram_chars": 64,
+  "normalisation": "NFKC + lowercase + whitespace collapse",
+  "eval_suite": "THAILLM-EVAL-FROZEN-V1",
+  "total_unique_ngrams": 13697156,
+  "per_benchmark": {
+    "mmlu": {
+      "status": "ok",
+      "repo": "cais/mmlu",
+      "items": 13870,
+      "unique_ngrams": 4662333
+    },
+    "hellaswag": {
+      "status": "ok",
+      "repo": "Rowan/hellaswag",
+      "items": 10042,
+      "unique_ngrams": 7265554
+    },
+    "arc_challenge": {
+      "status": "ok",
+      "repo": "allenai/ai2_arc",
+      "items": 1159,
+      "unique_ngrams": 220649
+    },
+    "humaneval": {
+      "status": "ok",
+      "repo": "openai/openai_humaneval",
+      "items": 164,
+      "unique_ngrams": 144847
+    },
+    "belebele_th": {
+      "status": "ok",
+      "repo": "facebook/belebele",
+      "items": 900,
+      "unique_ngrams": 331083
+    },
+    "belebele_en": {
+      "status": "ok",
+      "repo": "facebook/belebele",
+      "items": 900,
+      "unique_ngrams": 362620
+    },
+    "m3exam_th": {
+      "status": "ok",
+      "repo": "chiayewken/m3exam",
+      "items": 2164,
+      "unique_ngrams": 539035
+    },
+    "thaiexam_onet": {
+      "status": "ok",
+      "repo": "scb10x/thai_exam",
+      "items": 162,
+      "unique_ngrams": 51543
+    },
+    "thaiexam_ic": {
+      "status": "ok",
+      "repo": "scb10x/thai_exam",
+      "items": 95,
+      "unique_ngrams": 30196
+    },
+    "thaiexam_tgat": {
+      "status": "ok",
+      "repo": "scb10x/thai_exam",
+      "items": 65,
+      "unique_ngrams": 22379
+    },
+    "thaiexam_tpat1": {
+      "status": "ok",
+      "repo": "scb10x/thai_exam",
+      "items": 116,
+      "unique_ngrams": 41280
+    },
+    "thaiexam_a_level": {
+      "status": "ok",
+      "repo": "scb10x/thai_exam",
+      "items": 126,
+      "unique_ngrams": 32883
+    }
+  },
+  "limitations": [
+    "Character 64-grams detect verbatim or near-verbatim overlap only. Paraphrased or translated benchmark items are NOT detected.",
+    "A benchmark that failed to load is NOT covered by this index."
+  ]
+}
