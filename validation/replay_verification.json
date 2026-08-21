@@ -1,0 +1,54 @@
+{
+  "verification_id": "VERIFY-CLEAN-REPLAY-V1",
+  "created_at": "2026-08-20T12:34:35.257797+00:00",
+  "scientific_evidence_allowed": false,
+  "manifest": "data/clean_replay_manifest.json",
+  "manifest_id": "CLEAN-REPLAY-EN-CODE-MATH-V1",
+  "tokenizer_revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+  "totals": {
+    "en": {
+      "documents": 3508510,
+      "utf8_bytes": 16357455540,
+      "qwen_tokens": 3516598044
+    },
+    "code": {
+      "documents": 700129,
+      "utf8_bytes": 4317065311,
+      "qwen_tokens": 1104617663
+    },
+    "math": {
+      "documents": 412820,
+      "utf8_bytes": 2022436244,
+      "qwen_tokens": 592984656
+    }
+  },
+  "heldout": {
+    "EN-HELDOUT": {
+      "documents": 2000,
+      "set_sha256": "e0a30eae016b9d3f9610503fa0e26d70c9e24adf415d9637445d1b4f2f807b75",
+      "leakage": 0
+    },
+    "CODE-HELDOUT": {
+      "documents": 1000,
+      "set_sha256": "932d5efc953d8a83856ae97f642b89d8f28ef1f425eae42a74bac3e07e32cf68",
+      "leakage": 0
+    }
+  },
+  "token_recount": {
+    "en": {
+      "sampled": 100,
+      "mismatches": 0
+    },
+    "code": {
+      "sampled": 100,
+      "mismatches": 0
+    },
+    "math": {
+      "sampled": 100,
+      "mismatches": 0
+    }
+  },
+  "unique_documents": 4621459,
+  "errors": [],
+  "verdict": "PASS"
+}

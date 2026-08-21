@@ -1,0 +1,98 @@
+{
+  "set_id": "CODE-HELDOUT",
+  "created_at": "2026-08-20T11:50:58.039914+00:00",
+  "scientific_evidence_allowed": false,
+  "exclusion_rule": {
+    "rule_id": "HELDOUT-BUCKET-V1",
+    "module": "phase0/heldout_rule.py",
+    "total_buckets": 100,
+    "heldout_buckets": [
+      0
+    ],
+    "contract": "Training MUST import heldout_rule.is_trainable and drop false records."
+  },
+  "source": {
+    "repo": "codeparrot/github-code-clean",
+    "revision": "c48d40f9e70f0196f8236901ee35807f7d6c44c0",
+    "files": [
+      "data/train-00000-of-00880.parquet",
+      "data/train-00251-of-00880.parquet",
+      "data/train-00502-of-00880.parquet",
+      "data/train-00753-of-00880.parquet",
+      "data/train-00879-of-00880.parquet"
+    ],
+    "access": "hf_hub_download + pyarrow local read"
+  },
+  "filters": {
+    "order": [
+      "heldout_bucket",
+      "length",
+      "script_ratio",
+      "code_license_if_applicable",
+      "exact_duplicate"
+    ],
+    "min_chars": 100,
+    "max_chars": 200000,
+    "script_min_ratio": 0.0,
+    "allowed_licenses": [
+      "apache-2.0",
+      "bsd-2-clause",
+      "bsd-3-clause",
+      "mit"
+    ]
+  },
+  "counts": {
+    "scanned": 168444,
+    "in_bucket": 1654,
+    "too_short": 46,
+    "too_long": 7,
+    "wrong_script": 0,
+    "disallowed_license": 601,
+    "dup": 0,
+    "kept": 1000
+  },
+  "per_file": [
+    {
+      "file": "data/train-00000-of-00880.parquet",
+      "quota": 200,
+      "scanned": 35016,
+      "kept": 200
+    },
+    {
+      "file": "data/train-00251-of-00880.parquet",
+      "quota": 200,
+      "scanned": 30373,
+      "kept": 200
+    },
+    {
+      "file": "data/train-00502-of-00880.parquet",
+      "quota": 200,
+      "scanned": 32892,
+      "kept": 200
+    },
+    {
+      "file": "data/train-00753-of-00880.parquet",
+      "quota": 200,
+      "scanned": 37250,
+      "kept": 200
+    },
+    {
+      "file": "data/train-00879-of-00880.parquet",
+      "quota": 200,
+      "scanned": 32913,
+      "kept": 200
+    }
+  ],
+  "totals": {
+    "documents": 1000,
+    "utf8_bytes": 6243491,
+    "chars": 6212603
+  },
+  "set_sha256": "932d5efc953d8a83856ae97f642b89d8f28ef1f425eae42a74bac3e07e32cf68",
+  "jsonl": "data/heldout/CODE-HELDOUT.jsonl",
+  "limitations": [
+    "Token counts are not recorded here; BPB scoring tokenizes with the evaluated model.",
+    "Benchmark decontamination is a separate step and has not run yet.",
+    "Selected from pinned, range-spread source shards; EN/CODE use per-file quotas."
+  ]
+}

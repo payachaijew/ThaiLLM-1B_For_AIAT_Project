@@ -1,0 +1,353 @@
+{
+  "manifest_id": "CLEAN-REPLAY-EN-CODE-MATH-V1",
+  "created_at": "2026-08-20T12:20:47.391894+00:00",
+  "scientific_evidence_allowed": false,
+  "exclusion_rule": "HELDOUT-BUCKET-V1",
+  "selected_tokenizer": {
+    "repo": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "artifact": "tokenizer.json",
+    "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "add_special_tokens": false
+  },
+  "sources": {
+    "en": {
+      "repo": "HuggingFaceFW/fineweb-edu",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "subset": "sample/10BT",
+      "dataset_level_license": "ODC-By-1.0",
+      "additional_terms": "CommonCrawl Terms of Use",
+      "target_qwen_tokens": 3500000000,
+      "target_met": true,
+      "filters": {
+        "order": [
+          "heldout_bucket",
+          "length",
+          "code_license_if_applicable",
+          "exact_duplicate"
+        ],
+        "min_chars": 500,
+        "max_chars": 100000,
+        "code_license_allowlist": null
+      },
+      "input": {
+        "documents": 3655000,
+        "utf8_bytes": 17340610652,
+        "source_shards": 5
+      },
+      "output": {
+        "documents": 3508510,
+        "utf8_bytes": 16357455540,
+        "qwen_tokens": 3516598044
+      },
+      "dropped_documents": {
+        "too_short": 46707,
+        "heldout_bucket": 36430,
+        "too_long": 3213,
+        "exact_duplicate": 60140
+      },
+      "dropped_bytes": {
+        "too_short": 19547751,
+        "heldout_bucket": 170988198,
+        "too_long": 518420544,
+        "exact_duplicate": 274198619
+      }
+    },
+    "code": {
+      "repo": "codeparrot/github-code-clean",
+      "revision": "c48d40f9e70f0196f8236901ee35807f7d6c44c0",
+      "subset": "data",
+      "dataset_level_license": "Apache-2.0 (dataset packaging only)",
+      "additional_terms": "Underlying files retain their repository licenses; only MIT, Apache-2.0, BSD-2-Clause and BSD-3-Clause rows are retained.",
+      "target_qwen_tokens": 1000000000,
+      "target_met": true,
+      "filters": {
+        "order": [
+          "heldout_bucket",
+          "length",
+          "code_license_if_applicable",
+          "exact_duplicate"
+        ],
+        "min_chars": 100,
+        "max_chars": 200000,
+        "code_license_allowlist": [
+          "apache-2.0",
+          "bsd-2-clause",
+          "bsd-3-clause",
+          "mit"
+        ]
+      },
+      "input": {
+        "documents": 1142319,
+        "utf8_bytes": 9238274894,
+        "source_shards": 9
+      },
+      "output": {
+        "documents": 700129,
+        "utf8_bytes": 4317065311,
+        "qwen_tokens": 1104617663
+      },
+      "dropped_documents": {
+        "disallowed_license": 400520,
+        "too_short": 26783,
+        "heldout_bucket": 11493,
+        "too_long": 3394
+      },
+      "dropped_bytes": {
+        "disallowed_license": 3528655071,
+        "too_short": 1586670,
+        "heldout_bucket": 96874895,
+        "too_long": 1294092947
+      }
+    },
+    "math": {
+      "repo": "HuggingFaceTB/finemath",
+      "revision": "e92b25a616738fe95dc186b64dfb19f9c8525594",
+      "subset": "finemath-4plus",
+      "dataset_level_license": "ODC-By-1.0",
+      "additional_terms": "CommonCrawl Terms of Use",
+      "target_qwen_tokens": 500000000,
+      "target_met": true,
+      "filters": {
+        "order": [
+          "heldout_bucket",
+          "length",
+          "code_license_if_applicable",
+          "exact_duplicate"
+        ],
+        "min_chars": 200,
+        "max_chars": 100000,
+        "code_license_allowlist": null
+      },
+      "input": {
+        "documents": 418720,
+        "utf8_bytes": 2133289390,
+        "source_shards": 4
+      },
+      "output": {
+        "documents": 412820,
+        "utf8_bytes": 2022436244,
+        "qwen_tokens": 592984656
+      },
+      "dropped_documents": {
+        "heldout_bucket": 4172,
+        "too_short": 1289,
+        "too_long": 429,
+        "exact_duplicate": 10
+      },
+      "dropped_bytes": {
+        "heldout_bucket": 21503583,
+        "too_short": 209295,
+        "too_long": 89104634,
+        "exact_duplicate": 35634
+      }
+    }
+  },
+  "output_shards": [
+    {
+      "language": "code",
+      "source_file": "data/train-00000-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00000.jsonl.gz",
+      "output_sha256": "02cf2db160cf5fe53b9e0e0c06fd32e3f724b449e37d88e1c50719d481c1b304",
+      "input_documents": 126925,
+      "input_bytes": 1020054471,
+      "output_documents": 76895,
+      "output_bytes": 469424204,
+      "qwen_tokens": 120688788
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00001-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00008.jsonl.gz",
+      "output_sha256": "afc4651047ba637b99d1b773e3aec735cf82cdff4feaf290e811cd01d335ddb3",
+      "input_documents": 126925,
+      "input_bytes": 1030123344,
+      "output_documents": 78607,
+      "output_bytes": 483173454,
+      "qwen_tokens": 123764255
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00126-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00001.jsonl.gz",
+      "output_sha256": "1509b8d3f707e9634f4c871f3648a0c3379845a19d0db6892fa862321b85f90d",
+      "input_documents": 126925,
+      "input_bytes": 1035688135,
+      "output_documents": 78998,
+      "output_bytes": 496049585,
+      "qwen_tokens": 126909522
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00251-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00002.jsonl.gz",
+      "output_sha256": "5cfb39880b8e82d38ad1b781e9356e5fd2402efa0c9a692e8688c474df98a290",
+      "input_documents": 126924,
+      "input_bytes": 1040093367,
+      "output_documents": 78621,
+      "output_bytes": 484238988,
+      "qwen_tokens": 123496091
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00377-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00003.jsonl.gz",
+      "output_sha256": "a1243315405461b9162f3c35d95bff36731cbde5258b8ee3efc9e875c784e86a",
+      "input_documents": 126924,
+      "input_bytes": 1024459485,
+      "output_documents": 76696,
+      "output_bytes": 473993182,
+      "qwen_tokens": 121008712
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00502-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00004.jsonl.gz",
+      "output_sha256": "b513c18ca8c09c9e6ea332aae1df4f1c530abc4e33e4b513dcd26f9787040993",
+      "input_documents": 126924,
+      "input_bytes": 1017393275,
+      "output_documents": 77517,
+      "output_bytes": 477439017,
+      "qwen_tokens": 122447650
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00628-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00005.jsonl.gz",
+      "output_sha256": "a9b6164a78ef6722fa1e7619f7342a46360a20eb25010e91b6d5718909b1fb04",
+      "input_documents": 126924,
+      "input_bytes": 999284627,
+      "output_documents": 77845,
+      "output_bytes": 473053176,
+      "qwen_tokens": 120808509
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00753-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00006.jsonl.gz",
+      "output_sha256": "a5b4a3677d96de922d55c4faea36f176dc8f6d5ac9fb1c12764d5fab3b6e095f",
+      "input_documents": 126924,
+      "input_bytes": 1033191020,
+      "output_documents": 77955,
+      "output_bytes": 481835699,
+      "qwen_tokens": 123122378
+    },
+    {
+      "language": "code",
+      "source_file": "data/train-00879-of-00880.parquet",
+      "output_file": "data/clean_replay/code/code-00007.jsonl.gz",
+      "output_sha256": "b4eb8c5f2263ba75afc559f3bfe8d2183b542387fe3010a2f69efe28e245df87",
+      "input_documents": 126924,
+      "input_bytes": 1037987170,
+      "output_documents": 76995,
+      "output_bytes": 477858006,
+      "qwen_tokens": 122371758
+    },
+    {
+      "language": "en",
+      "source_file": "sample/10BT/000_00000.parquet",
+      "output_file": "data/clean_replay/en/en-00000.jsonl.gz",
+      "output_sha256": "da59f935a7fa14131334fe84c7c67f649b3e73365d1d5077ea2d46d2bf8c82ff",
+      "input_documents": 726000,
+      "input_bytes": 3469725588,
+      "output_documents": 707012,
+      "output_bytes": 3320431635,
+      "qwen_tokens": 713808992
+    },
+    {
+      "language": "en",
+      "source_file": "sample/10BT/002_00000.parquet",
+      "output_file": "data/clean_replay/en/en-00001.jsonl.gz",
+      "output_sha256": "97370163378cf202069f4ab62e91d3162d5cd2115f7b54194bea7421577ae007",
+      "input_documents": 727000,
+      "input_bytes": 3480105428,
+      "output_documents": 704469,
+      "output_bytes": 3310622280,
+      "qwen_tokens": 708364046
+    },
+    {
+      "language": "en",
+      "source_file": "sample/10BT/004_00000.parquet",
+      "output_file": "data/clean_replay/en/en-00002.jsonl.gz",
+      "output_sha256": "9ac4a60fa00124a8e5b5c308472c9b5c0df5f6d89d06ee1335ce475277b80b5a",
+      "input_documents": 745000,
+      "input_bytes": 3459375286,
+      "output_documents": 715034,
+      "output_bytes": 3271049502,
+      "qwen_tokens": 702573193
+    },
+    {
+      "language": "en",
+      "source_file": "sample/10BT/006_00000.parquet",
+      "output_file": "data/clean_replay/en/en-00003.jsonl.gz",
+      "output_sha256": "e0733636bbe8060ee0d4f23f8dad2965b369b9f1f1df33a980e371603577a0ce",
+      "input_documents": 732000,
+      "input_bytes": 3465849604,
+      "output_documents": 697185,
+      "output_bytes": 3238506402,
+      "qwen_tokens": 698427748
+    },
+    {
+      "language": "en",
+      "source_file": "sample/10BT/007_00000.parquet",
+      "output_file": "data/clean_replay/en/en-00004.jsonl.gz",
+      "output_sha256": "1e7a0beff75526c7733e357af6abcf1adff2d16aff5fa84cf0b34c00fd8da3e4",
+      "input_documents": 725000,
+      "input_bytes": 3465554746,
+      "output_documents": 684810,
+      "output_bytes": 3216845721,
+      "qwen_tokens": 693424065
+    },
+    {
+      "language": "math",
+      "source_file": "finemath-4plus/train-00000-of-00064.parquet",
+      "output_file": "data/clean_replay/math/math-00000.jsonl.gz",
+      "output_sha256": "57b920082d1e4b0db3704e68d462868b130900ab47beff83364bea3a06a3a663",
+      "input_documents": 104680,
+      "input_bytes": 531469047,
+      "output_documents": 103175,
+      "output_bytes": 504150025,
+      "qwen_tokens": 147689377
+    },
+    {
+      "language": "math",
+      "source_file": "finemath-4plus/train-00009-of-00064.parquet",
+      "output_file": "data/clean_replay/math/math-00001.jsonl.gz",
+      "output_sha256": "2dc6a96a6837a5a610e3a4ddfbab96f1756d5d00aae1d57d9c4e91da7b26834e",
+      "input_documents": 104680,
+      "input_bytes": 534163413,
+      "output_documents": 103222,
+      "output_bytes": 503960697,
+      "qwen_tokens": 147925668
+    },
+    {
+      "language": "math",
+      "source_file": "finemath-4plus/train-00018-of-00064.parquet",
+      "output_file": "data/clean_replay/math/math-00002.jsonl.gz",
+      "output_sha256": "54ecbce10595475a6acd756cbe6943b2bbd2e102a65b51c8f2b9dc7465c9d26a",
+      "input_documents": 104680,
+      "input_bytes": 533087994,
+      "output_documents": 103209,
+      "output_bytes": 506715251,
+      "qwen_tokens": 148477894
+    },
+    {
+      "language": "math",
+      "source_file": "finemath-4plus/train-00027-of-00064.parquet",
+      "output_file": "data/clean_replay/math/math-00003.jsonl.gz",
+      "output_sha256": "e78dbd806ef3321315ae7cbfddf563bc580b61e2fb4c4a85df344a886ec4c4fd",
+      "input_documents": 104680,
+      "input_bytes": 534568936,
+      "output_documents": 103214,
+      "output_bytes": 507610271,
+      "qwen_tokens": 148891717
+    }
+  ],
+  "limitations": [
+    "Exact deduplication only; near-duplicate removal is not applied.",
+    "FineWeb-Edu and FineMath derive from CommonCrawl and retain source-content risks.",
+    "The code dataset card is Apache-2.0, but source files retain per-repository licenses; only the recorded permissive allowlist is retained.",
+    "No PII or secrets scanner is applied to replay data in this task.",
+    "Token counts are exact for the pinned Qwen3-1.7B tokenizer, but training may sample only a capped subset of each pool."
+  ]
+}
