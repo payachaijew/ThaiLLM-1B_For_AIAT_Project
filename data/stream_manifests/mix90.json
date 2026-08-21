@@ -1,0 +1,65 @@
+{
+  "stream_id": "mix90",
+  "created_at": "2026-08-21T17:26:27.682398+00:00",
+  "scientific_evidence_allowed": false,
+  "seed": 20260821,
+  "sequence_length": 8192,
+  "requested_mixture": {
+    "th": 0.9,
+    "en": 0.05,
+    "code": 0.05,
+    "math": 0.0
+  },
+  "budget_tokens": 2000000000,
+  "per_language": {
+    "th": {
+      "target_tokens": 1800000000,
+      "used_tokens": 1800000875,
+      "documents": 1343706,
+      "pool_tokens": 5830657927,
+      "pool_documents": 4350370,
+      "epochs": 0.3087,
+      "shortfall": 0
+    },
+    "en": {
+      "target_tokens": 100000000,
+      "used_tokens": 100000276,
+      "documents": 100225,
+      "pool_tokens": 3500358208,
+      "pool_documents": 3492818,
+      "epochs": 0.0286,
+      "shortfall": 0
+    },
+    "code": {
+      "target_tokens": 100000000,
+      "used_tokens": 100013327,
+      "documents": 66853,
+      "pool_tokens": 969727453,
+      "pool_documents": 649757,
+      "epochs": 0.1031,
+      "shortfall": 0
+    },
+    "math": {
+      "target_tokens": 0,
+      "used_tokens": 0,
+      "documents": 0
+    }
+  },
+  "achieved_mixture": {
+    "th": 0.9,
+    "en": 0.05,
+    "code": 0.05,
+    "math": 0.0
+  },
+  "sequences": 244142,
+  "tokens_written": 2000011264,
+  "tail_tokens_discarded": 3214,
+  "train_bin_sha256": "a0671538d99da784abb5e7d1c2bf1895d21976b6a509aaad464df023b870d40a",
+  "dtype": "uint32",
+  "contract": "S0, D1 and D2 MUST read this exact file. Identical data and identical order across conditions is guaranteed by using one stream, and is verifiable by comparing train_bin_sha256.",
+  "limitations": [
+    "Documents are sampled without replacement until the per-language budget is met; a language whose pool is smaller than its target is reported as a shortfall.",
+    "Sequences cross document boundaries; EOS marks each boundary.",
+    "The final partial sequence is discarded, not padded."
+  ]
+}
