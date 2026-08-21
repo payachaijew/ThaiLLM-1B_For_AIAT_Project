@@ -47,10 +47,29 @@ class DeltaRouter(nn.Module):
 
     The paper does not use such a gate. It relies on a zero-initialised query alone, which
     gives a uniform softmax and therefore a BOUNDED PERTURBATION at init rather than an exact
-    identity — and, critically, non-zero query gradients from step 1. That is what is done here.
+    identity — and, critically, non-zero query gradients from step 1.
+
+    null_logit_init is the correct control, and it is NOT the same thing as route_scale.
+    The null source contributes nothing, so raising its logit moves softmax mass onto "do
+    nothing" and shrinks the mixture towards zero. The query gradient decays as e^-c rather
+    than being multiplied by zero, so the router keeps learning. Measured on Qwen3-0.6B,
+    one forward, 128 tokens (S0 loss 13.8879):
+
+        null_logit_init   loss delta vs S0   max query grad
+              route_scale=0        0.0000         0.000000   <- cannot learn
+                    0.0           +6.7440         0.589615   <- paper default, disruptive
+                    2.0           +0.7739         2.162301   <- default here
+                    4.0           -0.0234         0.064080
+                    8.0           +0.0051         0.002060   <- approaching the old failure
+
+    2.0 is the default: the +0.77 starting penalty is recovered quickly, and it gives the
+    LARGEST query gradient of any setting tested. Values of 4 and above buy a near-identity
+    conversion at the cost of a gradient 30-1000x smaller, which risks recreating the
+    route_scale failure in milder form — a router that technically can learn but does not,
+    within the token budget. Treat this as a preregistered choice and check it in preflight.
     """
 
-    def __init__(self, hidden_size: int, num_heads: int = 1, *, null_logit_init: float = 0.0):
+    def __init__(self, hidden_size: int, num_heads: int = 1, *, null_logit_init: float = 2.0):
         super().__init__()
         if hidden_size % num_heads:
             raise ValueError(f"hidden_size {hidden_size} not divisible by num_heads {num_heads}")
@@ -136,6 +155,21 @@ class RoutedLayer(nn.Module):
         self.layer, self.router, self.layer_index = layer, router, index
         object.__setattr__(self, "_owner", owner)
 
+    def __getattr__(self, name):
+        """Proxy unknown attributes to the wrapped decoder layer.
+
+        Model code reads per-layer metadata straight off the layer object — Qwen3 reads
+        decoder_layer.attention_type on every forward. Without this the wrapper raises
+        AttributeError and no routed condition can run at all.
+        """
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            layer = self.__dict__.get("_modules", {}).get("layer")
+            if layer is not None and layer is not self:
+                return getattr(layer, name)
+            raise
+
     def forward(self, hidden_states, *a, **k):
         owner = object.__getattribute__(self, "_owner")
         st = owner._state
@@ -184,7 +218,7 @@ class DeltaAttnResAdapter(nn.Module):
     """Wrap a loaded causal LM with Delta Block routing (D1) or MHAR (D2)."""
 
     def __init__(self, base_model, *, block_size_layers: int = 4, num_heads: int = 1,
-                 null_logit_init: float = 0.0):
+                 null_logit_init: float = 2.0):
         super().__init__()
         if block_size_layers <= 0:
             raise ValueError("block_size_layers must be positive")

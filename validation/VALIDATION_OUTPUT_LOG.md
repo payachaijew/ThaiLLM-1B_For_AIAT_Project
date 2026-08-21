@@ -1223,6 +1223,77 @@ next_required:
   - Compare against the official implementation before quoting any D1/D2 result in a paper.
 ```
 
+## `SRC-2026-08-21-TRAINING-SCRIPTS`
+
+```yaml
+run_id: SRC-2026-08-21-TRAINING-SCRIPTS
+stage: local_unit
+scientific_evidence_allowed: false
+claim: CPT training script and one-GPU preflight written and smoke-tested before any GPU rental
+artifacts: [../src/train_cpt.py, ../src/preflight.py]
+
+train_cpt:
+  data: reads the packed stream from build_training_stream.py; all conditions read ONE file
+  resume: >
+    Data order is a seeded permutation of sequence indices, so restarting at global_step N
+    replays exactly what an uninterrupted run would have seen. Order does not depend on how
+    many times the job was killed.
+  parity: gradient checkpointing enabled for EVERY condition, so S0 and D1/D2 share one
+          memory regime and the GPU-hour axis measures architecture, not the wrapper
+  eval: chunked fp32 BPB during training, same method as measure_baseline.py
+
+preflight:
+  measures: [tokens_per_s, peak_vram, step_time_spread, checkpoint_resume, S0_vs_D1_vs_D2]
+  projects: GPU-hours per billion tokens from MEASURED throughput, replacing the MFU-40 guess
+  trains_but_discards: 220 steps; the weights are thrown away
+
+bug_found_by_smoke_test:
+  id: ROUTEDLAYER_ATTRIBUTE_PROXY
+  symptom: "AttributeError: 'RoutedLayer' object has no attribute 'attention_type'"
+  cause: >
+    Qwen3 reads per-layer metadata straight off the layer object each forward. The wrapper
+    did not proxy unknown attributes, so NO routed condition could run at all.
+  fix: RoutedLayer.__getattr__ falls through to the wrapped layer
+  note: >
+    S0 ran fine; only D1 and D2 failed. Without a local smoke test this would have been
+    discovered on a rented GPU.
+
+finding_null_logit_init_is_the_correct_control:
+  problem: >
+    Removing route_scale fixed the zero-gradient defect but left the routed conditions
+    starting from a much worse loss, because a zero-initialised query gives a uniform softmax
+    over all sources and therefore a large perturbation to a converged checkpoint.
+  measurement: |
+    Qwen3-0.6B, one forward, 128 tokens, S0 loss 13.8879
+      null_logit_init   loss delta vs S0   max query grad
+        route_scale=0         0.0000          0.000000   cannot learn
+              0.0            +6.7440          0.589615   paper default, disruptive
+              2.0            +0.7739          2.162301   selected
+              4.0            -0.0234          0.064080
+              8.0            +0.0051          0.002060   approaching the old failure
+  why_it_differs_from_route_scale: >
+    The null source contributes nothing, so raising its logit moves softmax mass onto "do
+    nothing" and shrinks the mixture towards zero. The query gradient decays as e^-c instead
+    of being multiplied by zero, so the router keeps learning.
+  decision: >
+    Default 2.0. The +0.77 starting penalty is recoverable and it gives the LARGEST query
+    gradient of any setting tested. Values at or above 4 buy near-identity conversion at the
+    cost of a gradient 30-1000x smaller, which risks recreating the route_scale failure in
+    milder form: a router that technically can learn but does not, within the token budget.
+  status: preregistered choice; must be checked in preflight before the pilot
+
+limitations:
+  - Smoke tests used Qwen3-0.6B on MPS with a synthetic random-token stream and 2-3 steps.
+    They verify that the code runs and that resume machinery exists. They say nothing about
+    model quality, throughput on real hardware, or whether routing helps.
+  - Multi-GPU DDP path is written but has NOT been executed; there is no multi-GPU machine here.
+  - The null_logit_init table is one forward pass on one model at one sequence length.
+verdict: scripts_ready_for_preflight
+next_required:
+  - Run preflight on a rented GPU; confirm resume passes before committing the main budget.
+  - Verify the DDP path on the first multi-GPU session.
+```
+
 ## Required future entries
 
 - `BASE-SCREEN-*`: tokenizer, frozen BPB, license and port-complexity results
