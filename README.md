@@ -11,18 +11,37 @@
 
 ---
 
-## สถานะ: Data preparation เสร็จ — evaluation gates ยังไม่ครบและ **ยังไม่ได้เทรนโมเดล**
+## สถานะ: ข้อมูลพร้อมเทรน — **ยังไม่ได้เทรนโมเดล**
 
 - [x] คัดเลือก base model + tokenizer screen
 - [x] แช่แข็ง eval suite **ก่อน** วัด baseline
 - [x] สร้าง held-out set + วัด baseline + ประเมิน headroom
-- [x] Clean corpus + PII redaction
-- [x] Replay corpus อังกฤษ/code/math + EN/CODE held-out
-- [ ] decontamination กับ ThaiExam / M3Exam
-- [ ] downstream accuracy (lm-evaluation-harness)
+- [x] Clean corpus + PII redaction (ไทย + สากล) + secret redaction
+- [x] Benchmark decontamination + near-duplicate detection
+- [x] **Tokenize 10.890B tokens** (แยกตามภาษา)
+- [x] **สร้าง training streams** — main 10B + ablation 3 แขน
+- [x] **แก้บั๊ก router** ที่ทำให้ D1/D2 เรียนรู้ไม่ได้
+- [ ] one-GPU preflight
 - [ ] **ยังไม่ได้เทรนโมเดลจริง**
 
----
+### Token pools
+
+| ภาษา | เอกสาร | Tokens | สัดส่วน |
+|---|---:|---:|---:|
+| ไทย | 4,350,370 | **5.831B** | 53.5% |
+| อังกฤษ | 3,492,818 | **3.500B** | 32.1% |
+| code | 649,757 | **0.970B** | 8.9% |
+| math | 410,058 | **0.589B** | 5.4% |
+| **รวม** | **8,903,003** | **10.890B** | |
+
+ตัดตาม `removal_list.txt` ไปแล้ว 273,703 เอกสาร
+
+### Training streams
+
+`main` 10B · `mix50` / `mix70` / `mix90` อย่างละ 2B สำหรับ replay-ratio ablation
+
+> 🔑 **S0, D1 และ D2 อ่านไฟล์ `train.bin` ตัวเดียวกัน** — "ข้อมูลเดียวกัน ลำดับเดียวกัน"
+> เป็นจริงโดยโครงสร้าง และตรวจสอบย้อนหลังได้จาก `train_bin_sha256` ใน manifest
 
 ## ทำไมถึงเชื่อว่าคุ้มที่จะเทรน
 

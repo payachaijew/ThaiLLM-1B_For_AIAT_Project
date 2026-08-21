@@ -1091,6 +1091,138 @@ next_required:
   - Re-run decontamination if any new data source is added.
 ```
 
+## `DATA-2026-08-21-TOKENIZE-V1`
+
+```yaml
+run_id: TOKENS-V1
+stage: data_engineering
+scientific_evidence_allowed: false
+claim: Corpus tokenised into per-language pools with the removal list applied
+artifacts:
+  - ../phase0/tokenize_corpus.py
+  - ../phase0/build_training_stream.py
+  - ../data/tokens_manifest.json
+  - ../data/tokens/{th,en,code,math}.{bin,idx,meta.json}
+
+tokenizer: {repo: Qwen/Qwen3-1.7B-Base, revision: ea980cb0a6c2ae4b936e82123acc929f1cec04c1,
+            add_special_tokens: false, eos_token_id: 151643}
+
+results:
+  th:   {documents: 4350370, tokens: 5.831e9, share: 0.535}
+  en:   {documents: 3492818, tokens: 3.500e9, share: 0.321}
+  code: {documents:  649757, tokens: 0.970e9, share: 0.089}
+  math: {documents:  410058, tokens: 0.589e9, share: 0.054}
+  total_tokens: 10.890e9
+  on_disk: 41 GB (uint32)
+  dropped_by_removal_list: {th: 215834, en: 14234, code: 40959, math: 2676}
+
+why_per_language_pools: >
+  The training mixture is chosen by build_training_stream.py, not baked in here. The
+  replay-ratio ablation (50/70/90 percent Thai) therefore rebuilds a stream in minutes
+  instead of re-tokenising 10.9B tokens.
+
+track2_contract: >
+  S0, D1 and D2 read ONE stream file produced by build_training_stream.py. Identical data
+  and identical order across conditions is guaranteed by construction, and the manifest
+  records train_bin_sha256 so a reviewer can verify it after the fact rather than trusting
+  a statement in the paper.
+
+finding_heldout_guard_fired:
+  observed: the redundant is_heldout() guard fired on 1,010 Thai documents during tokenisation
+  investigation: >
+    Checked directly: the intersection of the 2,000 held-out document hashes with all
+    4,567,214 corpus document hashes is EMPTY, and none of the documents the guard rejected
+    were in the held-out set. There is no leakage.
+  root_cause: >
+    The bucket rule hashes document TEXT. PII redaction rewrites text in place, so a
+    document's hash changes across the redaction boundary and can land in bucket 0 even
+    though its original text did not. The guard is therefore not stable across that
+    boundary and produces false positives there.
+  impact: 1,010 of 4,350,370 Thai documents (0.02 percent) were excluded unnecessarily. Harmless.
+  correct_fix_if_repeated: >
+    Compare the stored doc_sha256, which is computed on the pre-redaction text and is stable,
+    rather than recomputing is_heldout() from the mutated text. Not applied here because the
+    verification shows no leakage and the cost is 0.02 percent of documents.
+
+limitations:
+  - Held-out BPB is measured on RAW held-out text while training uses PII-redacted text.
+    A mild distribution difference, not contamination.
+  - Sequences cross document boundaries; EOS marks each boundary.
+  - The final partial sequence of each stream is discarded, not padded.
+verdict: token_pools_frozen
+next_required:
+  - Build the main training stream and the ablation streams.
+  - Upload token pools to the private HF repo before renting any GPU.
+```
+
+## `SRC-2026-08-21-ROUTER-FIX`
+
+```yaml
+run_id: SRC-2026-08-21-ROUTER-FIX
+stage: local_unit
+scientific_evidence_allowed: false
+claim: Corrected router implementation; the six defects found by the 2026-08-18 audit are fixed
+artifacts:
+  - ../src/routing.py
+  - ../src/test_routing.py
+supersedes: >
+  ../../thai-llm-five-to-two/depth_routing/routing.py — archived and READ-ONLY, not edited.
+
+fixes:
+  FIX1_ROUTE_SCALE_GATE:
+    was: >
+      out = residual + s * mixture(w) with s initialised to zero, so dL/dw is proportional
+      to s and identically zero at initialisation. Measured: query gradient still ~0.095
+      percent of the paper-faithful magnitude after 50 optimiser steps.
+    now: >
+      Zero-initialised query only, as in arXiv:2605.18855. That gives a uniform softmax and
+      a BOUNDED PERTURBATION at init rather than an exact identity, and non-zero query
+      gradients from step 1.
+    measured_after_fix:
+      D1_delta:    {max_query_grad_step1: 0.737785, layers_receiving_gradient: "6/6"}
+      D2_mhar_h4:  {max_query_grad_step1: 0.868846, layers_receiving_gradient: "6/6"}
+      before_fix:  {max_query_grad_step1: 0.0, note: "every layer, every step"}
+  FIX2_MHAR_IMPLEMENTED:
+    was: condition D2 had no code at all in the archive
+    now: >
+      DeltaRouter takes num_heads; the query is reshaped into H per-subspace heads each with
+      its own softmax over the depth history, per arXiv:2607.27230. num_heads=1 reproduces
+      plain Delta, so D1 and D2 share one code path and cannot diverge by accident.
+  FIX3_AUTOGRAD_GRAPH_RETENTION:
+    was: last_routing stored live tensors, pinning activation memory for the routed arms only
+    now: diagnostics are detached AND opt-in via collect_routing, default False
+  FIX4_GRADIENT_CHECKPOINTING:
+    was: >
+      the adapter raised if gradient checkpointing was enabled, so S0 could use it and D1/D2
+      could not. Different memory regimes per condition make the GPU-hour axis measure the
+      wrapper rather than the architecture.
+    now: allowed; only genuine re-entrancy is rejected
+  FIX5_BLOCK_SEMANTICS:
+    was: silent — the first block routes over zero sources, so those routers are dead weight
+    now: surfaced as adapter.blocks and adapter.layers_without_sources
+  FIX6_TEN_PERCENT_KILL_RULE: not carried over; this project uses compute-normalised curves
+
+tests:
+  file: ../src/test_routing.py
+  result: 11/11 pass
+  the_missing_test: >
+    test_router_receives_nonzero_gradient_at_step_one is placed first deliberately. The
+    archived suite passed 25/25 while shipping a router that could not learn, because its
+    tests asked "does the function do what it says" and none asked "are the three conditions
+    actually comparable". This test would have failed on the archived build.
+
+limitations:
+  - Tiny random fixtures only. No pretrained weights, no Thai, no throughput measurement.
+  - Not a certified reproduction of the official Delta AttnRes implementation.
+  - The official MIT implementation at github.com/wdlctc/delta-attention-residuals-code ships
+    modeling_qwen3_attnres.py and remains the preferred path for the final runs; this module
+    exists so the conditions are runnable and testable now, with the audit fixes explicit.
+verdict: router_defects_closed_pending_gpu_preflight
+next_required:
+  - One-GPU preflight for S0/D1/D2 under identical memory settings.
+  - Compare against the official implementation before quoting any D1/D2 result in a paper.
+```
+
 ## Required future entries
 
 - `BASE-SCREEN-*`: tokenizer, frozen BPB, license and port-complexity results

@@ -59,4 +59,16 @@ hf_token*
 data/benchmark_ngrams.npz
 data/near_duplicate_hits.jsonl
 
-data/removal_list.txt   # 17.8 MB, deterministic; regenerate with phase0/decon_and_neardedup.py
+# 17.8 MB, deterministic; regenerate with phase0/decon_and_neardedup.py
+data/removal_list.txt
+
+# log การอัปโหลด
+upload.log
+
+# token pools (41 GB, สร้างใหม่ได้ด้วย phase0/tokenize_corpus.py)
+data/tokens/
+data/streams/
+
+# แพ็กตัวอย่างสำหรับ mentor (สร้างใหม่ได้ด้วย phase0/make_sample_pack.py)
+corpus_sample_pack/
+corpus_sample_pack.zip
