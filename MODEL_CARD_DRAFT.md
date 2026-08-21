@@ -35,7 +35,9 @@
 | แหล่งไทย | [SEA-PILE-v2](https://huggingface.co/datasets/aisingapore/SEA-PILE-v2) subset `th` rev `77573cc84631412a781daa8e6f72cf322d4207f0` |
 | License ข้อมูล | **ODC-By 1.0** + CommonCrawl Terms of Use |
 | ที่มาเนื้อหา | CommonCrawl 2020–2022+ (เว็บไทยสาธารณะ) |
-| replay | อังกฤษ 35% · code 10% · math 5% *(แหล่ง TBD)* |
+| replay อังกฤษ | FineWeb-Edu sample/10BT rev `87f09149…` · ODC-By 1.0 |
+| replay code | GitHub Code Clean rev `c48d40f9…` · เก็บเฉพาะ MIT/Apache-2.0/BSD ต่อ row |
+| replay math | FineMath-4plus rev `e92b25a6…` · ODC-By 1.0 |
 
 ### การทำความสะอาด — ตัวเลขจริง
 
@@ -63,6 +65,7 @@
   ลบไปเพียง ~1 MB จาก 29.5 GB เพราะแทนที่ตัวเลข ไม่ทิ้งเอกสาร
 - **PII detector จับชื่อคน ที่อยู่ วันเกิด ไม่ได้** — เป็น regex ไม่ใช่ NER model
 - **ยังไม่ได้ decontaminate** กับ ThaiExam / M3Exam
+- **replay pools ยังไม่ได้ทำ PII/secrets scan** และทำเพียง exact dedup
 - dataset card ของต้นทางระบุเองว่า *"harmful, toxic, or private content may still pass through"*
 
 ---

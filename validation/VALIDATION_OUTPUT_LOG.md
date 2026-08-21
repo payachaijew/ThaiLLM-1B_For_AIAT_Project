@@ -728,6 +728,369 @@ next_required:
   - Decontaminate the held-out set against ThaiExam and M3Exam.
 ```
 
+## `DATA-2026-08-20-REPLAY-EN-CODE-MATH`
+
+```yaml
+run_id: DATA-2026-08-20-REPLAY-EN-CODE-MATH
+stage: replay_data_preparation
+scientific_evidence_allowed: false
+claim: >
+  CPU-only, revision-pinned English/code/math replay pools meet the 10B-mixture targets,
+  use the frozen Qwen3-1.7B tokenizer for exact counts, and are disjoint from the frozen
+  EN/CODE held-out sets under HELDOUT-BUCKET-V1.
+
+tokenizer:
+  repo: Qwen/Qwen3-1.7B-Base
+  revision: ea980cb0a6c2ae4b936e82123acc929f1cec04c1
+  tokenizer_json_sha256: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539
+  add_special_tokens: false
+  model_weights_loaded: false
+
+sources:
+  en:
+    repo: HuggingFaceFW/fineweb-edu
+    revision: 87f09149ef4734204d70ed1d046ddc9ca3f2b8f9
+    subset: sample/10BT
+    license: ODC-By-1.0 plus CommonCrawl Terms of Use
+    source_shards: 5
+    input_documents: 3655000
+    output_documents: 3508510
+    qwen_tokens: 3516598044
+    target: 3500000000
+  code:
+    repo: codeparrot/github-code-clean
+    revision: c48d40f9e70f0196f8236901ee35807f7d6c44c0
+    license: Apache-2.0 dataset packaging; source files retain per-repository licenses
+    access_decision: >
+      The Stack v2, StarCoderData and The Stack Dedup were gated. The non-gated fallback
+      was selected as required by TASK_A_REPLAY_DATA.md.
+    retained_row_licenses: [apache-2.0, bsd-2-clause, bsd-3-clause, mit]
+    source_shards: 9
+    input_documents: 1142319
+    output_documents: 700129
+    qwen_tokens: 1104617663
+    target: 1000000000
+  math:
+    repo: HuggingFaceTB/finemath
+    revision: e92b25a616738fe95dc186b64dfb19f9c8525594
+    subset: finemath-4plus
+    license: ODC-By-1.0 plus CommonCrawl Terms of Use
+    source_shards: 4
+    input_documents: 418720
+    output_documents: 412820
+    qwen_tokens: 592984656
+    target: 500000000
+
+dropped_documents:
+  en: {heldout_bucket: 36430, too_short: 46707, too_long: 3213, exact_duplicate: 60140}
+  code: {heldout_bucket: 11493, too_short: 26783, too_long: 3394, disallowed_license: 400520}
+  math: {heldout_bucket: 4172, too_short: 1289, too_long: 429, exact_duplicate: 10}
+
+heldout:
+  EN-HELDOUT:
+    documents: 2000
+    set_sha256: e0a30eae016b9d3f9610503fa0e26d70c9e24adf415d9637445d1b4f2f807b75
+    source_files: 5
+    quota_per_file: 400
+  CODE-HELDOUT:
+    documents: 1000
+    set_sha256: 932d5efc953d8a83856ae97f642b89d8f28ef1f425eae42a74bac3e07e32cf68
+    source_files: 5
+    quota_per_file: 200
+
+verification:
+  report: validation/replay_verification.json
+  unique_documents: 4621459
+  full_output_shards_checked: 18
+  compressed_sha_mismatches: 0
+  document_hash_mismatches: 0
+  cross_shard_duplicates: 0
+  heldout_leakage: 0
+  token_recount: {en: 100/100, code: 100/100, math: 100/100}
+  unit_and_fixture_tests: 6/6
+  dropped_sample_audit: >
+    Deterministic samples were inspected for every observed drop reason: 20 per reason,
+    except math exact_duplicate where all 10 observed examples were inspected.
+
+decisions:
+  - Length floors: EN 500 chars, code 100 chars, math 200 chars.
+  - Maximum lengths: EN/math 100000 chars; code 200000 chars.
+  - Exact dedup uses heldout_rule.doc_hash (NFC + whitespace collapse + SHA-256).
+  - Source shards are selected in a deterministic spread; held-out sets additionally use
+    equal per-file quotas so the first shard cannot fill the set.
+  - Processing checkpoints atomically at source-shard boundaries using SQLite state.
+
+limitations:
+  - Exact dedup only; no near-duplicate removal.
+  - No PII or secret scanner was applied to replay data in this task.
+  - Per-row code licenses come from the source dataset metadata and were not independently
+    re-verified against every upstream repository.
+  - ODC-By applies to FineWeb-Edu/FineMath databases; underlying CommonCrawl content retains
+    source rights and CommonCrawl terms.
+  - Outputs are data-preparation artifacts, not evidence of model quality.
+
+artifacts:
+  - phase0/build_replay.py
+  - phase0/build_heldout.py
+  - phase0/verify_replay.py
+  - phase0/test_replay_pipeline.py
+  - data/clean_replay_manifest.json
+  - data/heldout/EN-HELDOUT.manifest.json
+  - data/heldout/CODE-HELDOUT.manifest.json
+  - validation/replay_verification.json
+
+verdict: replay_data_targets_and_isolation_pass
+next_required:
+  - Run PII/secrets policy decision for replay data before training.
+  - Complete benchmark decontamination against the frozen evaluation suite.
+  - Tokenize/pack the final capped 50/35/10/5 mixture without exceeding each pool target.
+```
+
+## `AUDIT-2026-08-20-REPLAY-INDEPENDENT`
+
+```yaml
+run_id: AUDIT-2026-08-20-REPLAY-INDEPENDENT
+stage: desk_audit
+scientific_evidence_allowed: false
+claim: Independent verification of the agent-produced replay corpus, re-measured from the data itself
+method: >
+  Every headline claim was re-derived from the output files rather than read from the
+  agent's report or its own verification artifact.
+
+verified_pass:
+  token_counting:
+    method: recounted 900 documents (300 per language) with Qwen3-1.7B-Base, add_special_tokens=False
+    result: en/code/math all matched the stored qwen_tokens field EXACTLY, zero difference
+  heldout_rule_reuse: build_replay.py imports heldout_rule; no reimplementation of the bucket rule
+  add_special_tokens_false: confirmed in both build_replay.py and verify_replay.py
+  exact_duplicates_in_output: 0 across 750,000 documents scanned (250k per language)
+  heldout_leakage: 0 across the same 750,000 documents
+  code_license_allowlist:
+    method: read the license field of 120,000 output documents
+    result: mit 64,550 / apache-2.0 41,437 / bsd-3-clause 11,229 / bsd-2-clause 2,784; ZERO outside the allowlist
+    dropped_for_licence: 400,520 documents / 3.53 GB — the filter did real work
+  heldout_stratification:
+    EN: sample/10BT shards 000,002,004,006,007
+    CODE: shards 00000, 00251, 00502, 00753, 00879 of 880 — spread across the full range
+    assessment: correct; avoids the temporal-bias failure previously found in the Thai set
+  pinned_revisions:
+    fineweb-edu: 87f09149ef4734204d70ed1d046ddc9ca3f2b8f9 (sample/10BT)
+    github-code-clean: c48d40f9e70f0196f8236901ee35807f7d6c44c0
+    finemath: e92b25a616738fe95dc186b64dfb19f9c8525594 (finemath-4plus)
+  per_record_provenance: source_repo, source_revision, source_file, repo_name, path, language, license
+  unit_tests: 6/6 pass, re-run independently
+  registry_integrity: 48 rows, no duplicate ids
+  targets: en 3.517B/3.5B, code 1.105B/1.0B, math 0.593B/0.5B — all met
+
+findings_not_failures:
+  - id: CODE_MARKUP_SHARE
+    severity: medium
+    measured: >
+      25.6 percent of code TOKENS are markup rather than source code, on 150,000 documents
+      and 238.7M tokens: HTML 17.8, Markdown 4.4, plus CSS/XML/JSON/YAML. HTML alone carries
+      more tokens than any real programming language in the sample.
+    language_mix_by_tokens: {Java: 14.3, HTML: 17.8, JavaScript: 10.4, C: 9.9, C++: 8.7, Python: 6.8}
+    why_it_matters: >
+      The purpose of the code slice is to preserve the base model's coding ability. A quarter
+      of it being markup dilutes that. The first code document inspected was javadoc-generated
+      HTML boilerplate, not authored source.
+    recommendation: >
+      Consider excluding HTML/Markdown or capping their share before tokenisation. Not a defect
+      in the pipeline; a property of github-code-clean that was not specified in the task.
+  - id: CODE_GENERATED_FILES
+    severity: low
+    measured: 2.2 percent of 60,000 code documents self-identify as generated or auto-generated
+  - id: MATH_QUALITY_INITIAL_CONCERN_WITHDRAWN
+    note: >
+      The first math sample inspected read as machine-translated spam. Quantifying it over
+      8,000 documents showed only 0.8 percent carry low-quality signals and 6.3 percent lack
+      mathematical symbols (some legitimately, e.g. word problems). Samples included kernel
+      density estimation, applied-mathematics blogs, RMO practice problems and physics
+      exercises. The initial concern was one unlucky draw and does not hold.
+
+open_risks_correctly_self_declared_by_the_agent:
+  - near-duplicate deduplication not performed (exact only)
+  - benchmark decontamination not performed
+  - PII and secrets scanning not performed on the replay corpus
+  - per-repository provenance for code not audited beyond the license field
+
+audit_verdict: PASS
+notes: >
+  The agent's self-report was accurate on every checkable claim. Its declared limitations
+  were complete and matched what the data shows. The two findings above are properties of
+  the chosen source that the task did not specify, not deviations from instructions.
+```
+
+## `DATA-2026-08-21-REPLAY-V2-SCAN-AND-REBALANCE`
+
+```yaml
+run_id: DATA-2026-08-21-REPLAY-V2-SCAN-AND-REBALANCE
+stage: data_engineering
+scientific_evidence_allowed: false
+claim: Secret/PII redaction applied to the replay corpus and the code language mix rebalanced
+artifacts:
+  - ../phase0/secret_scan.py
+  - ../phase0/pii_filter_en.py
+  - ../phase0/apply_scan.py
+  - ../phase0/rebalance_code.py
+  - ../phase0/verify_replay_v2.py
+  - ../phase0/test_scan_and_rebalance.py
+  - ../data/clean_replay_v2_manifest.json
+  - replay_v2_verification.json
+
+totals_verified_independently:
+  method: >
+    phase0/verify_replay_v2.py re-derives every number from data/clean_replay_v2 itself.
+    No agent summary file was trusted.
+  en:   {documents: 3507052, qwen_tokens: 3513258103}
+  code: {documents:  690716, qwen_tokens: 1000075432}
+  math: {documents:  412734, qwen_tokens:  592472266}
+  replay_total_tokens: 5.106e9
+  with_thai: "5.851B Thai + 5.106B replay = 10.96B tokens available against a 6-10B budget"
+  exact_duplicates: {en: 0, code: 0, math: 0}
+  heldout_leakage:  {en: 0, code: 0, math: 0}
+  token_recount_mismatches: {en: 0, code: 0, math: 0}   # 100 documents per language, exact
+  verdict: PASS
+
+code_rebalance:
+  before: {python: 6.90, javascript_typescript: 14.07, java: 14.76, c_cpp: 18.59,
+           csharp: 4.49, long_tail: 15.45, markdown: 4.29, html: 17.84, css_config: 3.62}
+  after:  {python: 14.50, javascript_typescript: 14.50, java: 12.00, c_cpp: 12.00,
+           csharp: 4.00, long_tail: 26.67, markdown: 5.00, html: 5.00}
+  constraints: {max_single_language: "Python 14.499 percent (cap 15)", long_tail: "26.7 percent (floor 20)"}
+  rationale_basis: GitHub Octoverse 2025 real-world language usage, recorded in sources/source_registry.csv
+  rationale_explicitly_not: >
+    HumanEval or any evaluation benchmark. HTML at 17.8 percent of tokens is unsupported by any
+    usage survey and was an artefact of github-code-clean sampling. Balancing to the benchmark
+    would be metric gaming; balancing to observed real-world usage is not.
+
+secret_and_pii_hits_on_v1_inputs:
+  secrets: {aws_access_key: 29, connection_string_password: 183, env_secret: 137,
+            google_api_key: 319, jwt: 135, private_key_documents_dropped: 75,
+            slack: 4, stripe: 1, aws_secret: 1, github_token: 0, openai: 0, anthropic: 0}
+  pii: {email: 192864, phone: 91915, public_ip: 5003, credit_card: 211, us_ssn: 143}
+
+process_note_five_detector_revisions:
+  summary: >
+    The agent ran the pipeline five times, rejecting and archiving each build after visual
+    sampling exposed a NEW false-positive class: sk- matching CSS SpinKit names; version
+    numbers read as IPs and ISSN read as SSN; [PASSWORD] and path-valued env variables;
+    printf and escaped-angle placeholders. Nothing was deleted; each build was moved under
+    data/rejected_task_b_intermediate/.
+  assessment: >
+    This is correct discipline, not a failure loop. An earlier interim reading by the
+    supervising session mistook the archive-and-rerun pattern for a loop and for data loss.
+    That reading was WRONG and is corrected here.
+
+known_defect_accepted:
+  id: PLACEHOLDER_OVER_REDACTION
+  measured: 656 of 4,610,502 documents contain [REDACTED_SECRET] (0.014 percent)
+  residual_cases: placeholders inside connection-string templates, e.g. "mongodb://%s:[REDACTED_SECRET]@%s"
+  direction: >
+    OVER-redaction, not under-redaction. For a security filter this is the safe direction;
+    accepting this build exposes no additional real secret.
+  decision: accepted; a further full rerun was judged disproportionate to a 0.014 percent cosmetic effect
+
+limitations:
+  - Detectors are regex with context guards, not trained models. Names, addresses and dates of birth are NOT detected.
+  - Near-duplicate deduplication NOT performed (exact only).
+  - Benchmark decontamination NOT performed.
+  - Code provenance audited only to the license field, not per repository.
+  - Hit counts measured on v1 inputs; nine additional raw code shards scanned during rebalancing were not fully re-aggregated.
+verdict: replay_v2_frozen
+next_required:
+  - Near-duplicate deduplication across all four languages.
+  - Benchmark decontamination against the seven tasks in THAILLM-EVAL-FROZEN-V1.
+  - Tokenise and push the durable master to a private HF repo before renting any GPU.
+```
+
+## `DATA-2026-08-21-DECONTAMINATION-AND-NEAR-DEDUP`
+
+```yaml
+run_id: DECON-NEARDEDUP-V1
+stage: data_engineering
+scientific_evidence_allowed: false
+claim: Benchmark decontamination and near-duplicate detection across the full training pool
+artifacts:
+  - ../phase0/build_benchmark_index.py
+  - ../phase0/decon_and_neardedup.py
+  - ../data/benchmark_ngrams.npz
+  - ../data/benchmark_ngrams_meta.json
+  - ../data/decontamination_hits.jsonl
+  - ../data/near_duplicate_hits.jsonl
+  - ../data/removal_list.txt
+  - ../data/decon_neardedup_report.json
+
+method:
+  one_pass: >
+    Decontamination and near-duplicate detection share the same character n-gram hashes per
+    document, so the corpus is read once instead of twice.
+  ngram: 64 characters, NFKC + lowercase + whitespace collapse
+  hashing: Python str hash with PYTHONHASHSEED=0 (the script refuses to run without it)
+  stride: benchmark index built at stride 1, corpus scanned at stride 8
+  stride_rationale: >
+    Asymmetric striding is deliberate. The index covers every alignment, so a document
+    containing a verbatim benchmark span still matches while corpus cost drops eightfold.
+  decontamination_threshold: at least 2 distinct benchmark n-grams
+  near_duplicates: MinHash with 32 permutations, LSH 8 bands x 4 rows, first occurrence kept
+
+benchmark_index:
+  eval_suite: THAILLM-EVAL-FROZEN-V1
+  benchmarks_covered: 12 sources (mmlu, hellaswag, arc_challenge, humaneval, belebele th+en,
+                                  m3exam_th, thaiexam onet/ic/tgat/tpat1/a_level)
+  unique_ngrams: 13697156
+  note: All 7 benchmarks named in the frozen suite are covered; ThaiExam ships as 5 configs and all 5 are included.
+
+results:
+  documents_scanned: {th: 4567214, en: 3507052, code: 690716, math: 412734, total: 9177716}
+  decontamination:
+    flagged: {th: 803, en: 1371, code: 826, math: 233, total: 3233}
+    rate: 0.0352 percent
+    max_ngram_hits_single_document: 455
+  near_duplicates:
+    flagged: 270841
+    rate: 2.95 percent
+    note: These are near-duplicates remaining AFTER exact deduplication had already been applied.
+  removal_list:
+    unique_documents: 273703
+    rate: 2.98 percent
+    estimated_token_cost: >
+      Roughly 0.33B tokens if removal is proportional to document count. NOT measured;
+      the removal list stores document hashes only. Even at that estimate about 10.6B tokens
+      remain against a 6-10B budget.
+  runtime_minutes: 159.4
+
+qualitative_check_documents_actually_caught:
+  - "quizlet.com AP Biology Chapter 22-25 Test Questions — 455 n-gram hits"
+  - "schoolbag.info AP Statistics — 444 hits"
+  - "gorporonline.com Thai civil-service (ก.พ.) exam practice sets — 358-364 hits each"
+  assessment: >
+    The Thai hits are exam-preparation pages carrying ก.พ. practice questions in the same
+    format as ThaiExam. Training on them and then scoring ThaiExam would have measured
+    memorisation. This is the failure decontamination exists to prevent, and it was present
+    in the corpus.
+
+policy:
+  action: FLAG ONLY. Nothing was deleted.
+  contract: The tokenisation step MUST drop every doc_sha256 listed in data/removal_list.txt.
+  rationale: Keeping the decision as a list makes it reversible and auditable.
+
+limitations:
+  - Character 64-grams detect verbatim or near-verbatim overlap only. Paraphrased or
+    translated benchmark items are NOT detected.
+  - Corpus scanned at stride 8 and capped at 40,000 characters per document.
+  - MinHash 32 permutations with 8x4 banding targets high-similarity pairs; moderately
+    similar documents are missed.
+  - LSH keeps the FIRST document in each bucket, so which member of a near-duplicate cluster
+    survives depends on file order rather than on quality.
+  - Token cost of the removal list is estimated, not measured.
+verdict: decontamination_and_near_dedup_complete
+next_required:
+  - Tokenise the corpus, applying data/removal_list.txt as a hard exclusion.
+  - Push the durable master to a private HF repo before renting any GPU.
+  - Re-run decontamination if any new data source is added.
+```
+
 ## Required future entries
 
 - `BASE-SCREEN-*`: tokenizer, frozen BPB, license and port-complexity results
@@ -739,4 +1102,3 @@ next_required:
 
 Use [`run_record.template.json`](run_record.template.json) for machine-readable
 records and link each artifact from the corresponding entry here.
-

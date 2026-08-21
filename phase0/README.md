@@ -156,6 +156,36 @@ python3 apply_pii.py               # -> data/clean_pii/th/ + data/clean_pii_th_m
 
 ---
 
+## Step G — Replay data อังกฤษ / code / math  ✅ รันแล้ว
+
+```bash
+python3 build_replay.py --languages en code math
+python3 build_heldout.py --set EN-HELDOUT --target 2000
+python3 build_heldout.py --set CODE-HELDOUT --target 1000
+python3 verify_replay.py
+```
+
+นับ token จริงด้วย tokenizer ของ `Qwen3-1.7B-Base` revision ที่ pin ไว้
+และ `add_special_tokens=false`; ไม่โหลด model weights และไม่ใช้ GPU
+
+| pool | แหล่ง | เอกสาร | Qwen tokens | เป้า |
+|---|---|---:|---:|---:|
+| English | FineWeb-Edu sample/10BT | 3,508,510 | **3,516,598,044** | 3.50B ✅ |
+| Code | GitHub Code Clean, MIT/Apache/BSD เท่านั้น | 700,129 | **1,104,617,663** | 1.00B ✅ |
+| Math | FineMath-4plus | 412,820 | **592,984,656** | 0.50B ✅ |
+
+Frozen held-out:
+
+- `EN-HELDOUT`: 2,000 docs · `e0a30eae…f807b75`
+- `CODE-HELDOUT`: 1,000 docs · `932d5efc…e32cf68`
+
+full verifier อ่านครบ **4,621,459 unique documents**: compressed SHA, document hash,
+token totals และ license ผ่านทั้งหมด; held-out leakage = 0; token recount 100 ตัวอย่างต่อภาษา mismatch = 0
+
+ข้อจำกัด: ยังไม่ได้ทำ near-dedup และยังไม่ได้ทำ PII/secrets scan กับ replay pools
+
+---
+
 ## ผลรวม Phase 0
 
 | โมเดล | พารามิเตอร์ | Thai CPT | Thai BPB |
@@ -172,7 +202,8 @@ python3 apply_pii.py               # -> data/clean_pii/th/ + data/clean_pii_th_m
 - [ ] **decontamination** ชุด held-out กับ ThaiExam / M3Exam ← ห้ามข้าม
 - [ ] baseline **gemma-4-E2B** (ต้อง transformers จาก git main)
 - [ ] **lm-evaluation-harness** บน frozen task list
-- [ ] สร้าง TH-ENC / EN / CODE held-out
+- [x] สร้าง EN / CODE held-out
+- [ ] สร้าง TH-ENC held-out
 - [ ] ตัดสิน **headroom gate**
 - [ ] รัน `measure_baseline.py` ของจริงกับ Qwen3-1.7B-Base และ gemma-4-E2B
 - [ ] รัน lm-evaluation-harness บน task list ที่ freeze ไว้

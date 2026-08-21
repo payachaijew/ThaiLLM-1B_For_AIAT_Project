@@ -98,3 +98,17 @@ revision ที่ pin ไว้ (`77573cc84631412a781daa8e6f72cf322d4207f0`), l
 - [ODC-By 1.0 ฉบับเต็ม](https://opendatacommons.org/licenses/by/1-0/)
 - [CommonCrawl Terms of Use](https://commoncrawl.org/terms-of-use)
 - [PDPA ประเทศไทย (PDPC)](https://www.pdpc.or.th/)
+
+---
+
+## 8. Replay data ที่เลือกใช้จริง (2026-08-20)
+
+| บทบาท | แหล่ง | revision | เงื่อนไข |
+|---|---|---|---|
+| English | FineWeb-Edu `sample/10BT` | `87f09149ef4734204d70ed1d046ddc9ca3f2b8f9` | ODC-By 1.0 + CommonCrawl ToU |
+| Math | FineMath `finemath-4plus` | `e92b25a616738fe95dc186b64dfb19f9c8525594` | ODC-By 1.0 + CommonCrawl ToU |
+| Code | GitHub Code Clean | `c48d40f9e70f0196f8236901ee35807f7d6c44c0` | dataset card Apache-2.0; source file ใช้ license ต่อ repository |
+
+Code pipeline เก็บ `license` ไว้ทุก record และยอมรับเฉพาะ `mit`, `apache-2.0`,
+`bsd-2-clause`, `bsd-3-clause` เท่านั้น อย่างไรก็ตาม metadata นี้ยังไม่ได้ตรวจย้อนกับ upstream
+repository ทั้ง 700,129 records จึงต้องรายงานเป็นข้อจำกัด ไม่ใช่อ้างว่า license risk เป็นศูนย์

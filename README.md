@@ -11,12 +11,13 @@
 
 ---
 
-## สถานะ: Phase 0 เสร็จ — **ยังไม่ได้เทรนโมเดล**
+## สถานะ: Data preparation เสร็จ — evaluation gates ยังไม่ครบและ **ยังไม่ได้เทรนโมเดล**
 
 - [x] คัดเลือก base model + tokenizer screen
 - [x] แช่แข็ง eval suite **ก่อน** วัด baseline
 - [x] สร้าง held-out set + วัด baseline + ประเมิน headroom
 - [x] Clean corpus + PII redaction
+- [x] Replay corpus อังกฤษ/code/math + EN/CODE held-out
 - [ ] decontamination กับ ThaiExam / M3Exam
 - [ ] downstream accuracy (lm-evaluation-harness)
 - [ ] **ยังไม่ได้เทรนโมเดลจริง**
@@ -59,28 +60,24 @@ Gemma-4 ที่ 2.833 → **ข้อความไทยชุดเดี�
 
 ## Corpus
 
-**SEA-PILE-v2** subset `th` · rev `77573cc8...` · ODC-By 1.0 + CommonCrawl ToU
+| | docs | Qwen tokens |
+|---|---|---|
+| **ไทย** SEA-PILE-v2 (clean + PII) | 4,567,214 | **5.851B** |
+| **อังกฤษ** FineWeb-Edu (secret+PII scanned) | 3,507,052 | **3.513B** |
+| **code** github-code-clean (license-filtered, rebalanced) | 690,716 | **1.000B** |
+| **math** FineMath-4plus | 412,734 | **0.592B** |
+| **รวม** | **9,177,716** | **10.96B** |
 
-| | |
-|---|---|
-| เอกสารตั้งต้น | **16,428,048** |
-| เหลือหลัง clean | **4,567,214 (27.8%)** · 29.5 GB · **~5.85B tokens** |
+**ผ่านการทำความสะอาดครบ:**
+exact dedup · length floor · Thai gambling/lottery filter · **PII redaction** (ไทย + สากล) ·
+**secret redaction** (AWS/GitHub/private key/JWT ฯลฯ) · **benchmark decontamination** · **near-dedup**
 
-**ตัดออกด้วยกฎที่บันทึกไว้ทุกข้อ:**
+**Removal list** — `data/removal_list.txt` มี 273,703 docs (2.98%) ที่ต้องตัดออกตอน tokenize:
+ปนเปื้อน benchmark 3,233 + near-duplicate 270,841
 
-| กฎ | % ของ corpus (bytes) |
-|---|---|
-| ซ้ำแบบตรงตัว | 15.0% |
-| สั้นกว่า 500 ตัวอักษร | 12.4% |
-| สแปมพนัน | 10.6% |
-| หวย | 1.6% |
-| กันไว้เป็นชุดวัด | 1.0% |
+> 🎯 decontamination จับเว็บติวข้อสอบ **ก.พ. ภาษาไทย** ได้ (364 n-gram hits) ซึ่งมีข้อสอบ
+> รูปแบบเดียวกับ ThaiExam — ถ้าเทรนแล้วเอาไปสอบ คะแนนจะเป็นการจำ ไม่ใช่ความสามารถ
 
-**PII redaction** — แก้ 108,237 เอกสาร (2.37%):
-Line ID 104,121 · social handle 18,578 · เบอร์โทร 18,127 · บัญชีธนาคาร 4,163 ·
-อีเมล 575 · **เลขบัตรประชาชน 420** *(ตรวจ checksum ก่อนลบ)*
-
----
 
 ## โครงสร้าง
 
@@ -101,29 +98,42 @@ Line ID 104,121 · social handle 18,578 · เบอร์โทร 18,127 · �
 ```bash
 pip install -r phase0/requirements.txt
 
-python3 phase0/tokenizer_screen_ext.py     # เทียบ tokenizer
-python3 phase0/freeze_eval_suite.py        # แช่แข็ง eval suite
+# Phase 0 — คัดเลือก base + ล็อกชุดวัด + baseline
+python3 phase0/tokenizer_screen_ext.py
+python3 phase0/freeze_eval_suite.py
 python3 phase0/build_heldout.py --set TH-WEB-HELDOUT --target 2000
 python3 phase0/measure_baseline.py --model Qwen/Qwen3-1.7B-Base \
     --heldout th=data/heldout/TH-WEB-HELDOUT.jsonl
-python3 phase0/corpus_audit.py 1000000     # audit corpus
-python3 phase0/clean_corpus.py             # clean
-python3 phase0/apply_pii.py                # PII redaction
+
+# Phase 1 — ข้อมูลไทย
+python3 phase0/corpus_audit.py 1000000
+python3 phase0/clean_corpus.py
+python3 phase0/apply_pii.py
+
+# Phase 1 — ข้อมูล replay (อังกฤษ/code/math)
+python3 phase0/build_replay.py
+python3 phase0/apply_scan.py --languages en math --offline
+python3 phase0/rebalance_code.py --offline
+python3 phase0/verify_replay_v2.py
+
+# Phase 1 — decontamination + near-dedup (ต้องตั้ง PYTHONHASHSEED)
+PYTHONHASHSEED=0 python3 phase0/build_benchmark_index.py
+PYTHONHASHSEED=0 python3 phase0/decon_and_neardedup.py
 ```
 
 **ไม่ได้เผยแพร่ตัว corpus** แต่สร้างซ้ำได้เป๊ะจากสคริปต์ + revision ที่ pin ไว้
 (กฎเลือกชุดวัดเป็น deterministic hash bucket — [`phase0/heldout_rule.py`](phase0/heldout_rule.py))
 
----
-
 ## ข้อจำกัดที่รู้ตัว
 
 - **ยังไม่ได้เทรนโมเดล** ตัวเลขทั้งหมดเป็น baseline ก่อนเทรน
-- **ยังไม่ได้ decontaminate** held-out กับ ThaiExam / M3Exam
+- **decontamination ทำแล้ว** แต่จับได้เฉพาะการซ้ำแบบตรงตัว/เกือบตรงตัว — ข้อสอบที่ถูกถอดความหรือแปล **จับไม่ได้**
 - ตัวกรองเป็น **regex ไม่ใช่ classifier** ตัดเกินและตัดไม่หมดทั้งคู่ —
   ตรวจด้วยตาแล้วพบว่าตัวกรองหวยมี false positive
-- **ทำ dedup แบบตรงตัวเท่านั้น** ยังไม่ได้ทำ near-duplicate
-- PII detector จับ **ชื่อคน ที่อยู่ วันเกิด ไม่ได้**
+- near-dedup ใช้ MinHash 32 permutations เน้นคู่ที่คล้ายกันสูง — คู่ที่คล้ายปานกลางจะหลุด
+- LSH เก็บเอกสาร**ตัวแรก**ที่เจอในแต่ละ bucket ตัวไหนรอดจึงขึ้นกับลำดับไฟล์ ไม่ใช่คุณภาพ
+- PII/secret detector เป็น regex + context guard ไม่ใช่โมเดล — จับ **ชื่อคน ที่อยู่ วันเกิด ไม่ได้**
+- code build ที่รับมามี `[REDACTED_SECRET]` แทน placeholder ใน 656 จาก 4.6M docs (0.014%) — เป็นการ redact เกิน ไม่ใช่ขาด
 - **ยังไม่ได้ประเมิน safety** ใด ๆ
 
 ---

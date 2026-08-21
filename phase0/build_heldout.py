@@ -1,160 +1,236 @@
 #!/usr/bin/env python3
-"""Phase 0 / Step D -- build the frozen held-out BPB sets.
+"""Build frozen BPB held-out sets with HELDOUT-BUCKET-V1.
 
-Streams the source corpus (no full download), selects documents by the shared
-HELDOUT-BUCKET-V1 rule, applies quality filters, and writes a hashed set plus a
-manifest.
-
-  python3 build_heldout.py --set TH-WEB-HELDOUT --target 2000
-
-The same rule module is imported by the training pipeline to drop the bucket, so
-held-out documents can never be trained on -- including documents in shards this
-builder never opened.
-
-scientific_evidence_allowed = false (this builds measurement inputs, not results).
+Source revisions and shard selections are pinned. EN and CODE use quotas over
+range-spread shards so a sorted first shard cannot fill the entire held-out set.
+This prepares measurement inputs; scientific_evidence_allowed is false.
 """
 from __future__ import annotations
-import argparse, json, hashlib, datetime, sys, unicodedata
+
+import argparse
+import datetime
+import hashlib
+import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUTDIR = HERE.parent / "data" / "heldout"
 sys.path.insert(0, str(HERE))
-from heldout_rule import doc_hash, is_heldout, RULE_ID, TOTAL_BUCKETS, HELDOUT_BUCKETS  # noqa: E402
+from heldout_rule import HELDOUT_BUCKETS, RULE_ID, TOTAL_BUCKETS, doc_hash, is_heldout  # noqa: E402
+
+CODE_LICENSES = {"mit", "apache-2.0", "bsd-2-clause", "bsd-3-clause"}
 
 SETS = {
     "TH-WEB-HELDOUT": {
-        "language": "th", "repo": "aisingapore/SEA-PILE-v2",
-        # STRATIFIED across the 54 shards. The corpus is ordered chronologically by
-        # CommonCrawl dump (shard 0 = CC-MAIN-2020-45, shard 2 = CC-MAIN-2022-05), so taking
-        # the first N shards yields a held-out set covering only the OLDEST slice of the
-        # corpus. Evaluating a model trained on 2020-2025 text against a 2020-2022-only
-        # held-out set is a temporal bias. Spread the sample across the whole range instead.
+        "language": "th",
+        "repo": "aisingapore/SEA-PILE-v2",
+        "revision": "77573cc84631412a781daa8e6f72cf322d4207f0",
         "files": [f"th/train-{i:05d}-of-00054.parquet" for i in (0, 13, 27, 40, 53)],
-        "text_field": "text", "script_min_ratio": 0.5,
+        "text_field": "text",
+        "script_min_ratio": 0.5,
         "script_range": ("฀", "๿"),
+        "min_chars": 500,
+        "max_chars": 20000,
+        "balanced_files": False,
     },
     "EN-HELDOUT": {
-        "language": "en", "repo": "HuggingFaceFW/fineweb-edu",
-        "files": ["sample/10BT/000_00000.parquet"],
-        "text_field": "text", "script_min_ratio": 0.5,
+        "language": "en",
+        "repo": "HuggingFaceFW/fineweb-edu",
+        "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+        # These source shards are already part of the replay pass. Their dump fields
+        # jointly cover CC-MAIN 2013--2024; quotas prevent any one shard/dump dominating.
+        "files": [f"sample/10BT/{i:03d}_00000.parquet" for i in (0, 2, 4, 6, 7)],
+        "text_field": "text",
+        "script_min_ratio": 0.5,
         "script_range": ("A", "z"),
+        "min_chars": 500,
+        "max_chars": 20000,
+        "balanced_files": True,
+        "metadata_fields": ("id", "url", "dump", "date", "language"),
+    },
+    "CODE-HELDOUT": {
+        "language": "code",
+        "repo": "codeparrot/github-code-clean",
+        "revision": "c48d40f9e70f0196f8236901ee35807f7d6c44c0",
+        "files": [f"data/train-{i:05d}-of-00880.parquet" for i in (0, 251, 502, 753, 879)],
+        "text_field": "code",
+        "script_min_ratio": 0.0,
+        "script_range": ("A", "z"),
+        "min_chars": 100,
+        "max_chars": 200000,
+        "balanced_files": True,
+        "allowed_licenses": CODE_LICENSES,
+        "metadata_fields": ("repo_name", "path", "language", "license"),
     },
 }
-
-MIN_CHARS, MAX_CHARS = 500, 20000
 
 
 def script_ratio(text, lo, hi):
     if not text:
         return 0.0
-    return sum(1 for c in text if lo <= c <= hi) / len(text)
+    return sum(1 for char in text if lo <= char <= hi) / len(text)
+
+
+def quotas(total, count, balanced):
+    if not balanced:
+        return [total] * count
+    return [total // count + (1 if i < total % count else 0) for i in range(count)]
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--set", required=True, choices=sorted(SETS))
-    ap.add_argument("--target", type=int, default=2000)
-    ap.add_argument("--max-scan", type=int, default=400000)
-    a = ap.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--set", required=True, choices=sorted(SETS))
+    parser.add_argument("--target", type=int, default=None)
+    parser.add_argument("--max-scan", type=int, default=2_000_000)
+    args = parser.parse_args()
+    target = args.target or (1000 if args.set == "CODE-HELDOUT" else 2000)
 
-    import warnings; warnings.filterwarnings("ignore")
+    import warnings
+    warnings.filterwarnings("ignore")
     import pyarrow.parquet as pq
     from huggingface_hub import HfApi, hf_hub_download
 
-    cfg = SETS[a.set]
-    rev = HfApi().dataset_info(cfg["repo"]).sha
-    print(f"[*] {a.set}: {cfg['repo']} @ {rev}")
-    print(f"[*] rule {RULE_ID}: bucket in {sorted(HELDOUT_BUCKETS)} of {TOTAL_BUCKETS} "
-          f"({100*len(HELDOUT_BUCKETS)/TOTAL_BUCKETS:.1f}% withheld)")
+    cfg = SETS[args.set]
+    revision = cfg["revision"]
+    HfApi().dataset_info(cfg["repo"], revision=revision)
+    print(f"[*] {args.set}: {cfg['repo']} @ {revision}")
+    print(
+        f"[*] rule {RULE_ID}: bucket in {sorted(HELDOUT_BUCKETS)} of {TOTAL_BUCKETS} "
+        f"({100 * len(HELDOUT_BUCKETS) / TOTAL_BUCKETS:.1f}% withheld)"
+    )
 
-    # Download shards and read locally. HF streaming was ~100x slower than the
-    # download+read path for this corpus and could not finish in reasonable time.
     local = []
-    for f in cfg["files"]:
-        print(f"    fetching {f} ...", flush=True)
-        local.append(hf_hub_download(cfg["repo"], f, repo_type="dataset", revision=rev))
+    for source_file in cfg["files"]:
+        print(f"    fetching {source_file} ...", flush=True)
+        local.append(
+            hf_hub_download(cfg["repo"], source_file, repo_type="dataset", revision=revision)
+        )
 
-    def rows():
-        for path in local:
-            pf = pq.ParquetFile(path)
-            for batch in pf.iter_batches(batch_size=2000):
-                d = batch.to_pydict()
-                for i in range(len(d[cfg["text_field"]])):
-                    yield {k: d[k][i] for k in d}
-
-    ds = rows()
+    def rows(path):
+        parquet = pq.ParquetFile(path)
+        for batch in parquet.iter_batches(batch_size=2000):
+            data = batch.to_pydict()
+            for index in range(len(data[cfg["text_field"]])):
+                yield {key: data[key][index] for key in data}
 
     lo, hi = cfg["script_range"]
     kept, seen_hashes = [], set()
-    stats = dict(scanned=0, in_bucket=0, too_short=0, too_long=0, wrong_script=0, dup=0)
+    stats = {
+        "scanned": 0, "in_bucket": 0, "too_short": 0, "too_long": 0,
+        "wrong_script": 0, "disallowed_license": 0, "dup": 0,
+    }
+    file_quotas = quotas(target, len(local), cfg.get("balanced_files", False))
+    per_file = []
+    max_scan_hit = False
 
-    for row in ds:
-        stats["scanned"] += 1
-        if stats["scanned"] > a.max_scan:
+    for source_file, path, quota in zip(cfg["files"], local, file_quotas):
+        file_scanned = file_kept = 0
+        for row in rows(path):
+            stats["scanned"] += 1
+            file_scanned += 1
+            if stats["scanned"] > args.max_scan:
+                max_scan_hit = True
+                break
+            text = row[cfg["text_field"]]
+            if not is_heldout(text):
+                continue
+            stats["in_bucket"] += 1
+            length = len(text)
+            if length < cfg["min_chars"]:
+                stats["too_short"] += 1
+                continue
+            if length > cfg["max_chars"]:
+                stats["too_long"] += 1
+                continue
+            if script_ratio(text, lo, hi) < cfg["script_min_ratio"]:
+                stats["wrong_script"] += 1
+                continue
+            license_name = str(row.get("license", "")).strip().lower()
+            if cfg.get("allowed_licenses") and license_name not in cfg["allowed_licenses"]:
+                stats["disallowed_license"] += 1
+                continue
+            digest = doc_hash(text)
+            if digest in seen_hashes:
+                stats["dup"] += 1
+                continue
+            seen_hashes.add(digest)
+            record = {
+                "doc_sha256": digest,
+                "chars": length,
+                "utf8_bytes": len(text.encode("utf-8")),
+                "text": text,
+                "source_file": source_file,
+                "source_revision": revision,
+            }
+            for field in cfg.get("metadata_fields", ("url", "dump")):
+                if field in row:
+                    record[field] = row.get(field)
+            kept.append(record)
+            file_kept += 1
+            if file_kept >= quota or len(kept) >= target:
+                break
+        per_file.append(
+            {"file": source_file, "quota": quota, "scanned": file_scanned, "kept": file_kept}
+        )
+        if max_scan_hit or len(kept) >= target:
             break
-        t = row[cfg["text_field"]]
-        if not is_heldout(t):
-            continue
-        stats["in_bucket"] += 1
-        n = len(t)
-        if n < MIN_CHARS:   stats["too_short"] += 1; continue
-        if n > MAX_CHARS:   stats["too_long"] += 1; continue
-        if script_ratio(t, lo, hi) < cfg["script_min_ratio"]:
-            stats["wrong_script"] += 1; continue
-        h = doc_hash(t)
-        if h in seen_hashes:
-            stats["dup"] += 1; continue
-        seen_hashes.add(h)
-        kept.append({"doc_sha256": h, "chars": n, "utf8_bytes": len(t.encode()),
-                     "url": row.get("url"), "dump": row.get("dump"), "text": t})
-        if len(kept) >= a.target:
-            break
-        if len(kept) and len(kept) % 250 == 0:
-            print(f"    kept {len(kept)}/{a.target} (scanned {stats['scanned']:,})", flush=True)
+        if file_kept < quota:
+            print(f"[!] {source_file}: kept {file_kept}/{quota}", flush=True)
+
+    if len(kept) != target:
+        raise RuntimeError(
+            f"fail-closed: {args.set} produced {len(kept)}/{target}; "
+            f"increase --max-scan or revise the pinned shard selection"
+        )
 
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    jsonl = OUTDIR / f"{a.set}.jsonl"
-    with jsonl.open("w") as fh:
-        for d in kept:
-            fh.write(json.dumps(d, ensure_ascii=False) + "\n")
+    jsonl = OUTDIR / f"{args.set}.jsonl"
+    with jsonl.open("w", encoding="utf-8") as handle:
+        for document in kept:
+            handle.write(json.dumps(document, ensure_ascii=False, default=str) + "\n")
 
     set_hash = hashlib.sha256(
-        "".join(d["doc_sha256"] for d in sorted(kept, key=lambda x: x["doc_sha256"])).encode()
+        "".join(document["doc_sha256"] for document in sorted(kept, key=lambda x: x["doc_sha256"])).encode()
     ).hexdigest()
-
-    man = {
-        "set_id": a.set,
+    manifest = {
+        "set_id": args.set,
         "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "scientific_evidence_allowed": False,
         "exclusion_rule": {
             "rule_id": RULE_ID, "module": "phase0/heldout_rule.py",
             "total_buckets": TOTAL_BUCKETS, "heldout_buckets": sorted(HELDOUT_BUCKETS),
-            "contract": "The training pipeline MUST import heldout_rule.is_trainable and drop "
-                        "every document for which it returns False. This excludes the whole "
-                        "bucket, including documents in shards this builder never opened.",
+            "contract": "Training MUST import heldout_rule.is_trainable and drop false records.",
         },
-        "source": {"repo": cfg["repo"], "revision": rev, "files": cfg["files"],
-                   "access": "hf_hub_download + pyarrow local read"},
-        "filters": {"min_chars": MIN_CHARS, "max_chars": MAX_CHARS,
-                    "script_min_ratio": cfg["script_min_ratio"]},
+        "source": {
+            "repo": cfg["repo"], "revision": revision, "files": cfg["files"],
+            "access": "hf_hub_download + pyarrow local read",
+        },
+        "filters": {
+            "order": ["heldout_bucket", "length", "script_ratio", "code_license_if_applicable", "exact_duplicate"],
+            "min_chars": cfg["min_chars"], "max_chars": cfg["max_chars"],
+            "script_min_ratio": cfg["script_min_ratio"],
+            "allowed_licenses": sorted(cfg.get("allowed_licenses", [])) or None,
+        },
         "counts": {**stats, "kept": len(kept)},
-        "totals": {"documents": len(kept),
-                   "utf8_bytes": sum(d["utf8_bytes"] for d in kept),
-                   "chars": sum(d["chars"] for d in kept)},
+        "per_file": per_file,
+        "totals": {
+            "documents": len(kept),
+            "utf8_bytes": sum(document["utf8_bytes"] for document in kept),
+            "chars": sum(document["chars"] for document in kept),
+        },
         "set_sha256": set_hash,
         "jsonl": str(jsonl.relative_to(HERE.parent)),
         "limitations": [
-            "Token counts are NOT recorded here; they depend on the final tokenizer choice "
-            "and must be computed after the base model is locked.",
-            "Benchmark decontamination against ThaiExam/M3Exam is a SEPARATE step and has not run yet.",
-            "Streamed from the first shards only; this is a held-out sample, not a stratified "
-            "sample of the whole corpus.",
+            "Token counts are not recorded here; BPB scoring tokenizes with the evaluated model.",
+            "Benchmark decontamination is a separate step and has not run yet.",
+            "Selected from pinned, range-spread source shards; EN/CODE use per-file quotas.",
         ],
     }
-    (OUTDIR / f"{a.set}.manifest.json").write_text(json.dumps(man, ensure_ascii=False, indent=2) + "\n")
-
-    print(f"\n[+] kept {len(kept)} docs, {man['totals']['utf8_bytes']:,} utf8 bytes")
+    (OUTDIR / f"{args.set}.manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(f"\n[+] kept {len(kept)} docs, {manifest['totals']['utf8_bytes']:,} utf8 bytes")
     print(f"[+] set_sha256 = {set_hash}")
     print(f"[+] wrote {jsonl}")
     print(f"[+] stats: {stats}")

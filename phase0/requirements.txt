@@ -3,6 +3,7 @@ torch>=2.4
 transformers>=4.51        # Qwen3 needs >=4.51; gemma4 needs a newer release (see README)
 tokenizers>=0.20
 huggingface_hub>=0.30
+pyarrow>=21.0
 sentencepiece
 protobuf
 # Step C downstream accuracy (pin the commit and record it in every run record):

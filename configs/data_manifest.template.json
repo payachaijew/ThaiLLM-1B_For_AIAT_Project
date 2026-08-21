@@ -2,9 +2,9 @@
   "manifest_id": null,
   "created_at": null,
   "selected_tokenizer": {
-    "repo": null,
-    "revision": null,
-    "hash": null
+    "repo": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "hash": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539"
   },
   "sources": [
     {
@@ -38,42 +38,55 @@
     {
       "source_id": "fineweb_edu_en",
       "repo_or_url": "HuggingFaceFW/fineweb-edu",
-      "subset": null,
-      "revision": null,
-      "role": "english_replay_candidate",
+      "subset": "sample/10BT",
+      "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+      "role": "english_replay_selected",
       "dataset_level_license": "odc-by-1.0",
       "additional_terms": null,
-      "provenance_verified": false,
+      "provenance_verified": true,
       "redistribution_verified": false,
-      "document_count": null,
-      "observed_tokens": null,
-      "content_hash": null
+      "document_count": 3508510,
+      "observed_tokens": 3516598044,
+      "content_hash": "sha256(output-shard-sha256s)=8b9c6e2ac332eeb2063919b123f5357d26cd7ef253a0b1ca270794dcf7b86a0f"
     },
     {
       "source_id": "permissive_code",
-      "repo_or_url": null,
-      "subset": null,
-      "revision": null,
-      "role": "code_replay_candidate",
-      "dataset_level_license": null,
-      "additional_terms": "retain repository-level provenance and approved permissive licenses",
-      "provenance_verified": false,
+      "repo_or_url": "codeparrot/github-code-clean",
+      "subset": "data; row allowlist: mit, apache-2.0, bsd-2-clause, bsd-3-clause",
+      "revision": "c48d40f9e70f0196f8236901ee35807f7d6c44c0",
+      "role": "code_replay_selected",
+      "dataset_level_license": "apache-2.0 (dataset packaging only)",
+      "additional_terms": "underlying code retains per-repository license; preserve row license and retain only the explicit allowlist",
+      "provenance_verified": true,
       "redistribution_verified": false,
-      "document_count": null,
-      "observed_tokens": null,
-      "content_hash": null
+      "document_count": 700129,
+      "observed_tokens": 1104617663,
+      "content_hash": "sha256(output-shard-sha256s)=2f5582e08c23e7c5f3d0678a42f354c31866ea13d7016f5ed29052acc96def0c"
+    },
+    {
+      "source_id": "finemath_4plus",
+      "repo_or_url": "HuggingFaceTB/finemath",
+      "subset": "finemath-4plus",
+      "revision": "e92b25a616738fe95dc186b64dfb19f9c8525594",
+      "role": "math_replay_selected",
+      "dataset_level_license": "odc-by-1.0",
+      "additional_terms": "CommonCrawl terms of use",
+      "provenance_verified": true,
+      "redistribution_verified": false,
+      "document_count": 412820,
+      "observed_tokens": 592984656,
+      "content_hash": "sha256(output-shard-sha256s)=4e1d1854145ecf809aab9ff5c08af799d6967fe9b012c77bbde7c5a2dc9fb5df"
     }
   ],
   "processing": {
     "unicode_normalization": "NFC",
     "language_id_model_and_revision": null,
-    "exact_dedup": null,
+    "exact_dedup": "phase0/heldout_rule.py::doc_hash (NFC + whitespace collapse + SHA-256)",
     "near_dedup": null,
-    "quality_filter_revision": null,
+    "quality_filter_revision": "phase0/build_replay.py",
     "pii_filter_revision": null,
     "benchmark_decontamination_hash": null,
-    "split_seed": null
+    "split_seed": "HELDOUT-BUCKET-V1 (SHA-256 bucket 0/100)"
   },
   "fail_closed": true
 }
-

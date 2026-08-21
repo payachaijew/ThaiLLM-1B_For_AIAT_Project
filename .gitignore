@@ -1,8 +1,34 @@
 # ---- ข้อมูลขนาดใหญ่: ห้าม commit (สร้างใหม่ได้จากสคริปต์) ----
-data/clean/                 # ~27 GB ผลลัพธ์จาก clean_corpus.py
-data/heldout/*.jsonl        # 9.3 MB สร้างซ้ำได้ด้วย build_heldout.py (bucket rule เป็น deterministic)
-data/dropped_samples/*.jsonl  # ข้อความดิบจาก corpus - ไม่ redistribute; INDEX.json commit ได้
-data/clean_pii/             # ผล PII pass
+# หมายเหตุ: gitignore ไม่รองรับ inline comment หลัง pattern; แยก comment ออกเสมอ
+data/clean/
+data/clean_pii/
+data/clean_replay/
+data/clean_replay_v2/
+data/scanned_replay_stage/
+data/rebalance_code_candidates/
+data/rebalance_code_candidates_v2/
+data/rejected_task_b_intermediate/
+data/scanned_replay_stage_v2/
+data/scanned_replay_stage_final/
+data/rebalance_code_candidates_final/
+data/replay_dropped_samples/
+data/scan_samples/*.jsonl
+data/scan_samples_corrected_code/*.jsonl
+data/scan_samples_final/*.jsonl
+data/heldout/*.jsonl
+data/dropped_samples/*.jsonl
+data/clean_replay_state.sqlite3*
+data/scan_replay_v2_state.sqlite3*
+data/scan_replay_v2_code_corrected_state.sqlite3*
+data/scan_replay_v2_final_state.sqlite3*
+data/scan_replay_v2_accepted_state.sqlite3*
+data/scanned_replay_stage_accepted/
+data/rebalance_code_candidates_accepted/
+data/scan_samples_accepted/*.jsonl
+data/scan_replay_v2_release_state.sqlite3*
+data/scanned_replay_stage_release/
+data/rebalance_code_candidates_release/
+data/scan_samples_release/*.jsonl
 *.parquet
 *.jsonl.gz
 *.safetensors
@@ -23,3 +49,14 @@ venv/
 .env
 *.key
 hf_token*
+
+# Task B generated data
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+
+# Plan C generated data
+data/benchmark_ngrams.npz
+data/near_duplicate_hits.jsonl
+
+data/removal_list.txt   # 17.8 MB, deterministic; regenerate with phase0/decon_and_neardedup.py
