@@ -1,0 +1,1040 @@
+{
+  "summary_id": "REPLAY-SECRET-PII-SCAN-V1",
+  "created_at": "2026-08-20T21:51:01.176373+00:00",
+  "scientific_evidence_allowed": false,
+  "policy": {
+    "secret": "private-key document drop; other accepted secret matches redact",
+    "pii": "redact, do not drop",
+    "post_redaction": [
+      "HELDOUT-BUCKET-V1",
+      "exact_dedup",
+      "exact_Qwen_token_recount_if_changed"
+    ]
+  },
+  "tokenizer": {
+    "repo": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "tokenizer_json_sha256": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "add_special_tokens": false
+  },
+  "languages": {
+    "code": {
+      "input_documents": 700129,
+      "input_bytes": 4317065311,
+      "input_qwen_tokens": 1104617663,
+      "output_documents": 699482,
+      "output_bytes": 4307090804,
+      "output_qwen_tokens": 1101716762,
+      "redacted_documents": 57205,
+      "secret_hits": {
+        "aws_access_key": 16,
+        "aws_secret": 2,
+        "connection_string_password": 279,
+        "env_secret": 202,
+        "google_api_key": 321,
+        "jwt": 62,
+        "openai_api_key": 60,
+        "private_key": 65,
+        "slack_token": 6
+      },
+      "secret_documents": {
+        "aws_access_key": 11,
+        "aws_secret": 2,
+        "connection_string_password": 173,
+        "env_secret": 132,
+        "google_api_key": 299,
+        "jwt": 31,
+        "openai_api_key": 10,
+        "private_key": 65,
+        "slack_token": 4
+      },
+      "pii_hits": {
+        "credit_card": 183,
+        "email": 103965,
+        "phone": 5660,
+        "public_ip": 5178,
+        "us_ssn": 104
+      },
+      "pii_documents": {
+        "credit_card": 60,
+        "email": 55681,
+        "phone": 1408,
+        "public_ip": 1388,
+        "us_ssn": 19
+      },
+      "dropped_documents": {
+        "post_redaction_exact_duplicate": 16,
+        "post_redaction_heldout": 566,
+        "private_key_document": 65
+      },
+      "source_shards": 9
+    },
+    "en": {
+      "input_documents": 3508510,
+      "input_bytes": 16357455540,
+      "input_qwen_tokens": 3516598044,
+      "output_documents": 3506972,
+      "output_bytes": 16344954770,
+      "output_qwen_tokens": 3513015042,
+      "redacted_documents": 107277,
+      "secret_hits": {
+        "aws_access_key": 13,
+        "connection_string_password": 3,
+        "jwt": 73,
+        "private_key": 7
+      },
+      "secret_documents": {
+        "aws_access_key": 13,
+        "connection_string_password": 3,
+        "jwt": 28,
+        "private_key": 7
+      },
+      "pii_hits": {
+        "credit_card": 11,
+        "email": 71943,
+        "phone": 95933,
+        "public_ip": 2486,
+        "us_ssn": 47
+      },
+      "pii_documents": {
+        "credit_card": 9,
+        "email": 54738,
+        "phone": 64268,
+        "public_ip": 1132,
+        "us_ssn": 31
+      },
+      "dropped_documents": {
+        "post_redaction_exact_duplicate": 419,
+        "post_redaction_heldout": 1112,
+        "private_key_document": 7
+      },
+      "source_shards": 5
+    },
+    "math": {
+      "input_documents": 412820,
+      "input_bytes": 2022436244,
+      "input_qwen_tokens": 592984656,
+      "output_documents": 412733,
+      "output_bytes": 2020757151,
+      "output_qwen_tokens": 592463876,
+      "redacted_documents": 7240,
+      "secret_hits": {
+        "aws_access_key": 1,
+        "private_key": 3
+      },
+      "secret_documents": {
+        "aws_access_key": 1,
+        "private_key": 3
+      },
+      "pii_hits": {
+        "credit_card": 17,
+        "email": 16944,
+        "phone": 2387,
+        "public_ip": 366,
+        "us_ssn": 10
+      },
+      "pii_documents": {
+        "credit_card": 14,
+        "email": 6303,
+        "phone": 1443,
+        "public_ip": 109,
+        "us_ssn": 6
+      },
+      "dropped_documents": {
+        "post_redaction_heldout": 84,
+        "private_key_document": 3
+      },
+      "source_shards": 4
+    }
+  },
+  "shards": [
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00000.jsonl.gz",
+      "input_sha256": "02cf2db160cf5fe53b9e0e0c06fd32e3f724b449e37d88e1c50719d481c1b304",
+      "output_file": "data/scanned_replay_stage/code/code-00000.jsonl.gz",
+      "output_sha256": "8ba9c1b889b41df8047e7a726b005889ad506523db85b9565a01ccafbc0004c4",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_heldout": 48,
+          "private_key_document": 6
+        },
+        "input_bytes": 469424204,
+        "input_documents": 76895,
+        "input_qwen_tokens": 120688788,
+        "output_bytes": 468488288,
+        "output_documents": 76841,
+        "output_qwen_tokens": 120404959,
+        "pii_documents": {
+          "credit_card": 6,
+          "email": 6166,
+          "phone": 154,
+          "public_ip": 161,
+          "us_ssn": 5
+        },
+        "pii_hits": {
+          "credit_card": 22,
+          "email": 11323,
+          "phone": 541,
+          "public_ip": 571,
+          "us_ssn": 8
+        },
+        "redacted_documents": 6347,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "connection_string_password": 20,
+          "env_secret": 19,
+          "google_api_key": 24,
+          "jwt": 2,
+          "openai_api_key": 1,
+          "private_key": 6
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "connection_string_password": 29,
+          "env_secret": 28,
+          "google_api_key": 26,
+          "jwt": 5,
+          "openai_api_key": 2,
+          "private_key": 6
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00001.jsonl.gz",
+      "input_sha256": "1509b8d3f707e9634f4c871f3648a0c3379845a19d0db6892fa862321b85f90d",
+      "output_file": "data/scanned_replay_stage/code/code-00001.jsonl.gz",
+      "output_sha256": "af9694176f70653852ba99b6300d17a17a57112bcd4812bb8265e75235c59c9a",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 1,
+          "post_redaction_heldout": 72,
+          "private_key_document": 7
+        },
+        "input_bytes": 496049585,
+        "input_documents": 78998,
+        "input_qwen_tokens": 126909522,
+        "output_bytes": 494494958,
+        "output_documents": 78918,
+        "output_qwen_tokens": 126488795,
+        "pii_documents": {
+          "credit_card": 12,
+          "email": 6309,
+          "phone": 170,
+          "public_ip": 178
+        },
+        "pii_hits": {
+          "credit_card": 45,
+          "email": 11992,
+          "phone": 753,
+          "public_ip": 530
+        },
+        "redacted_documents": 6489,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "connection_string_password": 17,
+          "env_secret": 14,
+          "google_api_key": 33,
+          "jwt": 2,
+          "openai_api_key": 1,
+          "private_key": 7
+        },
+        "secret_hits": {
+          "aws_access_key": 2,
+          "connection_string_password": 28,
+          "env_secret": 21,
+          "google_api_key": 35,
+          "jwt": 4,
+          "openai_api_key": 1,
+          "private_key": 7
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00002.jsonl.gz",
+      "input_sha256": "5cfb39880b8e82d38ad1b781e9356e5fd2402efa0c9a692e8688c474df98a290",
+      "output_file": "data/scanned_replay_stage/code/code-00002.jsonl.gz",
+      "output_sha256": "aab8ad66f4005ebd6be334c56a5ef17d6307e84a00e6bb309dcceaf0a66640a8",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 2,
+          "post_redaction_heldout": 86,
+          "private_key_document": 9
+        },
+        "input_bytes": 484238988,
+        "input_documents": 78621,
+        "input_qwen_tokens": 123496091,
+        "output_bytes": 483101455,
+        "output_documents": 78524,
+        "output_qwen_tokens": 123151100,
+        "pii_documents": {
+          "credit_card": 8,
+          "email": 6231,
+          "phone": 154,
+          "public_ip": 175,
+          "us_ssn": 4
+        },
+        "pii_hits": {
+          "credit_card": 49,
+          "email": 12228,
+          "phone": 581,
+          "public_ip": 559,
+          "us_ssn": 4
+        },
+        "redacted_documents": 6408,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 2,
+          "connection_string_password": 29,
+          "env_secret": 10,
+          "google_api_key": 39,
+          "jwt": 4,
+          "openai_api_key": 1,
+          "private_key": 9
+        },
+        "secret_hits": {
+          "aws_access_key": 5,
+          "connection_string_password": 48,
+          "env_secret": 11,
+          "google_api_key": 43,
+          "jwt": 5,
+          "openai_api_key": 1,
+          "private_key": 9
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00003.jsonl.gz",
+      "input_sha256": "a1243315405461b9162f3c35d95bff36731cbde5258b8ee3efc9e875c784e86a",
+      "output_file": "data/scanned_replay_stage/code/code-00003.jsonl.gz",
+      "output_sha256": "2d518add6ff7c8802d99e99bbb35cc1c629a91c944331614b74074da13176de0",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 4,
+          "post_redaction_heldout": 52,
+          "private_key_document": 4
+        },
+        "input_bytes": 473993182,
+        "input_documents": 76696,
+        "input_qwen_tokens": 121008712,
+        "output_bytes": 473261837,
+        "output_documents": 76636,
+        "output_qwen_tokens": 120787174,
+        "pii_documents": {
+          "credit_card": 7,
+          "email": 6110,
+          "phone": 152,
+          "public_ip": 144,
+          "us_ssn": 1
+        },
+        "pii_hits": {
+          "credit_card": 14,
+          "email": 11268,
+          "phone": 473,
+          "public_ip": 433,
+          "us_ssn": 2
+        },
+        "redacted_documents": 6288,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "connection_string_password": 13,
+          "env_secret": 20,
+          "google_api_key": 30,
+          "jwt": 5,
+          "openai_api_key": 2,
+          "private_key": 4,
+          "slack_token": 1
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "connection_string_password": 20,
+          "env_secret": 38,
+          "google_api_key": 34,
+          "jwt": 11,
+          "openai_api_key": 4,
+          "private_key": 4,
+          "slack_token": 1
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00004.jsonl.gz",
+      "input_sha256": "b513c18ca8c09c9e6ea332aae1df4f1c530abc4e33e4b513dcd26f9787040993",
+      "output_file": "data/scanned_replay_stage/code/code-00004.jsonl.gz",
+      "output_sha256": "10bfa42358242894ad880ba73e7eed9eb6a5fa28227fe3788a2062f2c5d96be5",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 1,
+          "post_redaction_heldout": 60,
+          "private_key_document": 12
+        },
+        "input_bytes": 477439017,
+        "input_documents": 77517,
+        "input_qwen_tokens": 122447650,
+        "output_bytes": 476613758,
+        "output_documents": 77444,
+        "output_qwen_tokens": 122182598,
+        "pii_documents": {
+          "credit_card": 4,
+          "email": 6184,
+          "phone": 164,
+          "public_ip": 127,
+          "us_ssn": 3
+        },
+        "pii_hits": {
+          "credit_card": 9,
+          "email": 11046,
+          "phone": 665,
+          "public_ip": 403,
+          "us_ssn": 72
+        },
+        "redacted_documents": 6330,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "connection_string_password": 17,
+          "env_secret": 16,
+          "google_api_key": 22,
+          "jwt": 7,
+          "openai_api_key": 2,
+          "private_key": 12
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "connection_string_password": 28,
+          "env_secret": 17,
+          "google_api_key": 25,
+          "jwt": 16,
+          "openai_api_key": 49,
+          "private_key": 12
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00005.jsonl.gz",
+      "input_sha256": "a9b6164a78ef6722fa1e7619f7342a46360a20eb25010e91b6d5718909b1fb04",
+      "output_file": "data/scanned_replay_stage/code/code-00005.jsonl.gz",
+      "output_sha256": "ba7c451eda812d68c1630cc263ce484991b020934edfb20b5969d2ac09353961",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 2,
+          "post_redaction_heldout": 66,
+          "private_key_document": 7
+        },
+        "input_bytes": 473053176,
+        "input_documents": 77845,
+        "input_qwen_tokens": 120808509,
+        "output_bytes": 471849576,
+        "output_documents": 77770,
+        "output_qwen_tokens": 120489907,
+        "pii_documents": {
+          "credit_card": 7,
+          "email": 6240,
+          "phone": 159,
+          "public_ip": 159,
+          "us_ssn": 1
+        },
+        "pii_hits": {
+          "credit_card": 21,
+          "email": 11294,
+          "phone": 644,
+          "public_ip": 567,
+          "us_ssn": 2
+        },
+        "redacted_documents": 6423,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "aws_secret": 1,
+          "connection_string_password": 28,
+          "env_secret": 12,
+          "google_api_key": 46,
+          "jwt": 4,
+          "openai_api_key": 1,
+          "private_key": 7
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "aws_secret": 1,
+          "connection_string_password": 47,
+          "env_secret": 18,
+          "google_api_key": 51,
+          "jwt": 7,
+          "openai_api_key": 1,
+          "private_key": 7
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00006.jsonl.gz",
+      "input_sha256": "a5b4a3677d96de922d55c4faea36f176dc8f6d5ac9fb1c12764d5fab3b6e095f",
+      "output_file": "data/scanned_replay_stage/code/code-00006.jsonl.gz",
+      "output_sha256": "1c8fdf2ea4977073e92c850a695a5f79381aae815d9bff7c37a95cbe0a1c4ddd",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 3,
+          "post_redaction_heldout": 58,
+          "private_key_document": 5
+        },
+        "input_bytes": 481835699,
+        "input_documents": 77955,
+        "input_qwen_tokens": 123122378,
+        "output_bytes": 480778889,
+        "output_documents": 77889,
+        "output_qwen_tokens": 122797054,
+        "pii_documents": {
+          "credit_card": 7,
+          "email": 6122,
+          "phone": 171,
+          "public_ip": 156,
+          "us_ssn": 3
+        },
+        "pii_hits": {
+          "credit_card": 11,
+          "email": 12467,
+          "phone": 808,
+          "public_ip": 1007,
+          "us_ssn": 13
+        },
+        "redacted_documents": 6307,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 2,
+          "connection_string_password": 19,
+          "env_secret": 11,
+          "google_api_key": 39,
+          "jwt": 5,
+          "openai_api_key": 1,
+          "private_key": 5,
+          "slack_token": 2
+        },
+        "secret_hits": {
+          "aws_access_key": 3,
+          "connection_string_password": 29,
+          "env_secret": 25,
+          "google_api_key": 39,
+          "jwt": 12,
+          "openai_api_key": 1,
+          "private_key": 5,
+          "slack_token": 3
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00007.jsonl.gz",
+      "input_sha256": "b4eb8c5f2263ba75afc559f3bfe8d2183b542387fe3010a2f69efe28e245df87",
+      "output_file": "data/scanned_replay_stage/code/code-00007.jsonl.gz",
+      "output_sha256": "d4052f523f7626f5eea99bb5a752df1bd825f8532794d2bb6dd11caf8a31597d",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 1,
+          "post_redaction_heldout": 64,
+          "private_key_document": 5
+        },
+        "input_bytes": 477858006,
+        "input_documents": 76995,
+        "input_qwen_tokens": 122371758,
+        "output_bytes": 476905441,
+        "output_documents": 76925,
+        "output_qwen_tokens": 122094505,
+        "pii_documents": {
+          "credit_card": 2,
+          "email": 6156,
+          "phone": 129,
+          "public_ip": 146
+        },
+        "pii_hits": {
+          "credit_card": 2,
+          "email": 11468,
+          "phone": 588,
+          "public_ip": 612
+        },
+        "redacted_documents": 6300,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 2,
+          "aws_secret": 1,
+          "connection_string_password": 14,
+          "env_secret": 14,
+          "google_api_key": 43,
+          "jwt": 1,
+          "private_key": 5,
+          "slack_token": 1
+        },
+        "secret_hits": {
+          "aws_access_key": 2,
+          "aws_secret": 1,
+          "connection_string_password": 21,
+          "env_secret": 18,
+          "google_api_key": 44,
+          "jwt": 1,
+          "private_key": 5,
+          "slack_token": 2
+        }
+      }
+    },
+    {
+      "language": "code",
+      "input_file": "data/clean_replay/code/code-00008.jsonl.gz",
+      "input_sha256": "afc4651047ba637b99d1b773e3aec735cf82cdff4feaf290e811cd01d335ddb3",
+      "output_file": "data/scanned_replay_stage/code/code-00008.jsonl.gz",
+      "output_sha256": "048422a5b68855bc3e3177ddcd8f781ff1a36c3edad3cb241b55e3d639e013b6",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 2,
+          "post_redaction_heldout": 60,
+          "private_key_document": 10
+        },
+        "input_bytes": 483173454,
+        "input_documents": 78607,
+        "input_qwen_tokens": 123764255,
+        "output_bytes": 481596602,
+        "output_documents": 78535,
+        "output_qwen_tokens": 123320670,
+        "pii_documents": {
+          "credit_card": 7,
+          "email": 6163,
+          "phone": 155,
+          "public_ip": 142,
+          "us_ssn": 2
+        },
+        "pii_hits": {
+          "credit_card": 10,
+          "email": 10879,
+          "phone": 607,
+          "public_ip": 496,
+          "us_ssn": 3
+        },
+        "redacted_documents": 6313,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "connection_string_password": 16,
+          "env_secret": 16,
+          "google_api_key": 23,
+          "jwt": 1,
+          "openai_api_key": 1,
+          "private_key": 10
+        },
+        "secret_hits": {
+          "connection_string_password": 29,
+          "env_secret": 26,
+          "google_api_key": 24,
+          "jwt": 1,
+          "openai_api_key": 1,
+          "private_key": 10
+        }
+      }
+    },
+    {
+      "language": "en",
+      "input_file": "data/clean_replay/en/en-00000.jsonl.gz",
+      "input_sha256": "da59f935a7fa14131334fe84c7c67f649b3e73365d1d5077ea2d46d2bf8c82ff",
+      "output_file": "data/clean_replay_v2/en/en-00000.jsonl.gz",
+      "output_sha256": "9a09c0f3f383c5c6b181419042747f4692f1c655b86b4821e20488191e6c6e0b",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 14,
+          "post_redaction_heldout": 233,
+          "private_key_document": 1
+        },
+        "input_bytes": 3320431635,
+        "input_documents": 707012,
+        "input_qwen_tokens": 713808992,
+        "output_bytes": 3318333415,
+        "output_documents": 706764,
+        "output_qwen_tokens": 713176880,
+        "pii_documents": {
+          "credit_card": 3,
+          "email": 11119,
+          "phone": 13256,
+          "public_ip": 234,
+          "us_ssn": 5
+        },
+        "pii_hits": {
+          "credit_card": 3,
+          "email": 14617,
+          "phone": 19889,
+          "public_ip": 417,
+          "us_ssn": 5
+        },
+        "redacted_documents": 22032,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "connection_string_password": 1,
+          "private_key": 1
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "connection_string_password": 1,
+          "private_key": 1
+        }
+      }
+    },
+    {
+      "language": "en",
+      "input_file": "data/clean_replay/en/en-00001.jsonl.gz",
+      "input_sha256": "97370163378cf202069f4ab62e91d3162d5cd2115f7b54194bea7421577ae007",
+      "output_file": "data/clean_replay_v2/en/en-00001.jsonl.gz",
+      "output_sha256": "b116e10da870a4de5341ca93a7751cde9da69850000b1545ca3e04eefc99a77f",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 37,
+          "post_redaction_heldout": 218,
+          "private_key_document": 1
+        },
+        "input_bytes": 3310622280,
+        "input_documents": 704469,
+        "input_qwen_tokens": 708364046,
+        "output_bytes": 3308468421,
+        "output_documents": 704213,
+        "output_qwen_tokens": 707733233,
+        "pii_documents": {
+          "email": 10867,
+          "phone": 12949,
+          "public_ip": 218,
+          "us_ssn": 3
+        },
+        "pii_hits": {
+          "email": 14253,
+          "phone": 18868,
+          "public_ip": 509,
+          "us_ssn": 3
+        },
+        "redacted_documents": 21648,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 4,
+          "jwt": 10,
+          "private_key": 1
+        },
+        "secret_hits": {
+          "aws_access_key": 4,
+          "jwt": 36,
+          "private_key": 1
+        }
+      }
+    },
+    {
+      "language": "en",
+      "input_file": "data/clean_replay/en/en-00002.jsonl.gz",
+      "input_sha256": "9ac4a60fa00124a8e5b5c308472c9b5c0df5f6d89d06ee1335ce475277b80b5a",
+      "output_file": "data/clean_replay_v2/en/en-00002.jsonl.gz",
+      "output_sha256": "50ce1b3f9bc4eabc69db58ac6db1c0d9a8ec214cbb103c3e1447252cf60f5fc9",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 84,
+          "post_redaction_heldout": 212
+        },
+        "input_bytes": 3271049502,
+        "input_documents": 715034,
+        "input_qwen_tokens": 702573193,
+        "output_bytes": 3268752451,
+        "output_documents": 714738,
+        "output_qwen_tokens": 701903767,
+        "pii_documents": {
+          "credit_card": 1,
+          "email": 11086,
+          "phone": 12892,
+          "public_ip": 220,
+          "us_ssn": 6
+        },
+        "pii_hits": {
+          "credit_card": 1,
+          "email": 14366,
+          "phone": 19555,
+          "public_ip": 443,
+          "us_ssn": 6
+        },
+        "redacted_documents": 21568,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 6,
+          "jwt": 16
+        },
+        "secret_hits": {
+          "aws_access_key": 6,
+          "jwt": 28
+        }
+      }
+    },
+    {
+      "language": "en",
+      "input_file": "data/clean_replay/en/en-00003.jsonl.gz",
+      "input_sha256": "e0733636bbe8060ee0d4f23f8dad2965b369b9f1f1df33a980e371603577a0ce",
+      "output_file": "data/clean_replay_v2/en/en-00003.jsonl.gz",
+      "output_sha256": "302ba11f6e5441458bdc73f0d2efde764aeacd32556f511ca2428290d7222062",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 130,
+          "post_redaction_heldout": 219,
+          "private_key_document": 3
+        },
+        "input_bytes": 3238506402,
+        "input_documents": 697185,
+        "input_qwen_tokens": 698427748,
+        "output_bytes": 3235600854,
+        "output_documents": 696833,
+        "output_qwen_tokens": 697629172,
+        "pii_documents": {
+          "credit_card": 2,
+          "email": 10973,
+          "phone": 12516,
+          "public_ip": 236,
+          "us_ssn": 12
+        },
+        "pii_hits": {
+          "credit_card": 4,
+          "email": 14514,
+          "phone": 18672,
+          "public_ip": 640,
+          "us_ssn": 18
+        },
+        "redacted_documents": 21049,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "jwt": 2,
+          "private_key": 3
+        },
+        "secret_hits": {
+          "jwt": 9,
+          "private_key": 3
+        }
+      }
+    },
+    {
+      "language": "en",
+      "input_file": "data/clean_replay/en/en-00004.jsonl.gz",
+      "input_sha256": "1e7a0beff75526c7733e357af6abcf1adff2d16aff5fa84cf0b34c00fd8da3e4",
+      "output_file": "data/clean_replay_v2/en/en-00004.jsonl.gz",
+      "output_sha256": "7de982ec03d80ad875952576d9edf7e25a20a6991938a6769c5e8a46e4af54cb",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_exact_duplicate": 154,
+          "post_redaction_heldout": 230,
+          "private_key_document": 2
+        },
+        "input_bytes": 3216845721,
+        "input_documents": 684810,
+        "input_qwen_tokens": 693424065,
+        "output_bytes": 3213799629,
+        "output_documents": 684424,
+        "output_qwen_tokens": 692571990,
+        "pii_documents": {
+          "credit_card": 3,
+          "email": 10693,
+          "phone": 12655,
+          "public_ip": 224,
+          "us_ssn": 5
+        },
+        "pii_hits": {
+          "credit_card": 3,
+          "email": 14193,
+          "phone": 18949,
+          "public_ip": 477,
+          "us_ssn": 15
+        },
+        "redacted_documents": 20980,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 2,
+          "connection_string_password": 2,
+          "private_key": 2
+        },
+        "secret_hits": {
+          "aws_access_key": 2,
+          "connection_string_password": 2,
+          "private_key": 2
+        }
+      }
+    },
+    {
+      "language": "math",
+      "input_file": "data/clean_replay/math/math-00000.jsonl.gz",
+      "input_sha256": "57b920082d1e4b0db3704e68d462868b130900ab47beff83364bea3a06a3a663",
+      "output_file": "data/clean_replay_v2/math/math-00000.jsonl.gz",
+      "output_sha256": "f26a372e1ccb3ee11c129d467d8a1220108a78ed61f829e910cb40f14cbb5f1e",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_heldout": 27
+        },
+        "input_bytes": 504150025,
+        "input_documents": 103175,
+        "input_qwen_tokens": 147689377,
+        "output_bytes": 503665552,
+        "output_documents": 103148,
+        "output_qwen_tokens": 147546658,
+        "pii_documents": {
+          "credit_card": 2,
+          "email": 1529,
+          "phone": 373,
+          "public_ip": 28,
+          "us_ssn": 1
+        },
+        "pii_hits": {
+          "credit_card": 2,
+          "email": 3704,
+          "phone": 612,
+          "public_ip": 76,
+          "us_ssn": 2
+        },
+        "redacted_documents": 1772,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {},
+        "secret_hits": {}
+      }
+    },
+    {
+      "language": "math",
+      "input_file": "data/clean_replay/math/math-00001.jsonl.gz",
+      "input_sha256": "2dc6a96a6837a5a610e3a4ddfbab96f1756d5d00aae1d57d9c4e91da7b26834e",
+      "output_file": "data/clean_replay_v2/math/math-00001.jsonl.gz",
+      "output_sha256": "41b114c4a80e6b27d1963ca9ba6ebffca67082e716effd538084dce872fa4168",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_heldout": 21,
+          "private_key_document": 2
+        },
+        "input_bytes": 503960697,
+        "input_documents": 103222,
+        "input_qwen_tokens": 147925668,
+        "output_bytes": 503455379,
+        "output_documents": 103199,
+        "output_qwen_tokens": 147764878,
+        "pii_documents": {
+          "credit_card": 5,
+          "email": 1609,
+          "phone": 366,
+          "public_ip": 31,
+          "us_ssn": 1
+        },
+        "pii_hits": {
+          "credit_card": 6,
+          "email": 4991,
+          "phone": 610,
+          "public_ip": 110,
+          "us_ssn": 1
+        },
+        "redacted_documents": 1846,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "private_key": 2
+        },
+        "secret_hits": {
+          "private_key": 2
+        }
+      }
+    },
+    {
+      "language": "math",
+      "input_file": "data/clean_replay/math/math-00002.jsonl.gz",
+      "input_sha256": "54ecbce10595475a6acd756cbe6943b2bbd2e102a65b51c8f2b9dc7465c9d26a",
+      "output_file": "data/clean_replay_v2/math/math-00002.jsonl.gz",
+      "output_sha256": "d0ec0ad844b74a4ad059386f714f122907fa9241e22b070abe95134acb53f878",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_heldout": 18
+        },
+        "input_bytes": 506715251,
+        "input_documents": 103209,
+        "input_qwen_tokens": 148477894,
+        "output_bytes": 506363644,
+        "output_documents": 103191,
+        "output_qwen_tokens": 148367607,
+        "pii_documents": {
+          "credit_card": 2,
+          "email": 1522,
+          "phone": 360,
+          "public_ip": 25,
+          "us_ssn": 2
+        },
+        "pii_hits": {
+          "credit_card": 2,
+          "email": 4186,
+          "phone": 573,
+          "public_ip": 103,
+          "us_ssn": 5
+        },
+        "redacted_documents": 1746,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {},
+        "secret_hits": {}
+      }
+    },
+    {
+      "language": "math",
+      "input_file": "data/clean_replay/math/math-00003.jsonl.gz",
+      "input_sha256": "e78dbd806ef3321315ae7cbfddf563bc580b61e2fb4c4a85df344a886ec4c4fd",
+      "output_file": "data/clean_replay_v2/math/math-00003.jsonl.gz",
+      "output_sha256": "43913d060fa7b77e469e5486d5542955d306a2c902123e743b8e33e23aa29d27",
+      "metrics": {
+        "dropped_documents": {
+          "post_redaction_heldout": 18,
+          "private_key_document": 1
+        },
+        "input_bytes": 507610271,
+        "input_documents": 103214,
+        "input_qwen_tokens": 148891717,
+        "output_bytes": 507272576,
+        "output_documents": 103195,
+        "output_qwen_tokens": 148784733,
+        "pii_documents": {
+          "credit_card": 5,
+          "email": 1643,
+          "phone": 344,
+          "public_ip": 25,
+          "us_ssn": 2
+        },
+        "pii_hits": {
+          "credit_card": 7,
+          "email": 4063,
+          "phone": 592,
+          "public_ip": 77,
+          "us_ssn": 2
+        },
+        "redacted_documents": 1876,
+        "scientific_evidence_allowed": false,
+        "secret_documents": {
+          "aws_access_key": 1,
+          "private_key": 1
+        },
+        "secret_hits": {
+          "aws_access_key": 1,
+          "private_key": 1
+        }
+      }
+    }
+  ],
+  "sample_files": {
+    "pii:credit_card": 20,
+    "pii:email": 20,
+    "pii:phone": 20,
+    "pii:public_ip": 20,
+    "pii:us_ssn": 20,
+    "secret:aws_access_key": 20,
+    "secret:aws_secret": 2,
+    "secret:connection_string_password": 20,
+    "secret:env_secret": 20,
+    "secret:google_api_key": 20,
+    "secret:jwt": 20,
+    "secret:openai_api_key": 20,
+    "secret:private_key": 20,
+    "secret:slack_token": 6
+  },
+  "limitations": [
+    "Regex/structure-based secret and PII detection cannot guarantee complete recall.",
+    "Public IPv4 detection requires network context to avoid decimal-section and version false positives.",
+    "Phone detection requires a plus sign, parenthesised area code, or nearby phone cue.",
+    "Private-key policy detects PEM armour; unarmoured key material is not detected."
+  ]
+}

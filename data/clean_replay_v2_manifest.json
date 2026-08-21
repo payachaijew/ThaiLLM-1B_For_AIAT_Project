@@ -1,0 +1,100 @@
+{
+  "manifest_id": "CLEAN-REPLAY-V2-EN-CODE-MATH",
+  "created_at": "2026-08-21T05:21:09.862357+00:00",
+  "scientific_evidence_allowed": false,
+  "supersedes": "CLEAN-REPLAY-EN-CODE-MATH-V1 (data/clean_replay_manifest.json)",
+  "what_changed": [
+    "secret redaction applied (11 detector classes; private-key documents dropped entirely)",
+    "English/international PII redaction applied (email, phone, US SSN, credit card, public IP)",
+    "code language mix rebalanced: HTML reduced from 17.8 to 5.0 percent of tokens, Python raised from 6.9 to 14.5"
+  ],
+  "totals": {
+    "en": {
+      "documents": 3507052,
+      "qwen_tokens": 3513258103,
+      "utf8_bytes": 16345514747,
+      "shards": 5
+    },
+    "code": {
+      "documents": 690716,
+      "qwen_tokens": 1000075432,
+      "utf8_bytes": 3912817614,
+      "shards": 9
+    },
+    "math": {
+      "documents": 412734,
+      "qwen_tokens": 592472266,
+      "utf8_bytes": 2020777498,
+      "shards": 4
+    }
+  },
+  "integrity_verified_independently": {
+    "method": "re-derived from data/clean_replay_v2 by phase0/verify_replay_v2.py; no summary file trusted",
+    "exact_duplicates": {
+      "en": 0,
+      "code": 0,
+      "math": 0
+    },
+    "heldout_leakage": {
+      "en": 0,
+      "code": 0,
+      "math": 0
+    },
+    "token_recount_mismatches": {
+      "en": 0,
+      "code": 0,
+      "math": 0
+    },
+    "verdict": "PASS"
+  },
+  "code_distribution": {
+    "total_tokens": 1000075432,
+    "by_group_pct": {
+      "python": 14.499,
+      "javascript_typescript": 14.504,
+      "java": 11.999,
+      "c_cpp": 11.999,
+      "csharp": 4.0,
+      "markdown": 5.0,
+      "html": 5.001,
+      "long_tail": 26.668
+    },
+    "max_single_language_pct": 14.499,
+    "max_single_language": "Python"
+  },
+  "code_mix_rationale": {
+    "basis": "real-world programming-language usage statistics (GitHub Octoverse 2025), recorded in sources/source_registry.csv",
+    "explicitly_not": "HumanEval or any evaluation benchmark. The pre-rebalance mix had HTML at 17.8 percent of tokens, which no usage survey supports; it was an artefact of the github-code-clean sampling, not a property of real code.",
+    "constraints_met": "no single language exceeds 15 percent; long tail retained above 20 percent to preserve generalist coverage"
+  },
+  "secret_hits_on_v1_inputs": null,
+  "pii_hits_on_v1_inputs": null,
+  "redaction_footprint": {
+    "en": {
+      "documents_with_redacted_secret": 40,
+      "rate": 1.1e-05
+    },
+    "code": {
+      "documents_with_redacted_secret": 615,
+      "rate": 0.00089
+    },
+    "math": {
+      "documents_with_redacted_secret": 1,
+      "rate": 2e-06
+    }
+  },
+  "known_defect_accepted": {
+    "id": "PLACEHOLDER_OVER_REDACTION",
+    "description": "The accepted code build comes from the fourth detector revision. A fifth revision was started to stop printf-style, escaped-angle and nested-bracket placeholders being redacted, but was halted before selection.",
+    "measured_impact": "656 documents out of 4,610,502 across all three languages contain [REDACTED_SECRET] (0.014 percent). Inspection shows the residual cases are placeholders inside connection-string templates such as mongodb://%s:[REDACTED_SECRET]@%s.",
+    "direction_of_error": "OVER-redaction, not under-redaction. For a security filter this is the safe direction: no additional real secret is exposed by accepting this build.",
+    "decision": "accepted deliberately; the cost of a further full rerun was judged disproportionate to a 0.014 percent cosmetic effect"
+  },
+  "limitations": [
+    "Detectors are regex plus context guards, not trained models. Names, street addresses and dates of birth are NOT detected.",
+    "Near-duplicate deduplication NOT performed (exact only).",
+    "Benchmark decontamination NOT performed.",
+    "Per-repository provenance for code audited only to the license field.",
+    "Secret and PII hit counts were measured on the v1 inputs; the nine additional raw code shards scanned during rebalancing were not fully re-aggregated."
+  ]
+}

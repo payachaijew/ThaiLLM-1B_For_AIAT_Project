@@ -1,0 +1,88 @@
+{
+  "verification_id": "VERIFY-CLEAN-REPLAY-V2",
+  "created_at": "2026-08-21T05:17:32.551681+00:00",
+  "scientific_evidence_allowed": false,
+  "method": "every number re-derived from data/clean_replay_v2; no summary file trusted",
+  "totals": {
+    "en": {
+      "documents": 3507052,
+      "qwen_tokens": 3513258103,
+      "utf8_bytes": 16345514747,
+      "shards": 5
+    },
+    "code": {
+      "documents": 690716,
+      "qwen_tokens": 1000075432,
+      "utf8_bytes": 3912817614,
+      "shards": 9
+    },
+    "math": {
+      "documents": 412734,
+      "qwen_tokens": 592472266,
+      "utf8_bytes": 2020777498,
+      "shards": 4
+    }
+  },
+  "token_recount": {
+    "en": {
+      "sampled": 100,
+      "mismatches": 0
+    },
+    "code": {
+      "sampled": 100,
+      "mismatches": 0
+    },
+    "math": {
+      "sampled": 100,
+      "mismatches": 0
+    }
+  },
+  "integrity": {
+    "en": {
+      "scanned": 250000,
+      "exact_duplicates": 0,
+      "heldout_leakage": 0
+    },
+    "code": {
+      "scanned": 250000,
+      "exact_duplicates": 0,
+      "heldout_leakage": 0
+    },
+    "math": {
+      "scanned": 250000,
+      "exact_duplicates": 0,
+      "heldout_leakage": 0
+    }
+  },
+  "code_distribution": {
+    "total_tokens": 1000075432,
+    "by_group_pct": {
+      "python": 14.499,
+      "javascript_typescript": 14.504,
+      "java": 11.999,
+      "c_cpp": 11.999,
+      "csharp": 4.0,
+      "markdown": 5.0,
+      "html": 5.001,
+      "long_tail": 26.668
+    },
+    "max_single_language_pct": 14.499,
+    "max_single_language": "Python"
+  },
+  "redaction": {
+    "en": {
+      "documents_with_redacted_secret": 40,
+      "rate": 1.1e-05
+    },
+    "code": {
+      "documents_with_redacted_secret": 615,
+      "rate": 0.00089
+    },
+    "math": {
+      "documents_with_redacted_secret": 1,
+      "rate": 2e-06
+    }
+  },
+  "errors": [],
+  "verdict": "PASS"
+}
