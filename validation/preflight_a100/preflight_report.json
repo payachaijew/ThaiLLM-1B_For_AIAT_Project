@@ -1,0 +1,92 @@
+{
+  "preflight_id": "PREFLIGHT-V1",
+  "created_at": "2026-08-22T12:55:26.470045+00:00",
+  "scientific_evidence_allowed": false,
+  "purpose": "measurement only; the trained weights are discarded",
+  "config": {
+    "stream": "../data/streams/preflight",
+    "warmup_steps": 10,
+    "measure_steps": 60,
+    "micro_batch": 1,
+    "grad_accum": 8,
+    "seq_len": 8192,
+    "model": "Qwen/Qwen3-1.7B-Base",
+    "revision": "ea980cb0a6c2ae4b936e82123acc929f1cec04c1",
+    "null_logit_init": 2.0,
+    "precision": "mixed",
+    "nproc": 2
+  },
+  "conditions": {
+    "S0": {
+      "status": "ok",
+      "measured_steps": 60,
+      "tokens_per_s_median": 14949.8,
+      "tokens_per_s_mean": 14936.1,
+      "step_time_s_median": 8.7675,
+      "step_time_s_p90": 8.8095,
+      "step_time_cv": 0.0032,
+      "peak_vram_gb": 54.93,
+      "wall_seconds": 633.9,
+      "final_loss": 1.64896,
+      "throughput_vs_S0": 1.0
+    },
+    "D1": {
+      "status": "ok",
+      "measured_steps": 60,
+      "tokens_per_s_median": 12438.8,
+      "tokens_per_s_mean": 12431.3,
+      "step_time_s_median": 10.5373,
+      "step_time_s_p90": 10.5605,
+      "step_time_cv": 0.0019,
+      "peak_vram_gb": 72.94,
+      "wall_seconds": 758.3,
+      "final_loss": 1.68614,
+      "throughput_vs_S0": 0.832
+    },
+    "D2": {
+      "status": "ok",
+      "measured_steps": 60,
+      "tokens_per_s_median": 12291.5,
+      "tokens_per_s_mean": 12285.1,
+      "step_time_s_median": 10.6637,
+      "step_time_s_p90": 10.6884,
+      "step_time_cv": 0.0017,
+      "peak_vram_gb": 72.95,
+      "wall_seconds": 768.1,
+      "final_loss": 1.68622,
+      "throughput_vs_S0": 0.8222
+    }
+  },
+  "resume_test": {
+    "status": "ok",
+    "resume_vs_straight": 0.0003951266407966614,
+    "nondeterminism_floor": 0.0003928467631340027,
+    "threshold": 0.0007856935262680054,
+    "verdict": "resume is within the hardware's own run-to-run noise",
+    "method": "four legs; the last pair measures how much this hardware disagrees with itself, and resume is judged against that rather than against a constant",
+    "note": "recomputed after e2dcd62; the run that produced these checkpoints crashed while writing the report"
+  },
+  "errors": [],
+  "nproc": 2,
+  "ddp_exercised": true,
+  "routing_overhead": {
+    "note": "arXiv:2607.27230 reports 0.55-0.88x of baseline for the AttnRes family even with fused Triton kernels. Compare.",
+    "ratios": {
+      "S0": 1.0,
+      "D1": 0.832,
+      "D2": 0.8222
+    }
+  },
+  "budget_projection": {
+    "basis": "measured S0 median tokens/s on THIS machine, single process",
+    "tokens_per_s": 14949.8,
+    "gpu_hours_per_billion_tokens": 18.58,
+    "for_budgets": {
+      "1B": 18.6,
+      "3B": 55.7,
+      "6B": 111.5,
+      "10B": 185.8
+    },
+    "note": "Multiply by GPU count only if you scale the job; total GPU-hours stay roughly constant, so cost is driven by tokens, not by card count."
+  }
+}

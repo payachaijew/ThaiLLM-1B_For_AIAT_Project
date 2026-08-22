@@ -1,0 +1,22 @@
+
+=== S0 : 70 steps ===
+  14,950 tok/s median · VRAM 54.93 GB · step CV 0.0032
+
+=== D1 : 70 steps ===
+  12,439 tok/s median · VRAM 72.94 GB · step CV 0.0019
+
+=== D2 : 70 steps ===
+  12,292 tok/s median · VRAM 72.95 GB · step CV 0.0017
+
+=== resume test (S0) ===
+  FAILED
+
+=== งบจากตัวเลขจริง ===
+  14,950 tok/s  ->  18.58 GPU-hr ต่อ 1B tokens
+      1B:   18.6 GPU-hr
+      3B:   55.7 GPU-hr
+      6B:  111.5 GPU-hr
+     10B:  185.8 GPU-hr
+
+[+] /workspace/preflight_out/preflight_report.json
+[!] มีข้อผิดพลาด — อย่าเพิ่งเริ่มรอบหลัก

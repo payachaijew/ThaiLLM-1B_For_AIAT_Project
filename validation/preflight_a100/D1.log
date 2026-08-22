@@ -1,0 +1,90 @@
+
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+[*] stream ../data/streams/preflight  4,096 sequences  sha af39c1a22acf616a
+[*] condition D1  device cuda:0  world 2
+[*] 131,072 tokens/step  ->  70 steps
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 1/310 [00:00<03:21,  1.53it/s]Loading weights:  72%|███████▏  | 223/310 [00:00<00:00, 392.55it/s]Loading weights:   0%|          | 1/310 [00:00<03:57,  1.30it/s]Loading weights:  72%|███████▏  | 223/310 [00:00<00:00, 344.87it/s]Loading weights: 100%|██████████| 310/310 [00:00<00:00, 319.00it/s]
+Loading weights: 100%|██████████| 310/310 [00:01<00:00, 275.19it/s]
+[*] precision mixed  autocast torch.bfloat16  1.72B params  ~27.5 GB for weights+grads+optimizer (activations on top)
+[*] routers: 48 receive gradient, 24 gated by the zero-init query (live once query moves), 0 inert in the first block (no earlier block to route over)
+/venv/main/lib/python3.12/site-packages/torch/autograd/graph.py:869: UserWarning: Grad strides do not match bucket view strides. This may indicate grad was not created according to the gradient layout contract, or that the param's strides changed since DDP was constructed.  This is not an error, but may impair performance.
+grad.sizes() = [1, 2048], strides() = [1, 1]
+bucket_view.sizes() = [1, 2048], strides() = [2048, 1] (Triggered internally at /pytorch/torch/csrc/distributed/c10d/reducer.cpp:332.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+/venv/main/lib/python3.12/site-packages/torch/autograd/graph.py:869: UserWarning: Grad strides do not match bucket view strides. This may indicate grad was not created according to the gradient layout contract, or that the param's strides changed since DDP was constructed.  This is not an error, but may impair performance.
+grad.sizes() = [1, 2048], strides() = [1, 1]
+bucket_view.sizes() = [1, 2048], strides() = [2048, 1] (Triggered internally at /pytorch/torch/csrc/distributed/c10d/reducer.cpp:332.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  step 1/70  loss 2.2470  11,308 tok/s  72.94 GB
+  step 2/70  loss 1.9160  12,474 tok/s  72.94 GB
+  step 3/70  loss 1.8054  12,216 tok/s  72.94 GB
+  step 4/70  loss 2.3399  12,450 tok/s  72.94 GB
+  step 5/70  loss 2.0243  12,446 tok/s  72.94 GB
+  step 6/70  loss 2.3865  12,288 tok/s  72.94 GB
+  step 7/70  loss 2.2553  12,440 tok/s  72.94 GB
+  step 8/70  loss 2.0179  12,447 tok/s  72.94 GB
+  step 9/70  loss 1.8724  12,329 tok/s  72.94 GB
+  step 10/70  loss 2.0196  12,449 tok/s  72.94 GB
+  step 11/70  loss 2.0794  12,343 tok/s  72.94 GB
+  step 12/70  loss 1.9844  12,445 tok/s  72.94 GB
+  step 13/70  loss 2.1564  12,440 tok/s  72.94 GB
+  step 14/70  loss 1.9981  12,398 tok/s  72.94 GB
+  step 15/70  loss 1.8730  12,446 tok/s  72.94 GB
+  step 16/70  loss 2.1116  12,438 tok/s  72.94 GB
+  step 17/70  loss 2.0172  12,448 tok/s  72.94 GB
+  step 18/70  loss 1.8268  12,449 tok/s  72.94 GB
+  step 19/70  loss 1.8128  12,436 tok/s  72.94 GB
+  step 20/70  loss 1.8252  12,450 tok/s  72.94 GB
+  step 21/70  loss 1.8655  12,447 tok/s  72.94 GB
+  step 22/70  loss 1.8997  12,421 tok/s  72.94 GB
+  step 23/70  loss 1.8517  12,443 tok/s  72.94 GB
+  step 24/70  loss 1.9589  12,442 tok/s  72.94 GB
+  step 25/70  loss 1.9986  12,412 tok/s  72.94 GB
+  step 26/70  loss 2.2650  12,441 tok/s  72.94 GB
+  step 27/70  loss 1.9362  12,412 tok/s  72.94 GB
+  step 28/70  loss 1.7353  12,440 tok/s  72.94 GB
+  step 29/70  loss 1.9544  12,441 tok/s  72.94 GB
+  step 30/70  loss 1.8545  12,414 tok/s  72.94 GB
+  step 31/70  loss 1.7827  12,440 tok/s  72.94 GB
+  step 32/70  loss 2.0980  12,446 tok/s  72.94 GB
+  step 33/70  loss 1.8199  12,424 tok/s  72.94 GB
+  step 34/70  loss 1.9866  12,439 tok/s  72.94 GB
+  step 35/70  loss 2.0155  12,437 tok/s  72.94 GB
+  step 36/70  loss 1.8361  12,439 tok/s  72.94 GB
+  step 37/70  loss 1.9228  12,445 tok/s  72.94 GB
+  step 38/70  loss 1.9095  12,441 tok/s  72.94 GB
+  step 39/70  loss 1.8167  12,444 tok/s  72.94 GB
+  step 40/70  loss 1.9517  12,446 tok/s  72.94 GB
+  step 41/70  loss 2.0226  12,434 tok/s  72.94 GB
+  step 42/70  loss 1.8253  12,440 tok/s  72.94 GB
+  step 43/70  loss 1.7692  12,440 tok/s  72.94 GB
+  step 44/70  loss 1.8960  12,448 tok/s  72.94 GB
+  step 45/70  loss 1.9239  12,446 tok/s  72.94 GB
+  step 46/70  loss 1.5635  12,442 tok/s  72.94 GB
+  step 47/70  loss 1.7866  12,439 tok/s  72.94 GB
+  step 48/70  loss 1.9606  12,434 tok/s  72.94 GB
+  step 49/70  loss 1.9076  12,424 tok/s  72.94 GB
+  step 50/70  loss 1.7995  12,438 tok/s  72.94 GB
+  step 51/70  loss 1.4700  12,439 tok/s  72.94 GB
+  step 52/70  loss 1.8798  12,431 tok/s  72.94 GB
+  step 53/70  loss 1.9782  12,430 tok/s  72.94 GB
+  step 54/70  loss 2.0340  12,436 tok/s  72.94 GB
+  step 55/70  loss 1.9650  12,438 tok/s  72.94 GB
+  step 56/70  loss 2.0565  12,440 tok/s  72.94 GB
+  step 57/70  loss 2.1020  12,440 tok/s  72.94 GB
+  step 58/70  loss 1.7369  12,439 tok/s  72.94 GB
+  step 59/70  loss 1.8187  12,440 tok/s  72.94 GB
+  step 60/70  loss 1.7943  12,442 tok/s  72.94 GB
+  step 61/70  loss 1.9249  12,433 tok/s  72.94 GB
+  step 62/70  loss 1.8464  12,438 tok/s  72.94 GB
+  step 63/70  loss 1.8946  12,338 tok/s  72.94 GB
+  step 64/70  loss 1.8852  12,436 tok/s  72.94 GB
+  step 65/70  loss 1.5626  12,430 tok/s  72.94 GB
+  step 66/70  loss 1.7739  12,345 tok/s  72.94 GB
+  step 67/70  loss 1.8806  12,431 tok/s  72.94 GB
+  step 68/70  loss 1.8681  12,397 tok/s  72.94 GB
+  step 69/70  loss 1.9150  12,428 tok/s  72.94 GB
+  step 70/70  loss 1.6861  12,435 tok/s  72.94 GB
+[+] done

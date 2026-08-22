@@ -1,0 +1,13 @@
+
+=== S0 : 3 steps ===
+  14,960 tok/s median · VRAM 54.93 GB · step CV 0.0045
+
+=== resume test (S0) ===
+  ok
+Traceback (most recent call last):
+  File "/workspace/repo/src/preflight.py", line 238, in <module>
+    main()
+  File "/workspace/repo/src/preflight.py", line 214, in main
+    if "S0" in ok:
+       ^^^^^^^^^^
+TypeError: argument of type 'bool' is not iterable

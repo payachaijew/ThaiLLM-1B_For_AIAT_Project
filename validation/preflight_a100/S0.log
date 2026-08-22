@@ -1,0 +1,81 @@
+
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+[*] stream ../data/streams/preflight  4,096 sequences  sha af39c1a22acf616a
+[*] condition S0  device cuda:0  world 2
+[*] 131,072 tokens/step  ->  70 steps
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 1/310 [00:00<03:23,  1.52it/s]Loading weights:  65%|██████▍   | 201/310 [00:00<00:00, 352.01it/s]Loading weights: 100%|██████████| 310/310 [00:01<00:00, 361.61it/s]Loading weights: 100%|██████████| 310/310 [00:01<00:00, 292.62it/s]
+Loading weights:   0%|          | 1/310 [00:00<03:53,  1.32it/s]Loading weights:  72%|███████▏  | 223/310 [00:00<00:00, 344.48it/s]Loading weights: 100%|██████████| 310/310 [00:01<00:00, 275.39it/s]
+[*] precision mixed  autocast torch.bfloat16  1.72B params  ~27.5 GB for weights+grads+optimizer (activations on top)
+  step 1/70  loss 1.8492  13,735 tok/s  48.05 GB
+  step 2/70  loss 1.4184  15,033 tok/s  54.93 GB
+  step 3/70  loss 1.4769  14,890 tok/s  54.93 GB
+  step 4/70  loss 1.9381  15,001 tok/s  54.93 GB
+  step 5/70  loss 1.6805  14,986 tok/s  54.93 GB
+  step 6/70  loss 2.0531  14,957 tok/s  54.93 GB
+  step 7/70  loss 1.9455  14,968 tok/s  54.93 GB
+  step 8/70  loss 1.7592  14,955 tok/s  54.93 GB
+  step 9/70  loss 1.6480  14,956 tok/s  54.93 GB
+  step 10/70  loss 1.8237  14,957 tok/s  54.93 GB
+  step 11/70  loss 1.8797  14,841 tok/s  54.93 GB
+  step 12/70  loss 1.8066  14,934 tok/s  54.93 GB
+  step 13/70  loss 1.9898  14,952 tok/s  54.93 GB
+  step 14/70  loss 1.8559  14,933 tok/s  54.93 GB
+  step 15/70  loss 1.7376  14,936 tok/s  54.93 GB
+  step 16/70  loss 1.9933  14,932 tok/s  54.93 GB
+  step 17/70  loss 1.9034  14,928 tok/s  54.93 GB
+  step 18/70  loss 1.7229  14,950 tok/s  54.93 GB
+  step 19/70  loss 1.7128  14,932 tok/s  54.93 GB
+  step 20/70  loss 1.7249  14,705 tok/s  54.93 GB
+  step 21/70  loss 1.7768  14,935 tok/s  54.93 GB
+  step 22/70  loss 1.8160  14,907 tok/s  54.93 GB
+  step 23/70  loss 1.7783  14,937 tok/s  54.93 GB
+  step 24/70  loss 1.8834  14,940 tok/s  54.93 GB
+  step 25/70  loss 1.9051  14,916 tok/s  54.93 GB
+  step 26/70  loss 2.1917  14,958 tok/s  54.93 GB
+  step 27/70  loss 1.8643  14,948 tok/s  54.93 GB
+  step 28/70  loss 1.6715  14,957 tok/s  54.93 GB
+  step 29/70  loss 1.8979  14,954 tok/s  54.93 GB
+  step 30/70  loss 1.7979  14,853 tok/s  54.93 GB
+  step 31/70  loss 1.7281  14,947 tok/s  54.93 GB
+  step 32/70  loss 2.0392  14,947 tok/s  54.93 GB
+  step 33/70  loss 1.7706  14,947 tok/s  54.93 GB
+  step 34/70  loss 1.9292  14,943 tok/s  54.93 GB
+  step 35/70  loss 1.9609  14,944 tok/s  54.93 GB
+  step 36/70  loss 1.7833  14,950 tok/s  54.93 GB
+  step 37/70  loss 1.8745  14,948 tok/s  54.93 GB
+  step 38/70  loss 1.8602  14,780 tok/s  54.93 GB
+  step 39/70  loss 1.7526  14,949 tok/s  54.93 GB
+  step 40/70  loss 1.9018  14,954 tok/s  54.93 GB
+  step 41/70  loss 1.9816  14,944 tok/s  54.93 GB
+  step 42/70  loss 1.7766  14,937 tok/s  54.93 GB
+  step 43/70  loss 1.7256  14,949 tok/s  54.93 GB
+  step 44/70  loss 1.8448  14,955 tok/s  54.93 GB
+  step 45/70  loss 1.8789  14,956 tok/s  54.93 GB
+  step 46/70  loss 1.4764  14,951 tok/s  54.93 GB
+  step 47/70  loss 1.7312  14,960 tok/s  54.93 GB
+  step 48/70  loss 1.9176  14,966 tok/s  54.93 GB
+  step 49/70  loss 1.8650  14,890 tok/s  54.93 GB
+  step 50/70  loss 1.7585  14,955 tok/s  54.93 GB
+  step 51/70  loss 1.4243  14,963 tok/s  54.93 GB
+  step 52/70  loss 1.8234  14,962 tok/s  54.93 GB
+  step 53/70  loss 1.9345  14,958 tok/s  54.93 GB
+  step 54/70  loss 1.9938  14,960 tok/s  54.93 GB
+  step 55/70  loss 1.9231  14,950 tok/s  54.93 GB
+  step 56/70  loss 2.0132  14,960 tok/s  54.93 GB
+  step 57/70  loss 2.0570  14,833 tok/s  54.93 GB
+  step 58/70  loss 1.6928  14,964 tok/s  54.93 GB
+  step 59/70  loss 1.7631  14,962 tok/s  54.93 GB
+  step 60/70  loss 1.7573  14,963 tok/s  54.93 GB
+  step 61/70  loss 1.8853  14,969 tok/s  54.93 GB
+  step 62/70  loss 1.8077  14,969 tok/s  54.93 GB
+  step 63/70  loss 1.8585  14,961 tok/s  54.93 GB
+  step 64/70  loss 1.8457  14,969 tok/s  54.93 GB
+  step 65/70  loss 1.5178  14,970 tok/s  54.93 GB
+  step 66/70  loss 1.7312  14,960 tok/s  54.93 GB
+  step 67/70  loss 1.8438  14,967 tok/s  54.93 GB
+  step 68/70  loss 1.8282  14,879 tok/s  54.93 GB
+  step 69/70  loss 1.8747  14,964 tok/s  54.93 GB
+  step 70/70  loss 1.6490  14,964 tok/s  54.93 GB
+[+] done

@@ -1,0 +1,52 @@
+
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+[*] stream ../data/streams/preflight  4,096 sequences  sha af39c1a22acf616a
+[*] condition S0  device cuda:0  world 2
+[*] 131,072 tokens/step  ->  40 steps
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   0%|          | 1/310 [00:00<03:31,  1.46it/s]Loading weights:  68%|██████▊   | 212/310 [00:00<00:00, 356.77it/s]Loading weights:   0%|          | 1/310 [00:00<03:49,  1.35it/s]Loading weights:  68%|██████▊   | 212/310 [00:00<00:00, 331.49it/s]Loading weights: 100%|██████████| 310/310 [00:01<00:00, 298.39it/s]
+Loading weights: 100%|██████████| 310/310 [00:01<00:00, 275.52it/s]
+[*] precision mixed  autocast torch.bfloat16  1.72B params  ~27.5 GB for weights+grads+optimizer (activations on top)
+  step 1/40  loss 1.8492  13,757 tok/s  48.05 GB
+  step 2/40  loss 1.4184  14,985 tok/s  54.93 GB
+  step 3/40  loss 1.4767  14,887 tok/s  54.93 GB
+  step 4/40  loss 1.9380  14,948 tok/s  54.93 GB
+  step 5/40  loss 1.6805  14,945 tok/s  54.93 GB
+  step 6/40  loss 2.0532  14,912 tok/s  54.93 GB
+  step 7/40  loss 1.9455  14,937 tok/s  54.93 GB
+  step 8/40  loss 1.7594  14,932 tok/s  54.93 GB
+  step 9/40  loss 1.6480  14,928 tok/s  54.93 GB
+  step 10/40  loss 1.8237  14,943 tok/s  54.93 GB
+  step 11/40  loss 1.8797  14,829 tok/s  54.93 GB
+  step 12/40  loss 1.8067  14,932 tok/s  54.93 GB
+  step 13/40  loss 1.9898  14,937 tok/s  54.93 GB
+  step 14/40  loss 1.8556  14,932 tok/s  54.93 GB
+  step 15/40  loss 1.7376  14,944 tok/s  54.93 GB
+  step 16/40  loss 1.9934  14,941 tok/s  54.93 GB
+  step 17/40  loss 1.9032  14,948 tok/s  54.93 GB
+  step 18/40  loss 1.7227  14,944 tok/s  54.93 GB
+  step 19/40  loss 1.7128  14,945 tok/s  54.93 GB
+  step 20/40  loss 1.7248  14,774 tok/s  54.93 GB
+  step 21/40  loss 1.7767  14,952 tok/s  54.93 GB
+  step 22/40  loss 1.8157  14,960 tok/s  54.93 GB
+  step 23/40  loss 1.7779  14,950 tok/s  54.93 GB
+  step 24/40  loss 1.8837  14,960 tok/s  54.93 GB
+  step 25/40  loss 1.9050  14,964 tok/s  54.93 GB
+  step 26/40  loss 2.1916  14,960 tok/s  54.93 GB
+  step 27/40  loss 1.8642  14,954 tok/s  54.93 GB
+  step 28/40  loss 1.6708  14,965 tok/s  54.93 GB
+  step 29/40  loss 1.8979  14,966 tok/s  54.93 GB
+  step 30/40  loss 1.7995  14,882 tok/s  54.93 GB
+  step 31/40  loss 1.7286  14,960 tok/s  54.93 GB
+  step 32/40  loss 2.0389  14,962 tok/s  54.93 GB
+  step 33/40  loss 1.7713  14,952 tok/s  54.93 GB
+  step 34/40  loss 1.9281  14,968 tok/s  54.93 GB
+  step 35/40  loss 1.9625  14,967 tok/s  54.93 GB
+  step 36/40  loss 1.7858  14,964 tok/s  54.93 GB
+  step 37/40  loss 1.8765  14,950 tok/s  54.93 GB
+  step 38/40  loss 1.8633  14,832 tok/s  54.93 GB
+  step 39/40  loss 1.7558  14,973 tok/s  54.93 GB
+  step 40/40  loss 1.9043  14,958 tok/s  54.93 GB
+  [saved] /workspace/preflight_out/resume_test/ckpt_40.pt
+[+] done

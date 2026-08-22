@@ -1505,3 +1505,98 @@ optimizer: exp_avg float32 · exp_avg_sq float32   params: float32   precision: 
 
 ยืนยันบน MPS: unit tests 11/11 · S0 และ D1 รันจบด้วย `precision=mixed`
 DDP จริงยังทดสอบไม่ได้บนเครื่องนี้ (GPU ใบเดียว) — ต้องรัน `--nproc 2` บนเครื่องเช่าเป็นอย่างแรก
+
+---
+
+## A6 — preflight บนฮาร์ดแวร์จริง (2× A100 SXM4 80GB)
+
+**วันที่:** 2026-08-22 · `scientific_evidence_allowed=false`
+**เครื่อง:** vast.ai · 2× A100-SXM4-80GB · NVLink · PCIe 4.0 ×16 · $2.348/hr · เช็กเกีย
+**สภาพแวดล้อม:** torch 2.11.0+cu128 · transformers 5.15.1 · Qwen3-1.7B-Base `ea980cb`
+**ผลดิบ:** `validation/preflight_a100/`
+
+### ผลการวัด
+
+| เงื่อนไข | tokens/s | เทียบ S0 | peak VRAM | step_time p90 | step_time_cv |
+|---|---|---|---|---|---|
+| S0 | 14,950 | 1.000 | 54.93 GB | 8.81 s | 0.0032 |
+| D1 | 12,439 | 0.832 | 72.94 GB | 10.56 s | 0.0019 |
+| D2 | 12,292 | 0.822 | 72.95 GB | 10.69 s | 0.0017 |
+
+`ddp_exercised: true` · micro-batch 1 · grad-accum 8 · seq 8192 · mixed precision
+
+routing overhead 0.82–0.83× อยู่ปลายบนของช่วง 0.55–0.88× ที่ `arXiv:2607.27230` รายงาน
+D2 (4 heads) แพงกว่า D1 (1 head) เพียง 1% และใช้ VRAM เท่ากัน สอดคล้องกับที่ MHAR
+อ้างว่าเพิ่ม parameter เป็นศูนย์ · step_time_cv 0.002–0.003 คือเครื่องนิ่งมาก ไม่มี throttle
+
+### บั๊กที่เจอ — ทั้งหมดเป็นชนิดที่เครื่อง MPS หาไม่เจอ
+
+**1. DDP ล้มทุกสเต็ปในเงื่อนไข routed**
+
+```
+RuntimeError: Expected to have finished reduction in the prior iteration ...
+parameters that were not used in producing loss
+```
+
+router ของบล็อกแรกไม่เคยได้ gradient เพราะไม่มีบล็อกก่อนหน้าให้ route
+DDP บังคับว่าทุก parameter ต้องได้ gradient ทุกรอบ reducer จึงรอ bucket ที่ไม่มีวันเต็ม
+แก้โดย**ไม่สร้าง router ให้บล็อกแรก** (ยังห่อ layer ไว้ เพราะ block bookkeeping ของมัน
+คือสิ่งที่ผลิต sources ให้บล็อกถัดไป) — `find_unused_parameters=True` กลบ error ได้
+แต่เพิ่มการไล่กราฟทุกรอบ ซึ่งทำลายจุดประสงค์ของสคริปต์ที่มีไว้วัด throughput
+เพิ่มเทสต์ 2 ตัวล็อก invariant ไว้ เพราะรัน GPU ใบเดียวสังเกตไม่เห็น (`a8bd5db`)
+
+**2. เกณฑ์ resume test ผิด — ผมตั้งไว้เป็นค่าคงที่**
+
+รอบแรก resume test FAILED ที่ `3.96e-4` เทียบเกณฑ์ `1e-4`
+รันเส้นตรงสองรอบด้วยอาร์กิวเมนต์และ seed เดียวกันเป๊ะ ได้ต่างกัน **`4.10e-4`**
+คือ **มากกว่า resume** ต่างกันครบทั้ง 311 tensor
+
+สาเหตุ: CUDA ใช้ atomics ใน backward, cuBLAS เลือก workspace ตอนรัน, NCCL ไม่ fix
+ลำดับ all-reduce ความต่างระดับ 1e-4 ที่สเต็ปแรกจึงขยายไปทั่วโมเดลภายใน 40 สเต็ป
+ส่วน MPS ที่ผมเขียนเทสต์ตอนแรก deterministic จริงและให้ 0 พอดี **จึงทำให้ตั้งเกณฑ์ผิด**
+
+แก้ให้ preflight **วัดพื้น noise เอง** ด้วยขาที่ 4 ที่เหมือนขาที่ 3 ทุกประการ
+แล้วตัดสิน resume เทียบกับพื้นนั้น (`9f030ff`) ผลยืนยันบนเครื่องจริง:
+
+| | |
+|---|---|
+| resume_vs_straight | **3.9513e-04** |
+| nondeterminism_floor | **3.9285e-04** |
+| threshold (2× floor) | 7.8569e-04 |
+| **ผล** | **ok — resume แม่นเท่าที่ฮาร์ดแวร์นี้จะแม่นได้** |
+
+**ผลที่ตามมาเป็นเงิน: ใช้ spot instance ได้** ซึ่งถูกกว่า On-Demand 2–3 เท่า
+
+**3. ตัวแปรชื่อชนใน preflight** — `ok` ที่เพิ่มใหม่ทับ `ok` ที่ budget projection ใช้อยู่
+ทำให้ preflight crash **หลังจาก resume test ผ่านไปแล้ว** และไม่ได้เขียนรายงาน
+รันที่สำเร็จจึงดูเหมือนรันที่ล้มเหลว (`e2dcd62`)
+
+**4. ดิสก์เต็ม 100%** — checkpoint ละ **20.6 GB** เพราะ fp32 optimizer state
+container disk 82 GB ไม่พอ resume test ต้องมี checkpoint 3 ไฟล์อยู่พร้อมกันเพื่อเทียบคู่
+= **62 GB แค่เทสต์เดียว** → **รอบหลักต้องขอดิสก์ ≥ 300 GB ตอนเช่า**
+
+**5. torch อยู่ใน `/venv/main`** ที่ SSH แบบไม่ interactive มองไม่เห็น และ transformers
+ไม่ได้ติดตั้งมากับ image ต้องเรียก `/venv/main/bin/python` ตรง ๆ
+
+### ประมาณการที่ผิด และค่าที่ถูก
+
+| | ผมประเมิน | วัดได้จริง |
+|---|---|---|
+| peak VRAM | 39.5 GB | **54.9 GB (S0) · 72.9 GB (D1/D2)** |
+| การ์ดขั้นต่ำ | 48 GB "สบาย" | **48 GB ใช้ไม่ได้ · ต้อง 80 GB** |
+
+ที่ไม่ได้นับคือ logits ของ vocab 151,936 ตัวที่ seq 8192 และ DDP gradient bucket
+
+### งบจากตัวเลขที่วัดได้ (14,950 tok/s)
+
+| token | wall-clock | On-Demand | Spot |
+|---|---|---|---|
+| 1B | 18.6 ชม. | $44 | $15–22 |
+| 3B | 55.7 ชม. | $131 | $44–65 |
+| 6B | 111.5 ชม. | $262 | $87–131 |
+| 10B | 185.8 ชม. | $436 | $145–218 |
+
+corpus ที่เตรียมไว้มี 10.9B token — เทรนได้ทั้งชุดในงบระดับ $150–220 บน spot
+
+**สถานะ: preflight ผ่านครบทั้ง 4 ข้อ** พร้อมสำหรับ ablation 3×1B และ CPT หลัก
+รอเพียงคำตอบจาก mentor เรื่องจำนวน token
