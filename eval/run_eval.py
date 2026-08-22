@@ -44,7 +44,9 @@ def main():
     # and that refusal is correct: run it in a disposable environment such as the rented GPU
     # box, not on a personal machine.
     ap.add_argument("--allow-code-exec", action="store_true",
-                    help="required for humaneval; executes model-generated code")
+                    help="required for humaneval; executes model-generated code. Adds both "
+                         "HF_ALLOW_CODE_EVAL=1 and --confirm_run_unsafe_code, which lm-eval "
+                         "0.4.12 needs together. Use only on a disposable machine.")
     a = ap.parse_args()
 
     suite = json.loads(SUITE.read_text())
@@ -88,7 +90,12 @@ def main():
         print(f"\n=== {n}-shot: {', '.join(ts)} ===", flush=True)
         env = dict(os.environ)
         if a.allow_code_exec:
+            # Both are required by lm-eval 0.4.12: the environment variable alone leaves the
+            # run refusing with ValueError: _WARNING. Verified on a rented A100 - humaneval
+            # pass@1 0.7 over 20 problems for Qwen3-1.7B-Base.
             env["HF_ALLOW_CODE_EVAL"] = "1"
+            if "humaneval" in ts:
+                cmd += ["--confirm_run_unsafe_code"]
         elif "humaneval" in ts:
             print("  [!] ข้าม humaneval: ต้องใส่ --allow-code-exec (รันโค้ดที่โมเดลสร้าง)")
             results[f"{n}shot"] = {"tasks": ts, "returncode": "skipped_needs_allow_code_exec"}

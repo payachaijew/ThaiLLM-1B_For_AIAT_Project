@@ -227,7 +227,10 @@ def main():
                          "every step rather than from a handful of sampled ones")
     ap.add_argument("--save-every", type=int, default=1000)
     ap.add_argument("--eval-every", type=int, default=500)
-    ap.add_argument("--eval-docs", type=int, default=200)
+    ap.add_argument("--eval-docs", type=int, default=200,
+                    help="documents per held-out set for the periodic eval. Monitoring only: "
+                         "BPB shifts with subsample size, so promotion decisions use the full "
+                         "frozen set via phase0/measure_baseline.py.")
     ap.add_argument("--heldout", action="append", default=[], metavar="LANG=PATH")
     ap.add_argument("--resume", default=None)
     ap.add_argument("--device", default="auto")
@@ -349,7 +352,14 @@ def main():
 
         if is_main and held and step % a.eval_every == 0:
             m = (model.module if ddp else model)
-            ev = {"step": step, "event": "eval"}
+            # eval_docs is recorded because BPB does not converge until the whole held-out
+            # set is scored: the same model on the same file gives 0.43515 over the first 200
+            # Thai documents and 0.454218 over all 2000. Comparing a mid-run number taken at
+            # one subsample size against a baseline taken at another manufactures an
+            # improvement out of nothing. Numbers that decide anything must come from the full
+            # frozen set; these periodic ones are for watching the curve.
+            ev = {"step": step, "event": "eval", "eval_docs": a.eval_docs,
+                  "decision_grade": False}
             for lang, texts in held.items():
                 ev[f"bpb_{lang}"] = eval_bpb(m, tok, texts, dev, chunk=256)
             logf.write(json.dumps(ev) + "\n"); logf.flush()
