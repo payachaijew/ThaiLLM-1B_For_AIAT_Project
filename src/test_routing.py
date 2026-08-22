@@ -52,12 +52,33 @@ class TheRegressionTest(unittest.TestCase):
                 m = DeltaAttnResAdapter(TinyLM(), block_size_layers=2, num_heads=heads)
                 _loss(m, torch.tensor([[1, 2, 3, 4, 5, 6]])).backward()
                 grads = [float(r.query.grad.abs().sum()) for r in m.routers
-                         if r.query.grad is not None]
+                         if r is not None and r.query.grad is not None]
                 self.assertTrue(grads, "no router received a gradient at all")
                 # routers in the first block see no sources yet, so only later ones must move
                 self.assertGreater(max(grads), 0.0,
                                    "router query gradient is zero at initialisation — "
                                    "this is the ROUTE_SCALE_GATE defect")
+
+
+class DDPContractTests(unittest.TestCase):
+    """Every parameter must receive a gradient every step, or DDP raises.
+
+    Measured on 2x A100: leaving routers on the first block made every DDP step fail with
+    "Expected to have finished reduction in the prior iteration". A single-GPU run never
+    notices, so the invariant is pinned here rather than left to the next rental.
+    """
+
+    def test_first_block_has_no_routers(self):
+        m = DeltaAttnResAdapter(TinyLM(n=8), block_size_layers=4)
+        self.assertEqual([r is None for r in m.routers][:4], [True] * 4)
+        self.assertTrue(all(r is not None for r in m.routers[4:]))
+
+    def test_every_parameter_receives_a_gradient(self):
+        torch.manual_seed(0)
+        m = DeltaAttnResAdapter(TinyLM(n=8), block_size_layers=4)
+        _loss(m, torch.tensor([[1, 2, 3, 4, 5, 6]])).backward()
+        missing = [n for n, p in m.named_parameters() if p.requires_grad and p.grad is None]
+        self.assertEqual(missing, [], f"these would stall the DDP reducer: {missing}")
 
 
 class RouterTests(unittest.TestCase):
@@ -126,7 +147,9 @@ class AdapterTests(unittest.TestCase):
         torch.manual_seed(5)
         m = DeltaAttnResAdapter(TinyLM(), block_size_layers=2)
         with torch.no_grad():
-            for r in m.routers: r.query.copy_(torch.randn_like(r.query))
+            for r in m.routers:
+                if r is not None:
+                    r.query.copy_(torch.randn_like(r.query))
         ids = torch.tensor([[1, 2, 3, 4]])
         m.set_next_intervention(null_clamp_mask=torch.ones_like(ids, dtype=torch.bool))
         a = m(ids).logits.detach()

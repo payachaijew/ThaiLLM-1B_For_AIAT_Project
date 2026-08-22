@@ -151,6 +151,14 @@ def _replace(o, h):
 
 class RoutedLayer(nn.Module):
     def __init__(self, layer, router, index, owner):
+        """router is None for layers in the first block.
+
+        Those layers have no earlier block to route over, so a router there would be a
+        parameter that never receives gradient. Under DDP that is fatal, not merely wasteful:
+        the reducer waits for buckets that never fill and the step raises "Expected to have
+        finished reduction in the prior iteration". The layer is still wrapped, because the
+        block bookkeeping below is what produces the sources every later block consumes.
+        """
         super().__init__()
         self.layer, self.router, self.layer_index = layer, router, index
         object.__setattr__(self, "_owner", owner)
@@ -177,17 +185,20 @@ class RoutedLayer(nn.Module):
             raise RuntimeError("routed layer called outside adapter forward")
         if st.block_start is None:
             st.block_start = hidden_states
-        routed, w = self.router(hidden_states, st.sources,
-                                null_clamp_mask=st.null_clamp_mask,
-                                ablate_source_indices=st.ablate_source_indices,
-                                override_weights=st.weight_overrides.get(self.layer_index))
+        if self.router is None:
+            routed, w = hidden_states, None
+        else:
+            routed, w = self.router(hidden_states, st.sources,
+                                    null_clamp_mask=st.null_clamp_mask,
+                                    ablate_source_indices=st.ablate_source_indices,
+                                    override_weights=st.weight_overrides.get(self.layer_index))
         out = self.layer(routed, *a, **k)
         h = _hidden(out)
         # FIX 3 — E2: the archive stored the LIVE weight tensor, keeping the autograd graph
         # alive after the forward returned and pinning activation memory for every layer.
         # Only the baseline avoided that cost, which biased the GPU-hour axis against the
         # routed arms. Diagnostics are detached here.
-        if owner.collect_routing:
+        if owner.collect_routing and w is not None:
             st.records.append({"layer": self.layer_index, "weights": w.detach()})
         if (self.layer_index + 1) % st.block_size_layers == 0:
             st.sources.append(h - st.block_start)
@@ -232,15 +243,22 @@ class DeltaAttnResAdapter(nn.Module):
         self._next: dict[str, Any] = {}
         H = _hidden_size(base_model)
         layers = _find_layers(base_model)
-        routers = [DeltaRouter(H, num_heads, null_logit_init=null_logit_init) for _ in layers]
+        first_block = min(block_size_layers, len(layers))
+        routers = [None if i < first_block
+                   else DeltaRouter(H, num_heads, null_logit_init=null_logit_init)
+                   for i in range(len(layers))]
         object.__setattr__(self, "routers", routers)
         for i, (lyr, r) in enumerate(zip(list(layers), routers)):
             layers[i] = RoutedLayer(lyr, r, i, self)
         self.config = getattr(base_model, "config", None)
-        # FIX 5 — E3: with block_size_layers=4 on a 16-layer model the first block routes over
-        # zero sources, so those routers are dead weight. Surfaced instead of hidden.
+        # FIX 5 — E3: the first block routes over zero sources. Those routers were previously
+        # built anyway and left permanently at their initial values; they are now simply not
+        # created. Beyond the wasted parameters, a parameter that never receives gradient
+        # breaks DDP outright — measured on 2x A100, where every step raised
+        # "Expected to have finished reduction in the prior iteration".
         self.blocks = len(layers) // block_size_layers
-        self.layers_without_sources = min(block_size_layers, len(layers))
+        self.layers_without_sources = first_block
+        self.routed_layers = len(layers) - first_block
 
     # FIX 6 — E4: the archive raised if gradient checkpointing was enabled, so S0 could use it
     # and D1/D2 could not. Different memory regimes per condition make the GPU-hour comparison
@@ -272,4 +290,5 @@ class DeltaAttnResAdapter(nn.Module):
 
     def router_parameters(self):
         for r in self.routers:
-            yield from r.parameters()
+            if r is not None:
+                yield from r.parameters()
