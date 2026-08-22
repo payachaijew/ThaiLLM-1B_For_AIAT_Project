@@ -1305,3 +1305,156 @@ next_required:
 
 Use [`run_record.template.json`](run_record.template.json) for machine-readable
 records and link each artifact from the corresponding entry here.
+
+---
+
+## A3 — lm-evaluation-harness ติดตั้งและ smoke test
+
+**วันที่:** 2026-08-22 · `scientific_evidence_allowed=false`
+**lm-eval:** 0.4.9.1 · **โมเดลทดสอบ:** Qwen3-0.6B-Base `da87bfb` · MPS · fp16 · `--limit 2`
+
+### สิ่งที่ทำ
+
+frozen suite `THAILLM-EVAL-FROZEN-V1` มี 7 งาน + BPB 3 ตัว ตรวจแล้วพบว่า
+lm-eval มี built-in อยู่ 5 งาน ขาด **ThaiExam** และ **M3Exam (ไทย)** จึงเขียน task config เอง:
+
+| ไฟล์ | หมายเหตุ |
+|---|---|
+| `eval/tasks/thaiexam_{onet,tgat,tpat1,a_level}.yaml` | 5 ตัวเลือก (ก–จ) |
+| `eval/tasks/thaiexam_ic.yaml` | **4 ตัวเลือก** — subset `ic` ไม่มีคอลัมน์ `e` |
+| `eval/tasks/thaiexam.yaml` | group รวม 5 subset |
+| `eval/tasks/m3exam_th.yaml` + `utils.py` | map `answer_text` → index |
+| `eval/run_eval.py` | อ่าน frozen suite โดยตรง เพื่อไม่ให้ metric drift |
+
+### บั๊กที่เจอและแก้
+
+1. **`jinja2.UndefinedError: 'e' is undefined`** — ตอนแรกใช้ template เดียวกันทั้ง 5 subset
+   ตรวจ schema จริงพบว่า `ic` (n=95) มีแค่ `a,b,c,d` และยังมีบางแถวที่ `b`/`c` เป็นค่าว่าง
+   แก้โดยแยก YAML ของ `ic` เป็น 4 ตัวเลือก และเพิ่ม `utils.process_thaiexam_{4,5}`
+   กรองแถวที่ตัวเลือกว่างหรือ `answer` ไม่อยู่ในช่วง พร้อมพิมพ์จำนวนที่ตัดทิ้ง
+   — ถ้าไม่กรอง โมเดลจะถูกวัดจากการเลือกระหว่างสตริงว่าง ซึ่งเป็น noise ที่ถูกรายงานเป็น accuracy
+
+2. **`ValueError: _WARNING` ที่ humaneval** — lm-eval กันไว้เพราะ HumanEval ให้คะแนนด้วยการ
+   **รันโค้ดที่โมเดลสร้างขึ้นจริง** แก้โดยเพิ่ม flag `--allow-code-exec` แบบ opt-in
+   (ไม่เปิดอัตโนมัติ) ถ้าไม่ใส่ `run_eval.py` จะข้าม humaneval พร้อมแจ้งเหตุผล
+   **ให้เปิดเฉพาะบนเครื่อง GPU ที่เช่าและทิ้งได้ ห้ามเปิดบนเครื่องส่วนตัว**
+
+3. **HF dataset cache เสีย** — `Feature type 'List' not found` ที่ hellaswag และ ai2_arc
+   แก้โดยลบ `~/.cache/huggingface/datasets/Rowan___hellaswag` และ `allenai___ai2_arc`
+
+### ผล smoke (`--limit 2` — ตัวเลขนี้ห้ามนำไปรายงาน)
+
+| shot | tasks | returncode |
+|---|---|---|
+| 0 | humaneval | `skipped_needs_allow_code_exec` (ตามที่ออกแบบ) |
+| 5 | thaiexam, m3exam_th, belebele_tha_Thai, mmlu | 0 ✅ |
+| 10 | hellaswag | 0 ✅ |
+| 25 | arc_challenge | 0 ✅ |
+
+BPB 3 ตัวไม่ผ่าน lm-eval โดยตั้งใจ — วัดจาก `src/train_cpt.py` และ
+`phase0/measure_baseline.py` และถูกบันทึกไว้ในช่อง `not_run_by_lm_eval` ของรายงาน
+
+**สรุป:** A3 เสร็จ — harness รันได้ครบทุกงานในชุดที่ freeze ไว้ ที่เหลือคือรันเต็ม (ไม่มี `--limit`)
+บนเครื่อง GPU ที่เช่า พร้อม `--allow-code-exec` สำหรับ humaneval
+
+---
+
+## A4 — smoke ของ pipeline เทรนจริงบน MPS
+
+**วันที่:** 2026-08-22 · `scientific_evidence_allowed=false`
+**โมเดล:** Qwen3-0.6B-Base `da87bfb` (ตัวแทน 1.7B เพราะเครื่องนี้เป็น MPS)
+**Stream:** `data/streams/_smoke` — 64 seq × 1024 tokens ตัดมาจาก `main` แล้ว re-chunk
+ไม่เคารพขอบเขตเอกสาร **ใช้ทดสอบท่อเท่านั้น ห้ามใช้วัดผล**
+
+### สิ่งที่ยืนยันแล้ว
+
+| รายการ | ผล |
+|---|---|
+| S0 / D1 / D2 รันจบครบ 3 เงื่อนไข | ✅ |
+| gradient checkpointing เปิดเท่ากันทุกเงื่อนไข | ✅ |
+| BPB eval ระหว่างเทรน (chunked fp32) | ✅ S0 0.5900 → 0.5904, D1 0.7628 → 0.7281 |
+| checkpoint save | ✅ |
+| **resume ตรงเป๊ะ** | ✅ เทียบ 395 tensors ระหว่างรันรวดเดียวกับรัน→หยุด→resume **ต่างสูงสุด 0.000e+00** |
+| unit tests ของ router | ✅ 11/11 |
+
+### สิ่งที่เจอ และเหตุผล
+
+**1. router ของ layer 0–3 ไม่ขยับเลย (`query`=0.0, `null_logit`=2.0 เป๊ะ)**
+ไม่ใช่บั๊ก `route_scale` กลับมา — `block_size=4` ทำให้ layer 0–3 เป็น**บล็อกแรก
+ซึ่งไม่มีบล็อกก่อนหน้าให้ route** router พวกนี้จึงตายโดยโครงสร้าง
+(`routing.py` FIX 5 บันทึกไว้แล้วในชื่อ `layers_without_sources`)
+layer 4 ขึ้นไปขยับจริง: `null_logit` 2.000000 → 2.000041, `|query|max` 4.10e-05 หลัง 4 สเต็ป
+
+**2. `router.norm.weight` ไม่มี gradient ที่ init**
+ไม่ใช่บั๊กเช่นกัน — logit คือ `query · norm(x)` ดังนั้น `∂/∂norm.weight` มีตัวคูณเป็น `query`
+ซึ่ง paper กำหนดให้เริ่มที่ **0 พอดี** วัดยืนยันแล้ว: grad = 0.000e+00 ที่ init
+และ = **1.05e-05 ทันทีที่ query ขยับไป 1e-3** คือมันปลดล็อกตัวเองหลังสเต็ปแรก
+
+**3. D1 กับ D2 ให้ loss เท่ากันเป๊ะที่สเต็ปแรก (3.1348)**
+ถูกต้องตามที่ควรเป็น — query ของทุก head เริ่มที่ 0 เหมือนกันหมด logits จึงเท่ากันหมด
+ไม่ว่าจะมีกี่ head จำนวน head จะเริ่มมีผลก็ต่อเมื่อ query แยกจากกันแล้ว
+(ที่สเต็ป 4 แยกกันจริง: BPB 0.72806 vs 0.72787)
+
+### สิ่งที่เพิ่มเข้าไปจากรอบนี้
+
+**`assert_routers_learn()` ใน `train_cpt.py`** — ทำ forward/backward หนึ่งครั้งก่อนเริ่มเทรน
+แล้ว**บังคับ**ว่า routing parameter นอกบล็อกแรกต้องได้ gradient จริง ถ้าไม่ได้ให้ raise ทันที
+เหตุผล: บั๊ก `route_scale` เดิมทำให้ gradient เป็นศูนย์**แบบเงียบ** งานเทรนจบสวยงาม
+แล้วให้ผลลบที่ดูสะอาดทั้งที่จริงเป็นสิ่งประดิษฐ์ของ wrapper — ความล้มเหลวแบบนี้ต้องถูกตรวจ ไม่ใช่ถูกเชื่อ
+ผลจริงทุกรัน D1/D2: `48 receive gradient, 24 gated by the zero-init query, 12 inert in the first block`
+
+แก้ `float(loss)` เป็น `loss.detach().item()` ตัด UserWarning เรื่อง tensor ที่ยัง requires_grad
+
+### ยังไม่ได้ทดสอบ
+
+- **multi-GPU DDP** — เครื่องนี้ไม่มี GPU หลายใบ ต้องทดสอบบนเครื่องเช่าเป็นอย่างแรก
+- `peak_vram_gb` ไม่ถูกบันทึกบน MPS (โค้ดอ่านจาก `torch.cuda`) จะมีค่าจริงบนเครื่อง CUDA
+- throughput บน MPS (~175 tok/s) **ไม่มีความหมายในการประมาณเวลา** — ตัวเลขที่ใช้จริงต้องมาจาก preflight บน GPU ที่เช่า
+
+### A4 (ต่อ) — บั๊กที่ preflight เจอในตัวมันเอง
+
+รัน `preflight.py` เต็มบน `_smoke` ครบ 4 ส่วน (throughput ×3 เงื่อนไข + resume test)
+รอบแรก resume test ขึ้น `max_abs_weight_diff = 3.36e-4` ทั้งที่การทดสอบด้วยมือก่อนหน้าได้ 0.0
+
+**การไล่หาสาเหตุ** — รันเส้นตรงชุดเดิมซ้ำสองรอบก่อน ได้ต่างกัน `0.000e+00`
+พิสูจน์ว่า MPS deterministic จึงตัดเรื่อง hardware ออก แล้วตรวจ lr schedule พบว่า:
+
+| step | lr เมื่อขอบฟ้า=30 | lr เมื่อขอบฟ้า=40 |
+|---|---|---|
+| 5 | 1.949e-05 | 1.972e-05 |
+| 15 | 1.201e-05 | 1.528e-05 |
+| 29 | 2.057e-06 | 5.472e-06 |
+
+**สาเหตุ:** `--max-steps` ถูกใช้เป็นทั้งจุดหยุด **และ** ตัวหารของ cosine schedule
+preflight รันขาแรกด้วย `--max-steps 30` (ขอบฟ้า 30) แล้ว resume ต่อด้วย 40
+ส่วนรันเส้นตรงใช้ 40 ตลอด → lr ต่างกันตั้งแต่สเต็ปแรก
+**resume ไม่ได้พัง ตัวทดสอบต่างหากที่ระบุผิด**
+
+**ทำไมถึงสำคัญเกินกว่าเรื่องเทสต์:** ถ้า spot instance ถูกเรียกคืนแล้ว resume ด้วย
+`--max-steps` ที่ไม่เท่าเดิม cosine schedule จะเปลี่ยนรูปเงียบ ๆ ทุกขาหลังการหยุดจะเทรน
+ด้วย lr ที่ไม่ใช่ที่ตั้งใจ และ **loss curve มองไม่เห็นความต่างนี้เลย**
+
+**แก้:**
+- แยก `--schedule-steps` ออกจาก `--max-steps` — จุดหยุดกับขอบฟ้า lr เป็นคนละเรื่อง
+- เก็บ `schedule_steps` ใน checkpoint และ **raise ตอน resume ถ้าไม่ตรง** พร้อมบอกค่าที่ต้องใส่
+- preflight ปักขอบฟ้าเป็นระยะเต็มทั้งสองขา
+- resume test เปลี่ยนจากเทียบ loss เป็น **เทียบทุก tensor** — เทียบ loss จับไม่ได้ถ้า resume
+  โหลดน้ำหนักถูกแต่เล่นข้อมูลผิดช่วง
+- เพิ่ม `--log-every` (preflight ตั้งเป็น 1) เดิม log ทุก 10 สเต็ป ทำให้ `measured_steps`
+  ได้แค่ 2 จาก 20 และ `step_time_cv` ที่คำนวณจาก 2 จุดไม่ใช่สถิติ
+
+**ผลหลังแก้:** `resume ok · max_abs_weight_diff 0.0 · measured_steps 6 · step_time_cv 0.021`
+
+### ตัวเลข throughput จาก preflight (MPS — ห้ามใช้ประมาณเวลาจริง)
+
+| เงื่อนไข | tokens/s | เทียบ S0 |
+|---|---|---|
+| S0 | 164.1 | 1.00 |
+| D1 | 99.7 | 0.61 |
+| D2 | 137.3 | 0.84 |
+
+อยู่ในช่วง 0.55–0.88× ที่ `arXiv:2607.27230` (MHAR) รายงานไว้ แต่ **ตัวเลขบน MPS
+ไม่ใช่หลักฐานว่า GPU จริงจะเป็นแบบนี้** ตัวเลขที่ใช้วางงบต้องมาจาก preflight บนการ์ดที่เช่า
+`peak_vram_gb` เป็น null เพราะโค้ดอ่านจาก `torch.cuda` — จะมีค่าจริงบนเครื่อง CUDA
+
+**สถานะ: A1–A4 ครบแล้ว** เหลือ DDP ที่ทดสอบได้เฉพาะบนเครื่องที่มี GPU หลายใบ

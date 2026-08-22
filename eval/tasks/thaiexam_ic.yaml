@@ -1,0 +1,20 @@
+# ThaiExam subset: ic
+# ต่างจาก subset อื่น: มีแค่ 4 ตัวเลือก (ไม่มี e) และบางแถวมีตัวเลือกว่าง
+# ใช้ YAML แยกและกรองแถวที่ตัวเลือกไม่ครบ ไม่ใช่ปล่อยให้ Jinja พังหรือให้โมเดลเลือกช่องว่าง
+task: thaiexam_ic
+dataset_path: scb10x/thai_exam
+dataset_name: ic
+test_split: test
+fewshot_split: test
+output_type: multiple_choice
+process_docs: !function utils.process_thaiexam_4
+doc_to_text: "คำถาม: {{question}}\nก. {{a}}\nข. {{b}}\nค. {{c}}\nง. {{d}}\nคำตอบ:"
+doc_to_choice: ["ก", "ข", "ค", "ง"]
+doc_to_target: "{{['a','b','c','d'].index(answer)}}"
+num_fewshot: 5
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

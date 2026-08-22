@@ -49,6 +49,10 @@ def main():
     ap.add_argument("--routing-heads", type=int, default=4)
     ap.add_argument("--device", default="auto")
     ap.add_argument("--model", default="Qwen/Qwen3-1.7B-Base")
+    # Must be forwarded. Without it train_cpt falls back to its own default revision, which
+    # belongs to a DIFFERENT repo, and the run dies with an unrelated config error.
+    ap.add_argument("--revision", default="ea980cb0a6c2ae4b936e82123acc929f1cec04c1")
+    ap.add_argument("--null-logit-init", type=float, default=2.0)
     a = ap.parse_args()
 
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
@@ -60,16 +64,21 @@ def main():
         "purpose": "measurement only; the trained weights are discarded",
         "config": {"stream": a.stream, "warmup_steps": a.warmup_steps,
                    "measure_steps": a.measure_steps, "micro_batch": a.micro_batch,
-                   "grad_accum": a.grad_accum, "seq_len": a.seq_len, "model": a.model},
+                   "grad_accum": a.grad_accum, "seq_len": a.seq_len, "model": a.model,
+                   "revision": a.revision, "null_logit_init": a.null_logit_init},
         "conditions": {}, "resume_test": {}, "errors": [],
     }
 
     base = [sys.executable, str(HERE / "train_cpt.py"), "--stream", a.stream,
-            "--model", a.model, "--seq-len", str(a.seq_len),
+            "--model", a.model, "--revision", a.revision,
+            "--null-logit-init", str(a.null_logit_init), "--seq-len", str(a.seq_len),
             "--micro-batch", str(a.micro_batch), "--grad-accum", str(a.grad_accum),
             "--routing-heads", str(a.routing_heads), "--device", a.device,
             "--max-steps", str(total), "--save-every", str(10**9),
-            "--eval-every", str(10**9), "--warmup", str(a.warmup_steps)]
+            "--eval-every", str(10**9), "--warmup", str(a.warmup_steps),
+            # Every step, not every tenth. Throughput statistics are the whole point of this
+            # script, and step_time_cv computed from two sampled steps is not a statistic.
+            "--log-every", "1"]
 
     for cond in a.conditions.split(","):
         cond = cond.strip()
@@ -119,21 +128,41 @@ def main():
     print("\n=== resume test (S0) ===", flush=True)
     rd = out / "resume_test"
     half = max(a.warmup_steps + 10, 30)
+    full = half + 10
+    # --schedule-steps pins the LR horizon to the FULL run. Without it the interrupted leg
+    # would follow a cosine sized for its own early stop, and the comparison below would fail
+    # for a reason that has nothing to do with whether resume works.
     rc1 = run(base + ["--condition", "S0", "--out", str(rd), "--max-steps", str(half),
-                      "--save-every", str(half)], out / "resume_a.log")
+                      "--schedule-steps", str(full), "--save-every", str(half)],
+              out / "resume_a.log")
     ck = rd / f"ckpt_{half}.pt"
     if rc1 == 0 and ck.exists():
-        rc2 = run(base + ["--condition", "S0", "--out", str(rd / "cont"),
-                          "--max-steps", str(half + 10), "--resume", str(ck)],
+        cont_dir = rd / "cont"
+        rc2 = run(base + ["--condition", "S0", "--out", str(cont_dir),
+                          "--max-steps", str(full), "--schedule-steps", str(full),
+                          "--resume", str(ck), "--save-every", str(full)],
                   out / "resume_b.log")
-        fresh = [r for r in read_log(rd) if r.get("step") == half]
-        cont = [r for r in read_log(rd / "cont") if r.get("step") == half + 10]
+        # Continue the ORIGINAL run to the same step, so there is something to compare against.
+        rc3 = run(base + ["--condition", "S0", "--out", str(rd),
+                          "--max-steps", str(full), "--schedule-steps", str(full),
+                          "--save-every", str(full)],
+                  out / "resume_c.log")
+        straight = rd / f"ckpt_{full}.pt"
+        resumed = cont_dir / f"ckpt_{full}.pt"
+        worst = None
+        if rc2 == 0 and rc3 == 0 and straight.exists() and resumed.exists():
+            import torch
+            A = torch.load(straight, map_location="cpu", weights_only=False)["model"]
+            B = torch.load(resumed, map_location="cpu", weights_only=False)["model"]
+            worst = max(float((A[k].float() - B[k].float()).abs().max()) for k in A)
         report["resume_test"] = {
-            "status": "ok" if rc2 == 0 and cont else "FAILED",
+            "status": "ok" if worst is not None and worst < 1e-4 else "FAILED",
             "checkpoint": str(ck.name),
-            "loss_before": fresh[0]["loss"] if fresh else None,
-            "loss_after_resume": cont[0]["loss"] if cont else None,
-            "interpretation": "A run that cannot resume will lose everything if a spot "
+            "max_abs_weight_diff": worst,
+            "method": "run straight to step N, and separately stop at N-10 and resume; compare "
+                      "every tensor. Comparing losses would not catch a resume that reloaded "
+                      "the weights but replayed the wrong slice of data — comparing weights does.",
+            "interpretation": "A run that cannot resume exactly will lose everything if a spot "
                               "instance is reclaimed. This must be ok before the main run.",
         }
     else:

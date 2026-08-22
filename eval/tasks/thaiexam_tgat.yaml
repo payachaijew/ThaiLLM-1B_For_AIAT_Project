@@ -1,0 +1,19 @@
+# ThaiExam subset: tgat — ไม่มีใน lm-eval ต้องเขียนเอง
+# freeze ตาม THAILLM-EVAL-FROZEN-V1 (5 shots, accuracy)
+task: thaiexam_tgat
+dataset_path: scb10x/thai_exam
+dataset_name: tgat
+test_split: test
+fewshot_split: test
+output_type: multiple_choice
+process_docs: !function utils.process_thaiexam_5
+doc_to_text: "คำถาม: {{question}}\nก. {{a}}\nข. {{b}}\nค. {{c}}\nง. {{d}}\nจ. {{e}}\nคำตอบ:"
+doc_to_choice: ["ก", "ข", "ค", "ง", "จ"]
+doc_to_target: "{{['a','b','c','d','e'].index(answer)}}"
+num_fewshot: 5
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0

@@ -1,0 +1,14 @@
+# กลุ่มรวม 5 subset ตามที่ eval suite ระบุ
+group: thaiexam
+task:
+  - thaiexam_onet
+  - thaiexam_ic
+  - thaiexam_tgat
+  - thaiexam_tpat1
+  - thaiexam_a_level
+aggregate_metric_list:
+  - metric: acc
+    aggregation: mean
+    weight_by_size: true
+metadata:
+  version: 1.0

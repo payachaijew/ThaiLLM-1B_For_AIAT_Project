@@ -115,6 +115,54 @@ def build_model(a, device):
     return model.to(device), tok, routed
 
 
+
+def assert_routers_learn(model, routed, ds, dev, seq_len):
+    """One forward/backward before training, to prove the routers actually receive gradient.
+
+    The archived adapter multiplied the routed mixture by a scale that started at zero, which
+    made routing-parameter gradients identically zero — the run trained happily and produced a
+    clean-looking negative result that was an artefact of the wrapper. That failure is silent,
+    so it is checked rather than trusted.
+
+    Routers in the FIRST block are inert by construction: there is no earlier block for them to
+    route over. They are expected to stay at their init values forever, and are reported here so
+    nobody later reads an unchanged first-block router as this bug returning.
+    """
+    b = ds.batch(0, 1, 0, 1)
+    ids = torch.from_numpy(b.astype(np.int64)).to(dev)
+    model(input_ids=ids, labels=ids).loss.backward()
+
+    inert, live, dead, gated = [], 0, [], 0
+    for n, prm in model.named_parameters():
+        if ".router." not in n:
+            continue
+        layer = int(n.split(".layers.")[1].split(".")[0])
+        grad = 0.0 if prm.grad is None else float(prm.grad.abs().max())
+        if layer < routed.layers_without_sources:
+            inert.append(n)          # first block: nothing earlier to route over
+        elif n.endswith(".norm.weight") and grad == 0.0:
+            # Expected, and only at init. The logit is query . norm(x), so d/d(norm.weight)
+            # carries a factor of query, which the paper initialises to exactly zero. Measured:
+            # norm.weight grad 0.000e+00 at init, 1.05e-05 after query moves by 1e-3.
+            gated += 1
+        elif grad > 0:
+            live += 1
+        else:
+            dead.append(n)
+    model.zero_grad(set_to_none=True)
+
+    print(f"[*] routers: {live} receive gradient, {gated} gated by the zero-init query "
+          f"(live once query moves), {len(inert)} inert in the first block "
+          f"(no earlier block to route over)", flush=True)
+    if dead:
+        raise RuntimeError(
+            f"{len(dead)} routing parameters outside the first block received no gradient, "
+            f"e.g. {dead[:3]}. Training would silently measure a disabled treatment. "
+            f"See src/routing.py FIX 1 (route_scale).")
+    if live == 0:
+        raise RuntimeError("no routing parameter received gradient at all")
+
+
 def lr_at(step, total, peak, warmup, floor_ratio=0.1):
     if step < warmup:
         return peak * step / max(warmup, 1)
@@ -144,9 +192,16 @@ def main():
     ap.add_argument("--weight-decay", type=float, default=0.1)
     ap.add_argument("--grad-clip", type=float, default=1.0)
     ap.add_argument("--max-steps", type=int, default=None)
+    ap.add_argument("--schedule-steps", type=int, default=None,
+                    help="horizon of the cosine LR schedule. Defaults to --max-steps. Set it "
+                         "explicitly when a run will be stopped early and resumed, so the "
+                         "schedule does not silently change shape between legs.")
     ap.add_argument("--seed", type=int, default=20260821)
     ap.add_argument("--grad-checkpoint", action="store_true", default=True)
     ap.add_argument("--no-grad-checkpoint", dest="grad_checkpoint", action="store_false")
+    ap.add_argument("--log-every", type=int, default=10,
+                    help="preflight sets this to 1 so throughput statistics are computed from "
+                         "every step rather than from a handful of sampled ones")
     ap.add_argument("--save-every", type=int, default=1000)
     ap.add_argument("--eval-every", type=int, default=500)
     ap.add_argument("--eval-docs", type=int, default=200)
@@ -176,12 +231,20 @@ def main():
     ds = StreamDataset(Path(a.stream), a.seq_len, a.seed)
     tok_per_step = a.micro_batch * a.grad_accum * a.seq_len * world
     total_steps = a.max_steps or (ds.n * a.seq_len) // tok_per_step
+    # The cosine denominator, kept separate from the stopping point. A run stopped at step 30
+    # and resumed to 40 must follow the SAME schedule as a run that went straight to 40;
+    # otherwise every leg after an interruption trains at a different learning rate and the
+    # resumed run is not the run you meant to do. This is recorded in the checkpoint and
+    # checked on resume, because the divergence is invisible in the loss curve.
+    sched_steps = a.schedule_steps or total_steps
     if is_main:
         print(f"[*] stream {a.stream}  {ds.n:,} sequences  sha {ds.manifest['train_bin_sha256'][:16]}", flush=True)
         print(f"[*] condition {a.condition}  device {dev}  world {world}", flush=True)
         print(f"[*] {tok_per_step:,} tokens/step  ->  {total_steps:,} steps", flush=True)
 
     model, tok, routed = build_model(a, dev)
+    if routed is not None and is_main:
+        assert_routers_learn(model, routed, ds, dev, a.seq_len)
     if ddp:
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local])
 
@@ -197,8 +260,14 @@ def main():
         (model.module if ddp else model).load_state_dict(ck["model"])
         opt.load_state_dict(ck["optimizer"])
         step = ck["step"]
+        prev = ck.get("schedule_steps")
+        if prev is not None and prev != sched_steps:
+            raise RuntimeError(
+                f"checkpoint was trained on a {prev}-step LR schedule but this run uses "
+                f"{sched_steps}. Pass --schedule-steps {prev} to continue the same schedule, "
+                f"or accept the change deliberately.")
         if is_main:
-            print(f"[*] resumed at step {step}", flush=True)
+            print(f"[*] resumed at step {step}  (LR horizon {sched_steps})", flush=True)
 
     held = {}
     for spec in a.heldout:
@@ -210,7 +279,7 @@ def main():
     model.train()
 
     while step < total_steps:
-        lr = lr_at(step, total_steps, a.lr, a.warmup)
+        lr = lr_at(step, sched_steps, a.lr, a.warmup)
         for g in opt.param_groups:
             g["lr"] = lr
         opt.zero_grad(set_to_none=True)
@@ -224,7 +293,7 @@ def main():
             out_ = model(input_ids=ids, labels=ids)
             loss = out_.loss / a.grad_accum
             loss.backward()
-            loss_sum += float(loss) * a.grad_accum
+            loss_sum += loss.detach().item() * a.grad_accum
 
         gn = torch.nn.utils.clip_grad_norm_(model.parameters(), a.grad_clip)
         opt.step()
@@ -232,7 +301,7 @@ def main():
         tokens_done += tok_per_step
         dt = time.time() - tstep
 
-        if is_main and (step % 10 == 0 or step == 1):
+        if is_main and (step % a.log_every == 0 or step == 1):
             rec = {"step": step, "loss": round(loss_sum / a.grad_accum, 5), "lr": lr,
                    "grad_norm": float(gn), "step_time_s": round(dt, 4),
                    "tokens_per_s": round(tok_per_step / dt, 1),
@@ -255,6 +324,7 @@ def main():
             ckp = out / f"ckpt_{step}.pt"
             torch.save({"step": step, "model": (model.module if ddp else model).state_dict(),
                         "optimizer": opt.state_dict(), "args": vars(a),
+                        "schedule_steps": sched_steps,
                         "stream_sha256": ds.manifest["train_bin_sha256"]}, ckp)
             print(f"  [saved] {ckp}", flush=True)
 
