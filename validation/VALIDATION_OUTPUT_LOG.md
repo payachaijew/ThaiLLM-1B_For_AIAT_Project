@@ -1458,3 +1458,50 @@ preflight รันขาแรกด้วย `--max-steps 30` (ขอบฟ้
 `peak_vram_gb` เป็น null เพราะโค้ดอ่านจาก `torch.cuda` — จะมีค่าจริงบนเครื่อง CUDA
 
 **สถานะ: A1–A4 ครบแล้ว** เหลือ DDP ที่ทดสอบได้เฉพาะบนเครื่องที่มี GPU หลายใบ
+
+---
+
+## A5 — fp32 optimizer และ DDP path ใน preflight
+
+**วันที่:** 2026-08-22 · `scientific_evidence_allowed=false`
+
+### 1. เปลี่ยนจาก bf16 ล้วนเป็น mixed precision
+
+ตรวจ optimizer state ที่ checkpoint เขียนออกมาแล้วพบว่าเทรน **bf16 ทั้งกระบวนการ**:
+
+```
+params bfloat16 · grads bfloat16 · exp_avg bfloat16 · exp_avg_sq bfloat16
+```
+
+bf16 มี mantissa 8 บิต ที่ lr 2e-5 การอัปเดตแต่ละครั้งมักเล็กกว่า 1 ulp ของน้ำหนักที่มันไปบวก
+จึงถูกปัดทิ้งทั้งก้อน — **รันดูปกติทุกอย่าง แต่โมเดลแทบไม่ขยับ** และ `exp_avg_sq` แย่กว่านั้น
+เพราะเก็บค่ากำลังสองของ gradient ซึ่งกินช่วงไดนามิกมาก
+
+`--precision` ค่าเริ่มต้นเป็น `mixed` แล้ว: master weights fp32 + autocast เฉพาะ forward
+`bf16` ยังเลือกได้ถ้าจำเป็นเรื่องหน่วยความจำ ยืนยันหลังแก้:
+
+```
+optimizer: exp_avg float32 · exp_avg_sq float32   params: float32   precision: mixed
+```
+
+บน MPS ใช้ autocast fp16 แทน bf16 เพราะ bf16 บน MPS ยังไม่นิ่ง และเคยวัดได้ว่า fp16
+เร็วกว่า (0.79 vs 0.52 doc/s)
+
+**ผลต่อการเลือกการ์ด** — ตัวเลขที่ `train_cpt.py` พิมพ์ตอนเริ่มรันคือ weights+grads+optimizer:
+
+| precision | Qwen3-1.7B | การ์ด 24 GB |
+|---|---|---|
+| bf16 ล้วน | ~13.6 GB | พอ |
+| mixed (fp32 master) | ~27.2 GB | ไม่พอเมื่อรวม activations |
+
+### 2. preflight ไม่เคยทดสอบ DDP เลย
+
+`preflight.py` เรียก `train_cpt.py` ด้วย `sys.executable` ตรง ๆ คือ process เดียว
+**เส้นทาง DDP ไม่เคยถูกแตะ** ทั้งที่เอกสารของ preflight เองอ้างว่าตรวจสิ่งที่จะพังบนเครื่องเช่า
+ถ้าไม่เจอตอนนี้ multi-GPU จะไปพังตอนจ่ายเงินแล้ว
+
+เพิ่ม `--nproc` ถ้ามากกว่า 1 จะ launch ผ่าน `torch.distributed.run` และรายงานบันทึก
+`ddp_exercised` ไว้ตรง ๆ เพื่อไม่ให้อ่านรายงานแล้วเข้าใจผิดว่า DDP ผ่านแล้ว
+
+ยืนยันบน MPS: unit tests 11/11 · S0 และ D1 รันจบด้วย `precision=mixed`
+DDP จริงยังทดสอบไม่ได้บนเครื่องนี้ (GPU ใบเดียว) — ต้องรัน `--nproc 2` บนเครื่องเช่าเป็นอย่างแรก

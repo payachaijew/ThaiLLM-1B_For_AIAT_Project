@@ -53,6 +53,13 @@ def main():
     # belongs to a DIFFERENT repo, and the run dies with an unrelated config error.
     ap.add_argument("--revision", default="ea980cb0a6c2ae4b936e82123acc929f1cec04c1")
     ap.add_argument("--null-logit-init", type=float, default=2.0)
+    ap.add_argument("--precision", default="mixed", choices=["mixed", "bf16"])
+    ap.add_argument("--nproc", type=int, default=1,
+                    help="GPUs per node. Set this to the real card count: >1 launches through "
+                         "torchrun and is the ONLY way this script exercises the DDP path. "
+                         "A single-process preflight says nothing about whether a multi-GPU "
+                         "run works, and that failure would otherwise surface on the rented "
+                         "machine with the meter running.")
     a = ap.parse_args()
 
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
@@ -65,13 +72,19 @@ def main():
         "config": {"stream": a.stream, "warmup_steps": a.warmup_steps,
                    "measure_steps": a.measure_steps, "micro_batch": a.micro_batch,
                    "grad_accum": a.grad_accum, "seq_len": a.seq_len, "model": a.model,
-                   "revision": a.revision, "null_logit_init": a.null_logit_init},
+                   "revision": a.revision, "null_logit_init": a.null_logit_init,
+                   "precision": a.precision, "nproc": a.nproc},
         "conditions": {}, "resume_test": {}, "errors": [],
+        "nproc": a.nproc,
+        "ddp_exercised": a.nproc > 1,
     }
 
-    base = [sys.executable, str(HERE / "train_cpt.py"), "--stream", a.stream,
+    launcher = ([sys.executable, "-m", "torch.distributed.run", "--standalone",
+                 "--nproc_per_node", str(a.nproc)] if a.nproc > 1 else [sys.executable])
+    base = launcher + [str(HERE / "train_cpt.py"), "--stream", a.stream,
             "--model", a.model, "--revision", a.revision,
             "--null-logit-init", str(a.null_logit_init), "--seq-len", str(a.seq_len),
+            "--precision", a.precision,
             "--micro-batch", str(a.micro_batch), "--grad-accum", str(a.grad_accum),
             "--routing-heads", str(a.routing_heads), "--device", a.device,
             "--max-steps", str(total), "--save-every", str(10**9),

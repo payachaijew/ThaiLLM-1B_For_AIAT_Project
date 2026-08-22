@@ -90,10 +90,25 @@ def eval_bpb(model, tok, texts, device, max_len=2048, chunk=256):
 
 
 # ---------------------------------------------------------------- model
+def autocast_dtype(a, device: str):
+    """bf16 everywhere except MPS, which has patchy bf16 support and was measured faster in
+    fp16 on this project's laptop (0.79 vs 0.52 doc/s)."""
+    if a.precision == "bf16":
+        return None                      # weights are already bf16; no autocast needed
+    return torch.float16 if device.startswith("mps") else torch.bfloat16
+
+
 def build_model(a, device):
     from transformers import AutoModelForCausalLM, AutoTokenizer
     tok = AutoTokenizer.from_pretrained(a.model, revision=a.revision)
-    model = AutoModelForCausalLM.from_pretrained(a.model, revision=a.revision, dtype=torch.bfloat16)
+    # Mixed precision keeps the master weights in fp32 and casts only the forward pass.
+    # Pure bf16 has an 8-bit mantissa, so at lr 2e-5 a typical update is smaller than one ulp
+    # of the weight it is applied to and is rounded away entirely: the run looks healthy and
+    # the model barely moves. exp_avg_sq suffers worse, since it holds squared gradients.
+    # The cost is memory - fp32 master, fp32 grads and fp32 Adam moments roughly double it -
+    # which is why the card has to be sized for this choice rather than the other way round.
+    param_dtype = torch.bfloat16 if a.precision == "bf16" else torch.float32
+    model = AutoModelForCausalLM.from_pretrained(a.model, revision=a.revision, dtype=param_dtype)
 
     routed = None
     if a.condition != "S0":
@@ -116,7 +131,7 @@ def build_model(a, device):
 
 
 
-def assert_routers_learn(model, routed, ds, dev, seq_len):
+def assert_routers_learn(model, routed, ds, dev, seq_len, amp_dtype):
     """One forward/backward before training, to prove the routers actually receive gradient.
 
     The archived adapter multiplied the routed mixture by a scale that started at zero, which
@@ -130,7 +145,11 @@ def assert_routers_learn(model, routed, ds, dev, seq_len):
     """
     b = ds.batch(0, 1, 0, 1)
     ids = torch.from_numpy(b.astype(np.int64)).to(dev)
-    model(input_ids=ids, labels=ids).loss.backward()
+    if amp_dtype is None:
+        model(input_ids=ids, labels=ids).loss.backward()
+    else:
+        with torch.autocast(device_type=dev.split(":")[0], dtype=amp_dtype):
+            model(input_ids=ids, labels=ids).loss.backward()
 
     inert, live, dead, gated = [], 0, [], 0
     for n, prm in model.named_parameters():
@@ -184,6 +203,10 @@ def main():
                     help="softly gates the routed mixture at init; see DeltaRouter docstring. "
                          "0=paper default (disruptive), 2=default here, >=4 risks a router "
                          "that learns too slowly to matter")
+    ap.add_argument("--precision", default="mixed", choices=["mixed", "bf16"],
+                    help="mixed = fp32 master weights + autocast forward (default, and what a "
+                         "multi-billion-token run needs). bf16 = pure bf16, roughly half the "
+                         "memory but updates below one ulp are silently lost.")
     ap.add_argument("--seq-len", type=int, default=8192)
     ap.add_argument("--micro-batch", type=int, default=1)
     ap.add_argument("--grad-accum", type=int, default=8)
@@ -242,9 +265,17 @@ def main():
         print(f"[*] condition {a.condition}  device {dev}  world {world}", flush=True)
         print(f"[*] {tok_per_step:,} tokens/step  ->  {total_steps:,} steps", flush=True)
 
+    amp_dtype = autocast_dtype(a, dev)
     model, tok, routed = build_model(a, dev)
+    if is_main:
+        n = sum(p.numel() for p in model.parameters())
+        bytes_per = 4 if a.precision == "mixed" else 2
+        # master + grads + exp_avg + exp_avg_sq
+        gb = n * bytes_per * 4 / 1e9
+        print(f"[*] precision {a.precision}  autocast {amp_dtype}  {n/1e9:.2f}B params  "
+              f"~{gb:.1f} GB for weights+grads+optimizer (activations on top)", flush=True)
     if routed is not None and is_main:
-        assert_routers_learn(model, routed, ds, dev, a.seq_len)
+        assert_routers_learn(model, routed, ds, dev, a.seq_len, amp_dtype)
     if ddp:
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local])
 
@@ -290,8 +321,12 @@ def main():
             gs = step * a.grad_accum + micro
             b = ds.batch(gs, a.micro_batch, rank, world)
             ids = torch.from_numpy(b.astype(np.int64)).to(dev)
-            out_ = model(input_ids=ids, labels=ids)
-            loss = out_.loss / a.grad_accum
+            if amp_dtype is None:
+                out_ = model(input_ids=ids, labels=ids)
+            else:
+                with torch.autocast(device_type=dev.split(":")[0], dtype=amp_dtype):
+                    out_ = model(input_ids=ids, labels=ids)
+            loss = out_.loss.float() / a.grad_accum
             loss.backward()
             loss_sum += loss.detach().item() * a.grad_accum
 
@@ -331,6 +366,7 @@ def main():
     if is_main:
         (out / "final.json").write_text(json.dumps({
             "run": a.out, "condition": a.condition, "steps": step,
+            "precision": a.precision, "autocast_dtype": str(amp_dtype),
             "tokens_seen": tokens_done, "wall_minutes": round((time.time() - t0) / 60, 1),
             "stream": a.stream, "stream_sha256": ds.manifest["train_bin_sha256"],
             "args": vars(a), "scientific_evidence_allowed": False,
