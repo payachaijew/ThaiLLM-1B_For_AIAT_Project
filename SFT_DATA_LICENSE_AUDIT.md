@@ -77,45 +77,125 @@ Alpaca ดั้งเดิมสร้างจาก `text-davinci-003` ข�
 
 ---
 
-## 4. ชุดที่แนะนำ
+## 4. ชุดที่แนะนำ — พร้อมตัวเลขจริงที่นับแล้ว
 
-**ระดับ A — สะอาด ใช้ได้ทันที**
+**แก้ไขจากฉบับแรก:** ตอนแรกผมประเมินว่าจะได้ 150,000–200,000 ตัวอย่าง
+หลังนับ license รายแถวจริงแล้ว ตัวเลขเปลี่ยนไปมาก
 
-| ชุด | ได้อะไร |
+| ชุด | แถวทั้งหมด | **ใช้ได้จริง** | ที่มา |
+|---|---|---|---|
+| seed-free 120k | 118,898 | **118,898** ⚠️ | Qwen2-72B — ขึ้นกับการตีความ |
+| thai-local-instruction-v2 | 39,829 | **39,829** | cc-by-4.0 |
+| WangchanThaiInstruct | 75,014 | **5,014** | มนุษย์เขียน แต่ 86.6% เป็น NC |
+| Aya (เฉพาะไทย) | 724 จาก 202,362 | **724** | มนุษย์เขียน apache-2.0 |
+| **รวม** | | **~164,000** | |
+
+### ตัวเลขที่ต้องเน้น: WangchanThaiInstruct ใช้ได้แค่ 6.7%
+
+นับจาก datasets-server statistics ทั้ง 4 split:
+
+| split | รวม | cc-by-sa-4.0 | **cc-by-nc-4.0** |
+|---|---|---|---|
+| default/train | 32,207 | 5,014 (15.6%) | 27,193 |
+| default/test | 7,793 | **0** | 7,793 |
+| paper/train | 28,098 | 5,014 (17.8%) | 23,084 |
+| paper/test | 6,916 | **0** | 6,916 |
+
+**86.6% เป็น NC** และ 5,014 แถวที่ใช้ได้ยังปรากฏซ้ำในทั้ง config `default` และ `paper`
+**ของจริงจึงเหลือ 5,014 แถว ไม่ใช่ 10,028 และไม่ใช่ 75,014**
+
+ชุดข้อมูลไทยที่มนุษย์เขียนชิ้นสำคัญที่สุดที่มีอยู่ ให้เราใช้ได้ **6.7%**
+
+### ความเสี่ยงที่ต้องรู้
+
+**118,898 จาก 164,000 (72%) ขึ้นอยู่กับการตีความ Tongyi Qianwen ข้อเดียว**
+ถ้าอาจารย์หรือฝ่ายกฎหมายตีความว่างานที่ต่อจาก Qwen3 ไม่นับเป็น "derivative works of
+Tongyi Qianwen" **เราจะเหลือข้อมูลราว 45,000 ตัวอย่าง** ซึ่งยังพอเทรน SFT ได้
+แต่บางลงมากและเสียความหลากหลายของประเภทงานไป
+
+---
+
+## 5. DPO — ไม่มีข้อมูลไทยที่ใช้ได้เลย
+
+ค้นด้วย 4 คำค้น (`thai dpo`, `thai preference`, `thai rlhf`, `thai reward`) พบ 7 ชุด
+**ไม่มีชุดไหนใช้ได้**
+
+| ชุด | ขนาด | ปัญหา |
+|---|---|---|
+| `SEACrowd/thai_hh_rlhf` | 161K | แปลด้วย Google Translate จาก Anthropic/hh-rlhf |
+| `siamaids/Magpie-DPO-Thai-76K` | 76K | **ไม่มี license** · วิธี Magpie ดึงจากโมเดล aligned |
+| `Stalemartyr/mt-thai-dpo-v1..v5` | 10K–1M | **ไม่มี license** · `mt` = machine translation |
+| `iapp/dpo_thai_tutorial` | <1K | apache-2.0 แต่เป็นตัวอย่างสอน ไม่ใช่ชุดใช้งาน |
+
+`thai_hh_rlhf` น่าสนใจที่สุดเพราะมี license (mit) แต่การ์ดของมันเองเตือนไว้ว่า
+ข้อมูลนี้ "are not meant for supervised training of dialogue agents" และ
+"training dialogue agents on these data is likely to lead to harmful models"
+— เพราะ hh-rlhf เป็นข้อมูล red-teaming ที่ฝั่ง rejected **จงใจให้เป็นคำตอบที่เป็นอันตราย**
+เอามาทำ DPO ตรง ๆ จะได้โมเดลที่แย่ลง ไม่ใช่ดีขึ้น
+
+และการแปลด้วยเครื่องเป็นปัญหาซ้อนอีกชั้น — **preference ขึ้นกับความละเอียดอ่อนของภาษา
+ซึ่งเป็นสิ่งแรกที่หายไปตอนแปลด้วยเครื่อง** คู่ chosen/rejected ที่ต่างกันด้วยน้ำเสียง
+หรือความสุภาพ จะกลายเป็นคู่ที่แยกไม่ออกหลังแปล
+
+### ทางเลือกสำหรับ DPO
+
+1. **ข้ามไปก่อนใน v1** — ปล่อย SFT-only ซึ่งก็ "ตอบรู้เรื่อง" แล้ว DPO เป็นการขัดเงา
+   ไม่ใช่ขั้นที่ทำให้มันคุยได้ **แนะนำทางนี้**
+2. **สร้างเอง** — ใช้โมเดลที่ได้จาก SFT สร้างคำตอบหลายแบบต่อหนึ่งคำสั่ง แล้วให้โมเดล
+   ตัดสิน เงื่อนไขคือ **license ของโมเดลผู้ตัดสินจะติดมากับผลลัพธ์** เหมือนกรณี Qwen
+   ถ้าใช้ Qwen เป็นผู้ตัดสินก็อยู่ในข้อยกเว้นเดียวกัน
+3. **ให้คนไทยจริงตัดสิน** — คุณภาพดีที่สุด แต่ต้องใช้คนและเวลา อาจทำได้เฉพาะชุดเล็ก
+   ไว้ใช้เป็นชุดวัดผลมากกว่าชุดเทรน
+
+---
+
+## 6. เครื่องมือที่สร้างแล้ว
+
+| ไฟล์ | ทำอะไร |
 |---|---|
-| Aya (เฉพาะไทย) | มนุษย์เขียน Apache-2.0 ไม่มีเงื่อนไขแฝง |
-| seed-free 120k | ปริมาณมากที่สุดที่ใช้ได้ · ครอบคลุม 5 ประเภทงาน |
-| WangchanThaiInstruct (**กรองเอาเฉพาะ cc-by-sa**) | มนุษย์เขียน · 4 โดเมน 7 ประเภทงาน |
-| thai-local-instruction-v2 | ความรู้ท้องถิ่นไทยที่โมเดลต่างชาติไม่มี |
-| OASST2 (คัดไทย) | บทสนทนาหลายเทิร์นที่มนุษย์เขียน |
+| `sft/sources.py` | ทะเบียนแหล่งข้อมูล + ตัวกรอง license พร้อมตัวเลขที่วัดแล้ว |
+| `sft/build_sft.py` | กรอง license รายแถว → decontamination → แบ่ง held-out |
 
-รวมประมาณ **150,000–200,000 ตัวอย่าง** ซึ่งเพียงพอสำหรับ SFT ของโมเดล 1.7B
-(งานส่วนใหญ่ใช้ 10K–100K)
+**ตัวกรอง license** ปฏิเสธทุกอย่างที่ไม่อยู่ในรายการอนุญาต รวมถึงค่าว่างและ `other`
+เพราะ **การไม่ระบุ license คือไม่ได้ให้สิทธิ์**
 
-**ระดับ B — ใช้ได้ถ้ากรอง** WangchanX-FLAN-v6.1, Legal-ThaiCCL-RAG
+**decontamination** ใช้ benchmark index เดิม (13.7M n-gram, `BENCH-NGRAM-V1`) แต่เปลี่ยนเป็น
+**stride 1 ทั้งสองฝั่ง** ต่างจากตอนสแกน corpus ที่ใช้ stride 8 เพราะข้อมูล instruct สั้นกว่ามาก
+และมีจำนวนน้อยกว่าสองระดับ จึงตรวจได้ทุกตำแหน่ง **ความเสี่ยง contamination สูงกว่า
+เว็บเท็กซ์มาก เพราะชุด instruct ประกอบขึ้นจากข้อสอบและคู่ถาม-ตอบ ซึ่งเป็นสิ่งเดียวกับ
+ที่ benchmark ทำมาจาก**
 
-**ระดับ C — ไม่แนะนำ** ทุกตัวที่แปลจาก Alpaca, ชุดที่ไม่ระบุที่มา, ชุดที่ไม่มี license
+ทดสอบด้วย `--limit 60` แล้ว: **จับ contamination ได้ 1 รายการจาก 60 แถวของ seed-free**
+(12 n-gram hits ข้อความเกี่ยวกับสถาบันเทคโนโลยีจิตรลดาที่มาจาก Wikipedia ไทย)
+ถ้าอัตรานี้คงอยู่ในชุดเต็ม จะมีราว 2,000 แถวที่ต้องตัดออก
 
----
+**held-out** ใช้ `HELDOUT-BUCKET-V1` ตัวเดียวกับ corpus โดยเจตนา — bucket คำนวณจากตัวข้อความ
+อย่างเดียว ตัวอย่างหนึ่ง ๆ จึงไม่มีทางอยู่ใน SFT training และ corpus evaluation พร้อมกัน
 
-## 5. สิ่งที่ต้องทำต่อ
-
-1. **ให้อาจารย์ยืนยันการตีความ Tongyi Qianwen** — ว่างานที่ต่อยอดจาก Qwen3
-   นับเป็น "derivative works of Tongyi Qianwen" หรือไม่ **ถ้าไม่ใช่ ชุด 120k ตกทันที**
-   และเราจะเหลือข้อมูลไม่ถึงครึ่ง
-2. **เขียนสคริปต์กรอง license รายแถว** สำหรับ WangchanThaiInstruct และ FLAN
-   พร้อมนับจำนวนที่ถูกตัดออก แบบเดียวกับที่ทำใน `phase0/clean_corpus.py`
-3. **decontamination รอบสอง** — ข้อมูล SFT ต้องผ่านการตรวจซ้ำกับ benchmark
-   ด้วย `phase0/build_benchmark_index.py` เหมือน corpus เพราะชุด instruct
-   มักมีข้อสอบปนอยู่โดยตรง
-4. **ขยาย held-out rule ให้ครอบคลุม SFT** — `HELDOUT-BUCKET-V1` ใช้กับ corpus
-   ยังไม่ครอบคลุมข้อมูล instruct
-5. **ยังไม่มีข้อมูล preference สำหรับ DPO** — ที่เจอมีแต่ `gamepollakrit/WangchanThaiInstruct_DPO`
-   (4 downloads ไม่มีเอกสาร) ถ้าจะทำ DPO อาจต้องสร้างเอง
+**ข้อควรระวังของ `--limit`:** Aya เรียงตามภาษา แถวไทยไม่ได้อยู่ต้นไฟล์ การใส่ `--limit`
+จึงได้ 0 แถวจาก Aya ซึ่งถูกต้องตามที่สั่ง ไม่ใช่บั๊ก แต่รันเต็มเท่านั้นที่ได้ครบ
 
 ---
 
-## 6. แหล่งอ้างอิง
+## 7. สิ่งที่ต้องทำต่อ
+
+| # | งาน | สถานะ |
+|---|---|---|
+| 1 | **ให้อาจารย์ยืนยันการตีความ Tongyi Qianwen** | ⛔ รออยู่ — ชี้เป็นชี้ตาย 72% ของข้อมูล |
+| 2 | กรอง license รายแถว | ✅ `sft/build_sft.py` |
+| 3 | decontamination ชุด SFT | ✅ `sft/build_sft.py` |
+| 4 | ขยาย held-out rule ให้ครอบคลุม SFT | ✅ ใช้ `HELDOUT-BUCKET-V1` ร่วมกัน |
+| 5 | ข้อมูล DPO | ✅ สำรวจแล้ว — ไม่มีที่ใช้ได้ แนะนำข้ามไปก่อน |
+| 6 | รัน `build_sft.py` แบบเต็ม | ⏳ รอข้อ 1 ก่อน จะได้ไม่ต้องรันซ้ำ |
+| 7 | เลือก chat template | ⏳ ยังไม่ได้ตัดสิน |
+| 8 | เขียน `train_sft.py` | ⏳ |
+
+**ข้อ 6 รอข้อ 1 โดยตั้งใจ** — ถ้าการตีความไม่ผ่าน แหล่งข้อมูลจะเปลี่ยนไปทั้งชุด
+รันตอนนี้ก็ต้องรันใหม่อยู่ดี
+
+---
+
+## 8. แหล่งอ้างอิง
 
 - [WangchanThaiInstruct](https://huggingface.co/datasets/airesearch/WangchanThaiInstruct)
 - [wangchanx-seed-free-synthetic-instruct-thai-120k](https://huggingface.co/datasets/airesearch/wangchanx-seed-free-synthetic-instruct-thai-120k)
@@ -124,3 +204,6 @@ Alpaca ดั้งเดิมสร้างจาก `text-davinci-003` ข�
 - [WangchanX-FLAN-v6.1](https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1)
 - [Suraponn/thai_instruction_sft](https://huggingface.co/datasets/Suraponn/thai_instruction_sft)
 - [iapp/Thai-R1-Distill-SFT](https://huggingface.co/datasets/iapp/Thai-R1-Distill-SFT)
+- [SEACrowd/thai_hh_rlhf](https://huggingface.co/datasets/SEACrowd/thai_hh_rlhf)
+- [pythainlp/thai-local-instruction-v2](https://huggingface.co/datasets/pythainlp/thai-local-instruction-v2)
+- ตัวเลข license รายแถว: datasets-server statistics endpoint, ดึงเมื่อ 2026-08-23
