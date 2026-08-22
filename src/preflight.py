@@ -165,7 +165,8 @@ def main():
                           "--max-steps", str(full), "--schedule-steps", str(full),
                           "--resume", str(ck), "--save-every", str(full)],
                   out / "resume_b.log")
-        ck.unlink(missing_ok=True)          # 20 GB each; consumed, so freed immediately
+        ck.unlink(missing_ok=True)          # 20 GB each; consumed, so freed immediately.
+        # The three ckpt_{full} files below must coexist to be compared pairwise.
         rc3 = run(base + ["--condition", "S0", "--out", str(rd),
                           "--max-steps", str(full), "--schedule-steps", str(full),
                           "--save-every", str(full)], out / "resume_c.log")
@@ -186,15 +187,15 @@ def main():
                 and resumed.exists() and control.exists():
             diff = max_abs_diff(rd_ck, resumed)
             floor = max_abs_diff(rd_ck, control)
-        ok = diff is not None and diff <= max(2 * floor, 1e-6)
+        resume_ok = diff is not None and diff <= max(2 * floor, 1e-6)
         report["resume_test"] = {
-            "status": "ok" if ok else "FAILED",
+            "status": "ok" if resume_ok else "FAILED",
             "checkpoint": f"ckpt_{half}.pt",
             "resume_vs_straight": diff,
             "nondeterminism_floor": floor,
             "verdict": (None if diff is None else
                         "resume is within the hardware's own run-to-run noise"
-                        if ok else
+                        if resume_ok else
                         "resume diverges by more than twice the measured noise floor"),
             "method": "four legs: stop at N-10 and resume to N; run straight to N; run "
                       "straight to N a second time. The last pair measures how much this "
