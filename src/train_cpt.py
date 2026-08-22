@@ -182,6 +182,62 @@ def assert_routers_learn(model, routed, ds, dev, seq_len, amp_dtype):
         raise RuntimeError("no routing parameter received gradient at all")
 
 
+# ---------------------------------------------------------------- checkpoints
+def ckpt_step(p: Path) -> int:
+    return int(p.stem.split("_")[1])
+
+
+def save_checkpoint(path: Path, payload: dict):
+    """Write to a temp file and rename.
+
+    A spot instance can be reclaimed mid-write. torch.save straight to the final name leaves a
+    truncated ckpt_N.pt that auto-resume then picks up, and the job crash-loops on restart
+    until someone notices. os.replace is atomic on the same filesystem, so the final name only
+    ever refers to a complete file.
+    """
+    tmp = path.with_suffix(".pt.partial")
+    torch.save(payload, tmp)
+    os.replace(tmp, path)
+
+
+def rotate_checkpoints(out: Path, keep_last: int, milestone_every: int):
+    """Delete old checkpoints, keeping the newest few plus permanent milestones.
+
+    A 10B-token run is roughly 76,000 steps. Saving every 1,000 and never deleting would leave
+    76 files at 20.6 GB each - 1.5 TB, which no rented disk carries. Milestones survive so the
+    run stays auditable at intervals; everything between them is scratch for restarting.
+    """
+    cks = sorted((p for p in out.glob("ckpt_*.pt")), key=ckpt_step)
+    keep = set(cks[-keep_last:]) if keep_last > 0 else set()
+    if milestone_every > 0:
+        keep |= {p for p in cks if ckpt_step(p) % milestone_every == 0}
+    freed = 0
+    for p in cks:
+        if p not in keep:
+            freed += p.stat().st_size
+            p.unlink()
+    for p in out.glob("*.pt.partial"):      # a save killed mid-write; never resumable
+        freed += p.stat().st_size
+        p.unlink()
+    return freed
+
+
+def find_resume(out: Path):
+    """Newest checkpoint that actually loads.
+
+    Returns the path only; the caller loads it. Corrupt files are skipped rather than fatal,
+    because the common cause is a reclaim during the most recent save and the one before it is
+    usually intact - losing an interval beats losing the run.
+    """
+    for p in sorted((q for q in out.glob("ckpt_*.pt")), key=ckpt_step, reverse=True):
+        try:
+            torch.load(p, map_location="meta", weights_only=False)
+            return p
+        except Exception as e:
+            print(f"[!] {p.name} ใช้ไม่ได้ ({type(e).__name__}) — ข้ามไปตัวก่อนหน้า", flush=True)
+    return None
+
+
 def lr_at(step, total, peak, warmup, floor_ratio=0.1):
     if step < warmup:
         return peak * step / max(warmup, 1)
@@ -232,7 +288,15 @@ def main():
                          "BPB shifts with subsample size, so promotion decisions use the full "
                          "frozen set via phase0/measure_baseline.py.")
     ap.add_argument("--heldout", action="append", default=[], metavar="LANG=PATH")
-    ap.add_argument("--resume", default=None)
+    ap.add_argument("--resume", default=None,
+                    help="path to a checkpoint, or 'auto' to continue from the newest one in "
+                         "--out. 'auto' is what makes an unattended spot run survive a reclaim: "
+                         "the same command works whether it is the first start or the tenth.")
+    ap.add_argument("--keep-last", type=int, default=2,
+                    help="checkpoints to retain besides milestones. 0 keeps everything, which "
+                         "on a multi-day run fills any disk.")
+    ap.add_argument("--milestone-every", type=int, default=0,
+                    help="steps between checkpoints that are never deleted. 0 disables.")
     ap.add_argument("--device", default="auto")
     a = ap.parse_args()
 
@@ -289,8 +353,15 @@ def main():
                             lr=a.lr, betas=(0.9, 0.95), eps=1e-8)
 
     step = 0
-    if a.resume:
-        ck = torch.load(a.resume, map_location="cpu", weights_only=False)
+    resume_from = a.resume
+    if resume_from == "auto":
+        found = find_resume(out)
+        resume_from = str(found) if found else None
+        if is_main:
+            print(f"[*] --resume auto -> {found.name if found else 'ไม่พบ checkpoint เริ่มใหม่'}",
+                  flush=True)
+    if resume_from:
+        ck = torch.load(resume_from, map_location="cpu", weights_only=False)
         (model.module if ddp else model).load_state_dict(ck["model"])
         opt.load_state_dict(ck["optimizer"])
         step = ck["step"]
@@ -367,11 +438,14 @@ def main():
 
         if is_main and step % a.save_every == 0:
             ckp = out / f"ckpt_{step}.pt"
-            torch.save({"step": step, "model": (model.module if ddp else model).state_dict(),
+            save_checkpoint(ckp, {"step": step,
+                        "model": (model.module if ddp else model).state_dict(),
                         "optimizer": opt.state_dict(), "args": vars(a),
                         "schedule_steps": sched_steps,
-                        "stream_sha256": ds.manifest["train_bin_sha256"]}, ckp)
-            print(f"  [saved] {ckp}", flush=True)
+                        "stream_sha256": ds.manifest["train_bin_sha256"]})
+            freed = rotate_checkpoints(out, a.keep_last, a.milestone_every)
+            note = f"  (ลบเก่า {freed/1e9:.1f} GB)" if freed else ""
+            print(f"  [saved] {ckp}{note}", flush=True)
 
     if is_main:
         (out / "final.json").write_text(json.dumps({
