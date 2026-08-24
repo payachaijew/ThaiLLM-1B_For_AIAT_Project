@@ -72,3 +72,6 @@ data/streams/
 # แพ็กตัวอย่างสำหรับ mentor (สร้างใหม่ได้ด้วย phase0/make_sample_pack.py)
 corpus_sample_pack/
 corpus_sample_pack.zip
+
+# สไลด์นำเสนอ — ไม่ขึ้น GitHub
+presentation/
